@@ -31,56 +31,33 @@ export async function scanAndCategorizeDrug(input: ScanAndCategorizeDrugInput): 
 }
 
 const categorizeDrug = ai.defineTool(
-  {
-    name: 'categorizeDrug',
-    description: 'Categorizes a drug and extracts relevant tags.',
-    inputSchema: z.object({
-      drugName: z.string().describe('The name of the drug to categorize.'),
-    }),
-    outputSchema: z.object({
-      category: z.string().describe('The category of the drug.'),
-      tags: z.array(z.string()).describe('Relevant tags for the drug.'),
-    }),
-  },
-  async (input) => {
-    const {text} = await ai.generate({
-      prompt: `You are an expert at categorizing drugs and extracting relevant tags.
+    {
+      name: 'categorizeDrug',
+      description: 'Categorizes a drug and extracts 5 relevant tags. Should be called after the drug name is extracted from an image.',
+      inputSchema: z.object({
+        drugName: z.string().describe('The name of the drug to categorize.'),
+      }),
+      outputSchema: z.object({
+        category: z.string().describe('The category of the drug.'),
+        tags: z.array(z.string()).describe('An array of 5 relevant tags for the drug.'),
+      }),
+    },
+    async ({ drugName }) => {
+        const { text } = await ai.generate({
+            prompt: `You are a drug categorization expert. For the drug "${drugName}", provide its category and 5 relevant tags. Format your response with "Category:" on one line and "Tags:" on the next.`,
+        });
 
-      Categorize the following drug and extract 5 relevant tags.
+        const lines = text.split('\n');
+        const categoryLine = lines.find(line => line.startsWith('Category:'));
+        const tagsLine = lines.find(line => line.startsWith('Tags:'));
+        
+        const category = categoryLine ? categoryLine.substring('Category:'.length).trim() : 'Unknown';
+        const tagsString = tagsLine ? tagsLine.substring('Tags:'.length).trim() : '';
+        const tags = tagsString.split(',').map(tag => tag.trim()).filter(Boolean);
 
-      Drug Name: ${input.drugName}
-      Category: 
-      Tags: `,
-    });
-
-    const lines = text.split('\n');
-    const categoryLine = lines.find(line => line.startsWith('Category:'));
-    const tagsLine = lines.find(line => line.startsWith('Tags:'));
-
-    const category = categoryLine ? categoryLine.substring('Category:'.length).trim() : 'Unknown';
-    const tagsString = tagsLine ? tagsLine.substring('Tags:'.length).trim() : '';
-    const tags = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-
-    return {
-      category: category,
-      tags: tags,
-    };
-  }
+        return { category, tags };
+    },
 );
-
-const prompt = ai.definePrompt({
-  name: 'scanAndCategorizeDrugPrompt',
-  input: {schema: ScanAndCategorizeDrugInputSchema},
-  output: {schema: ScanAndCategorizeDrugOutputSchema},
-  tools: [categorizeDrug],
-  prompt: `You are an AI assistant that identifies drugs from medicine label photos, categorizes them, and extracts relevant tags.
-
-  1.  Extract the drug name from the medicine label photo.
-  2.  Use the categorizeDrug tool to categorize the drug and extract relevant tags.
-
-  Photo: {{media url=photoDataUri}}
-  `,
-});
 
 const scanAndCategorizeDrugFlow = ai.defineFlow(
   {
@@ -88,18 +65,30 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     inputSchema: ScanAndCategorizeDrugInputSchema,
     outputSchema: ScanAndCategorizeDrugOutputSchema,
   },
-  async input => {
-    const ocrResult = await ai.generate({
-      prompt: `Extract the drug name from this medicine label.  Return just the name of the drug, nothing else.
-      Photo: {{media url=${input.photoDataUri}}}`, 
+  async (input) => {
+    const { text: drugName, toolRequest } = await ai.generate({
+      model: 'googleai/gemini-2.5-flash',
+      tools: [categorizeDrug],
+      prompt: `From the provided image of a medicine label, first extract the drug's name. Then, use the provided tool to categorize it and get tags.
+      
+      Image: {{media url=photoDataUri}}`,
     });
 
-    const drugName = ocrResult.text;
-
     if (!drugName) {
-      throw new Error('Could not extract drug name from the image.');
+        throw new Error('Could not extract drug name from the image.');
     }
     
+    if (toolRequest) {
+        const toolResponse = await toolRequest.run();
+        const output = toolResponse[0].output as { category: string; tags: string[] };
+        return {
+            drugName: JSON.parse(toolResponse[0].input as string).drugName,
+            category: output.category,
+            tags: output.tags,
+        };
+    }
+
+    // Fallback if the tool is not called
     const toolResult = await categorizeDrug({ drugName });
 
     return {
