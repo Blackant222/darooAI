@@ -21,8 +21,11 @@ const ChatbotInputSchema = z.object({
   userHealthConditions: z.string().describe("A text description of the user's known health conditions."),
   userMedications: z.array(z.object({
     brandName: z.string().optional(),
-    activeIngredients: z.array(z.string()),
-  })).describe('A list of medications available in the user\'s pharmacy.'),
+    activeIngredients: z.array(z.object({
+        name: z.string(),
+        dosage: z.string().optional(),
+    })),
+  })).describe('A list of medications available in the user\'s pharmacy, including active ingredients and dosages.'),
   currentQuery: z.string().describe('The latest message from the user.'),
   chatHistory: z.array(ChatMessageSchema).describe('The history of the conversation so far.'),
 });
@@ -45,7 +48,7 @@ const prompt = ai.definePrompt({
 
   You have access to the user's health profile and their list of available medications.
   - User's Health Conditions: {{{userHealthConditions}}}
-  - Medications in User's Pharmacy: {{#each userMedications}} {{brandName}} ({{#each activeIngredients}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}){{#unless @last}};{{/unless}} {{/each}}
+  - Medications in User's Pharmacy: {{#each userMedications}} {{brandName}} ({{#each activeIngredients}}{{{name}}} {{dosage}}{{#unless @last}}, {{/unless}}{{/each}}){{#unless @last}};{{/unless}} {{/each}}
 
   Your primary goal is to help the user with their health questions, like suggesting a medication they already own for a specific symptom (e.g., "I have a headache").
 

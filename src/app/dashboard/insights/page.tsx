@@ -32,7 +32,10 @@ export default function ChatbotPage() {
 
   // TODO: Get health conditions from user profile once available
   const userHealthConditions = "فشار خون بالا, دیابت نوع ۲";
-  const userMedications = drugs.map(d => ({ brandName: d.brandName, activeIngredients: d.activeIngredients }));
+  const userMedications = drugs.map(d => ({ 
+      brandName: d.brandName, 
+      activeIngredients: d.activeIngredients.map(i => ({ name: i.name, dosage: i.dosage })) 
+  }));
 
   useEffect(() => {
     // Scroll to the bottom when a new message is added
