@@ -11,7 +11,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
