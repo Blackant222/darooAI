@@ -30,7 +30,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
-        setError('File size must be less than 4MB.');
+        setError('اندازه فایل باید کمتر از ۴ مگابایت باشد.');
         return;
       }
       setFile(selectedFile);
@@ -72,12 +72,12 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
         setResult(response);
       } catch (e) {
         console.error(e);
-        const errorMessage = e instanceof Error ? e.message : 'An unexpected error occurred.';
-        setError(`Scan failed: ${errorMessage}`);
+        const errorMessage = e instanceof Error ? e.message : 'یک خطای غیرمنتظره رخ داد.';
+        setError(`اسکن ناموفق بود: ${errorMessage}`);
         toast({
           variant: 'destructive',
-          title: 'Scan Failed',
-          description: 'Could not analyze the medication label. Please try a clearer image.',
+          title: 'اسکن ناموفق بود',
+          description: 'امکان تحلیل برچسب دارو وجود نداشت. لطفاً از تصویر واضح‌تری استفاده کنید.',
         });
       } finally {
         setIsLoading(false);
@@ -85,17 +85,15 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
     };
     reader.onerror = (err) => {
       console.error("FileReader error:", err);
-      setError('Failed to read the file.');
+      setError('خواندن فایل ناموفق بود.');
       setIsLoading(false);
     };
   };
   
   const handleAddToPharmacy = () => {
-    // In a real app, this would save to a database.
-    // For now, we'll just show a success toast.
     toast({
-      title: 'Medication Added',
-      description: `${result?.drugName} has been added to your virtual pharmacy.`,
+      title: 'دارو اضافه شد',
+      description: `${result?.drugName} به داروخانه مجازی شما اضافه شد.`,
     });
     handleOpenChange(false);
   };
@@ -103,19 +101,19 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md neumorphic-card">
+      <DialogContent dir="rtl" className="sm:max-w-md neumorphic-card">
         <DialogHeader>
-          <DialogTitle className="font-headline text-center">Scan New Medication</DialogTitle>
-          <DialogDescription className="text-center">Upload a photo of the medication label to add it to your pharmacy.</DialogDescription>
+          <DialogTitle className="font-headline text-center">اسکن داروی جدید</DialogTitle>
+          <DialogDescription className="text-center">برای افزودن به داروخانه، عکس برچسب دارو را بارگذاری کنید.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {preview ? (
             <div className="relative group w-full aspect-video rounded-lg overflow-hidden border-2 border-dashed border-muted-foreground/50 flex justify-center items-center">
-              <Image src={preview} alt="Medication preview" fill style={{ objectFit: 'contain' }} />
+              <Image src={preview} alt="پیش‌نمایش دارو" fill style={{ objectFit: 'contain' }} />
               <button
                 onClick={() => { setFile(null); setPreview(null); setResult(null); setError(null); }}
-                className="absolute top-2 right-2 bg-card/80 backdrop-blur-sm rounded-full p-1 text-card-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 left-2 bg-card/80 backdrop-blur-sm rounded-full p-1 text-card-foreground opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -123,7 +121,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
           ) : (
             <div className="relative w-full aspect-video rounded-lg border-2 border-dashed border-muted-foreground/50 flex flex-col justify-center items-center text-center p-4 hover:border-primary transition-colors">
               <UploadCloud className="h-12 w-12 text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">Drag & drop or click to upload</p>
+              <p className="text-sm text-muted-foreground">برای بارگذاری، فایل را بکشید و رها کنید یا کلیک کنید</p>
               <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             </div>
           )}
@@ -136,13 +134,13 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
           )}
 
           {result && (
-            <div className="space-y-4 p-4 bg-muted/20 dark:bg-muted/50 rounded-lg border">
-              <h4 className="font-semibold text-lg flex items-center gap-2"><CheckCircle className="h-5 w-5 text-primary"/>Scan Successful</h4>
+            <div className="space-y-4 p-4 bg-muted/20 dark:bg-muted/50 rounded-lg border text-right">
+              <h4 className="font-semibold text-lg flex items-center gap-2"><CheckCircle className="h-5 w-5 text-primary ml-2"/>اسکن موفقیت‌آمیز بود</h4>
               <div className="space-y-3">
-                <p><strong>Drug Name:</strong> {result.drugName}</p>
-                <p><strong>Category:</strong> {result.category}</p>
+                <p><strong>نام دارو:</strong> {result.drugName}</p>
+                <p><strong>دسته بندی:</strong> {result.category}</p>
                 <div>
-                  <strong>Tags:</strong>
+                  <strong>تگ ها:</strong>
                   <div className="flex gap-2 flex-wrap mt-1">
                     {result.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
                   </div>
@@ -155,17 +153,17 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
         <DialogFooter>
           {result ? (
             <Button onClick={handleAddToPharmacy} className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90">
-              <PlusCircle className="mr-2"/> Add to Pharmacy
+              <PlusCircle className="ml-2"/> افزودن به داروخانه
             </Button>
           ) : (
             <Button onClick={handleScan} disabled={!file || isLoading} className="w-full neumorphic-button">
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 animate-spin" /> Scanning...
+                  <Loader2 className="ml-2 animate-spin" /> در حال اسکن...
                 </>
               ) : (
                 <>
-                  <ScanLine className="mr-2"/> Scan Label
+                  <ScanLine className="ml-2"/> اسکن برچسب
                 </>
               )}
             </Button>

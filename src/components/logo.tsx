@@ -18,7 +18,7 @@ export function Logo({
       <Pill className="h-6 w-6 text-primary" />
       {!collapsed && (
         <span className="text-lg font-bold font-headline whitespace-nowrap">
-          DarooAI
+          دارو AI
         </span>
       )}
     </Link>

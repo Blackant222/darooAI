@@ -19,17 +19,17 @@ export function UserNav() {
           <Avatar className="h-10 w-10 neumorphic-card p-0.5">
             <AvatarImage
               src="https://picsum.photos/seed/avatar1/40/40"
-              alt="User avatar"
+              alt="آواتار کاربر"
               data-ai-hint="person portrait"
             />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 neumorphic-card" align="end" forceMount>
+      <DropdownMenuContent dir="rtl" className="w-56 neumorphic-card" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">User</p>
+            <p className="text-sm font-medium leading-none">کاربر</p>
             <p className="text-xs leading-none text-muted-foreground">
               user@example.com
             </p>
@@ -38,13 +38,13 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/profile">Profile</Link>
+            <Link href="/dashboard/profile">پروفایل</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>تنظیمات</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Logout</Link>
+          <Link href="/">خروج</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

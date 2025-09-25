@@ -4,8 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "DarooAI",
-  description: "Your Personal Pharmacy Assistant",
+  title: "دارو AI",
+  description: "دستیار داروخانه شخصی شما",
 };
 
 export default function RootLayout({
@@ -14,12 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fa" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>

@@ -13,9 +13,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Welcome back!</h1>
+        <h1 className="text-3xl font-bold font-headline">خوش آمدید!</h1>
         <p className="text-muted-foreground">
-          Here&apos;s a quick overview of your pharmacy.
+          در اینجا یک نمای کلی از داروخانه شما آورده شده است.
         </p>
       </div>
 
@@ -23,39 +23,39 @@ export default function DashboardPage() {
         <Card className="neumorphic-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Medications
+              تعداد کل داروها
             </CardTitle>
             <Pill className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
+            <div className="text-2xl font-bold">۵</div>
             <p className="text-xs text-muted-foreground">
-              in your virtual pharmacy
+              در داروخانه مجازی شما
             </p>
           </CardContent>
         </Card>
         <Card className="neumorphic-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">AI Insights</CardTitle>
+            <CardTitle className="text-sm font-medium">بینش هوش مصنوعی</CardTitle>
             <Lightbulb className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2</div>
+            <div className="text-2xl font-bold">۲</div>
             <p className="text-xs text-muted-foreground">
-              new recommendations available
+              توصیه جدید در دسترس است
             </p>
           </CardContent>
         </Card>
         <Card className="neumorphic-card col-span-full lg:col-span-1 flex flex-col justify-center items-center p-6">
           <CardTitle className="text-lg font-semibold mb-2">
-            Add New Medication
+            افزودن داروی جدید
           </CardTitle>
           <CardDescription className="text-center mb-4">
-            Scan a medicine label to get started.
+            برای شروع، برچسب دارو را اسکن کنید.
           </CardDescription>
           <ScanDrugDialog>
             <Button className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90">
-              <FileUp className="mr-2 h-4 w-4" /> Scan Now
+              <FileUp className="ml-2 h-4 w-4" /> اسکن کن
             </Button>
           </ScanDrugDialog>
         </Card>
@@ -63,14 +63,14 @@ export default function DashboardPage() {
 
       <Card className="neumorphic-card">
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>فعالیت اخیر</CardTitle>
           <CardDescription>
-            An overview of your recent dosage logs.
+            نمای کلی از گزارشات مصرف اخیر شما.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-center py-8">
-            No recent activity.
+            فعالیت اخیری وجود ندارد.
           </p>
         </CardContent>
       </Card>

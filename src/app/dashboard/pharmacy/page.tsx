@@ -21,31 +21,31 @@ import { ScanDrugDialog } from "@/components/scan-drug-dialog";
 const mockMedications = [
   {
     id: "1",
-    name: "Lisinopril",
-    use: "High Blood Pressure",
-    tags: ["ACE inhibitor", "daily", "with food"],
-    lastTaken: "Today, 8:00 AM",
+    name: "لیزینوپریل",
+    use: "فشار خون بالا",
+    tags: ["مهارکننده ACE", "روزانه", "با غذا"],
+    lastTaken: "امروز, ۸:۰۰ صبح",
   },
   {
     id: "2",
-    name: "Metformin",
-    use: "Diabetes Type 2",
-    tags: ["biguanide", "twice daily", "oral"],
-    lastTaken: "Today, 9:00 AM",
+    name: "متفورمین",
+    use: "دیابت نوع ۲",
+    tags: ["بیگوانید", "دو بار در روز", "خوراکی"],
+    lastTaken: "امروز, ۹:۰۰ صبح",
   },
   {
     id: "3",
-    name: "Simvastatin",
-    use: "High Cholesterol",
-    tags: ["statin", "evening", "lipid-lowering"],
-    lastTaken: "Yesterday, 9:00 PM",
+    name: "سیمواستاتین",
+    use: "کلسترول بالا",
+    tags: ["استاتین", "عصر", "کاهش دهنده چربی"],
+    lastTaken: "دیروز, ۹:۰۰ شب",
   },
   {
     id: "4",
-    name: "Amlodipine",
-    use: "High Blood Pressure",
-    tags: ["calcium channel blocker", "daily"],
-    lastTaken: "Today, 8:00 AM",
+    name: "آملودیپین",
+    use: "فشار خون بالا",
+    tags: ["مسدود کننده کانال کلسیم", "روزانه"],
+    lastTaken: "امروز, ۸:۰۰ صبح",
   },
 ];
 
@@ -54,14 +54,14 @@ export default function PharmacyPage() {
     <Card className="neumorphic-card">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>My Virtual Pharmacy</CardTitle>
+          <CardTitle>داروخانه مجازی من</CardTitle>
           <CardDescription>
-            All your saved medications in one place.
+            تمام داروهای ذخیره شده شما در یک مکان.
           </CardDescription>
         </div>
         <ScanDrugDialog>
           <Button className="neumorphic-button">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Medication
+            <PlusCircle className="ml-2 h-4 w-4" /> افزودن دارو
           </Button>
         </ScanDrugDialog>
       </CardHeader>
@@ -70,11 +70,11 @@ export default function PharmacyPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Drug Name</TableHead>
-                <TableHead>Primary Use</TableHead>
-                <TableHead>Tags</TableHead>
-                <TableHead>Last Taken</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>نام دارو</TableHead>
+                <TableHead>کاربرد اصلی</TableHead>
+                <TableHead>تگ ها</TableHead>
+                <TableHead>آخرین مصرف</TableHead>
+                <TableHead className="text-left">اقدامات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -92,9 +92,9 @@ export default function PharmacyPage() {
                     </div>
                   </TableCell>
                   <TableCell>{med.lastTaken}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-left">
                     <Button variant="outline" size="sm" className="neumorphic-button">
-                      <Clock className="mr-2 h-4 w-4" /> Log Dosage
+                      <Clock className="ml-2 h-4 w-4" /> ثبت مصرف
                     </Button>
                   </TableCell>
                 </TableRow>

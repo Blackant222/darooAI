@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   return (
-    <div className="flex items-center justify-center min-h-dvh bg-background">
+    <div dir="rtl" className="flex items-center justify-center min-h-dvh bg-background">
       <Card className="mx-auto max-w-sm w-full neumorphic-card">
         <CardHeader>
           <Link
@@ -24,16 +24,16 @@ export default function LoginPage() {
             <Pill className="h-8 w-8 text-primary" />
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
-            Login to DarooAI
+            ورود به دارو AI
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your email below to login to your account
+            برای ورود به حساب کاربری، ایمیل خود را وارد کنید
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <div className="grid gap-4 text-right">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">ایمیل</Label>
               <Input
                 id="email"
                 type="email"
@@ -44,13 +44,13 @@ export default function LoginPage() {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">رمز عبور</Label>
                 <Link
                   href="#"
-                  className="ml-auto inline-block text-sm underline"
+                  className="mr-auto inline-block text-sm underline"
                   prefetch={false}
                 >
-                  Forgot your password?
+                  رمز عبور خود را فراموش کرده‌اید؟
                 </Link>
               </div>
               <Input
@@ -64,13 +64,13 @@ export default function LoginPage() {
               type="submit"
               className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Link href="/dashboard" className="w-full h-full flex items-center justify-center">Login</Link>
+              <Link href="/dashboard" className="w-full h-full flex items-center justify-center">ورود</Link>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            حساب کاربری ندارید؟{" "}
             <Link href="/signup" className="underline" prefetch={false}>
-              Sign up
+              ثبت نام
             </Link>
           </div>
         </CardContent>

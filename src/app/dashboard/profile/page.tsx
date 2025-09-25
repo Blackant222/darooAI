@@ -15,9 +15,9 @@ export default function ProfilePage() {
   return (
     <Card className="neumorphic-card">
       <CardHeader>
-        <CardTitle>My Profile</CardTitle>
+        <CardTitle>پروفایل من</CardTitle>
         <CardDescription>
-          Update your personal information and health conditions.
+          اطلاعات شخصی و شرایط سلامتی خود را به روز کنید.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -27,16 +27,16 @@ export default function ProfilePage() {
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <Button variant="outline" className="neumorphic-button">
-            Change Photo
+            تغییر عکس
           </Button>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" defaultValue="User" className="neumorphic-input" />
+            <Label htmlFor="name">نام کامل</Label>
+            <Input id="name" defaultValue="کاربر" className="neumorphic-input" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">ایمیل</Label>
             <Input
               id="email"
               type="email"
@@ -47,15 +47,15 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="health-conditions">Health Conditions</Label>
+          <Label htmlFor="health-conditions">شرایط سلامتی</Label>
           <Textarea
             id="health-conditions"
-            defaultValue="Hypertension, Diabetes Type 2"
+            defaultValue="فشار خون بالا, دیابت نوع ۲"
             className="neumorphic-input"
           />
         </div>
         <div className="flex justify-end">
-          <Button className="neumorphic-button">Save Changes</Button>
+          <Button className="neumorphic-button">ذخیره تغییرات</Button>
         </div>
       </CardContent>
     </Card>

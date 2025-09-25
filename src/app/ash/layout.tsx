@@ -8,12 +8,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-dvh flex flex-col">
+    <div dir="rtl" className="min-h-dvh flex flex-col">
       <header className="flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
         <Link href="/ash" className="flex items-center gap-2" prefetch={false}>
           <Pill className="h-6 w-6 text-primary" />
           <span className="text-lg font-bold font-headline">
-            DarooAI Admin
+            ادمین دارو AI
           </span>
         </Link>
         <nav className="flex items-center gap-4">
@@ -21,7 +21,7 @@ export default function AdminLayout({
             href="/dashboard"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
-            Back to App
+            بازگشت به اپلیکیشن
           </Link>
           <UserNav />
         </nav>

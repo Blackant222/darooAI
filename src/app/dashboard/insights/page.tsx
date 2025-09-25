@@ -18,8 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 import { getPersonalizedHealthInsights, type PersonalizedHealthInsightsOutput } from '@/ai/flows/get-personalized-health-insights';
 
 export default function InsightsPage() {
-  const [healthConditions, setHealthConditions] = useState("Hypertension, Diabetes Type 2");
-  const [medications, setMedications] = useState("Lisinopril, Metformin, Simvastatin, Amlodipine");
+  const [healthConditions, setHealthConditions] = useState("فشار خون بالا, دیابت نوع ۲");
+  const [medications, setMedications] = useState("لیزینوپریل, متفورمین, سیمواستاتین, آملودیپین");
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<PersonalizedHealthInsightsOutput | null>(null);
   const { toast } = useToast();
@@ -34,8 +34,8 @@ export default function InsightsPage() {
       console.error("Failed to get health insights:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not fetch AI insights. Please try again later.",
+        title: "خطا",
+        description: "دریافت اطلاعات از هوش مصنوعی با مشکل مواجه شد. لطفاً بعداً دوباره امتحان کنید.",
       });
     }
     setIsLoading(false);
@@ -45,31 +45,30 @@ export default function InsightsPage() {
     <div className="space-y-8">
       <Card className="neumorphic-card">
         <CardHeader>
-          <CardTitle>AI-Powered Health Insights</CardTitle>
+          <CardTitle>اطلاعات سلامتی مبتنی بر هوش مصنوعی</CardTitle>
           <CardDescription>
-            Get personalized medication recommendations and drug interaction
-            alerts based on your health profile.
+            توصیه‌های دارویی شخصی‌سازی‌شده و هشدارهای تداخل دارویی را بر اساس پروفایل سلامتی خود دریافت کنید.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-2">
-            <Label htmlFor="health-conditions">Your Health Conditions</Label>
+            <Label htmlFor="health-conditions">شرایط سلامتی شما</Label>
             <Textarea
               id="health-conditions"
               value={healthConditions}
               onChange={(e) => setHealthConditions(e.target.value)}
-              placeholder="e.g., Hypertension, Asthma"
+              placeholder="مثال: فشار خون بالا, آسم"
               className="neumorphic-input"
               rows={3}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="medications">Your Current Medications</Label>
+            <Label htmlFor="medications">داروهای فعلی شما</Label>
             <Textarea
               id="medications"
               value={medications}
               onChange={(e) => setMedications(e.target.value)}
-              placeholder="e.g., Lisinopril, Albuterol"
+              placeholder="مثال: لیزینوپریل, آلبوترول"
               className="neumorphic-input"
               rows={3}
             />
@@ -79,11 +78,11 @@ export default function InsightsPage() {
           <Button onClick={handleGetInsights} disabled={isLoading} className="neumorphic-button">
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 animate-spin" /> Getting Insights...
+                <Loader2 className="ml-2 animate-spin" /> در حال دریافت اطلاعات...
               </>
             ) : (
                <>
-                <Lightbulb className="mr-2" /> Get Insights
+                <Lightbulb className="ml-2" /> دریافت اطلاعات
               </>
             )}
           </Button>
@@ -98,11 +97,11 @@ export default function InsightsPage() {
 
       {results && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold font-headline">Your Results</h3>
+          <h3 className="text-xl font-semibold font-headline">نتایج شما</h3>
           {results.interactionAlerts && (
             <Alert variant="destructive" className="neumorphic-card">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Potential Drug Interaction</AlertTitle>
+              <AlertTitle>تداخل دارویی بالقوه</AlertTitle>
               <AlertDescription>
                 {results.interactionAlerts}
               </AlertDescription>
@@ -111,7 +110,7 @@ export default function InsightsPage() {
           {results.recommendations && (
             <Alert className="neumorphic-card">
               <FileWarning className="h-4 w-4" />
-              <AlertTitle>Medication Recommendation</AlertTitle>
+              <AlertTitle>توصیه دارویی</AlertTitle>
               <AlertDescription>
                 {results.recommendations}
               </AlertDescription>

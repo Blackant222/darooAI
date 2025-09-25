@@ -15,10 +15,10 @@ import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
-  drugName: z.string().min(1, "Drug name is required."),
-  drugCategory: z.string().min(1, "Drug category is required."),
-  drugTags: z.string().min(1, "Please provide comma-separated tags."),
-  description: z.string().min(1, "Description is required."),
+  drugName: z.string().min(1, "نام دارو الزامی است."),
+  drugCategory: z.string().min(1, "دسته بندی دارو الزامی است."),
+  drugTags: z.string().min(1, "لطفا تگ ها را با کاما جدا کنید."),
+  description: z.string().min(1, "توضیحات الزامی است."),
 });
 
 export function FlagMedicationForm() {
@@ -29,10 +29,10 @@ export function FlagMedicationForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            drugName: "Aspirin",
-            drugCategory: "Pain Reliever",
-            drugTags: "NSAID, anti-inflammatory, fever reducer, blood thinner",
-            description: "A common drug used for pain relief, fever, and inflammation. It is also used as an antiplatelet agent."
+            drugName: "آسپرین",
+            drugCategory: "تسکین دهنده درد",
+            drugTags: "NSAID, ضد التهاب, کاهش دهنده تب, رقیق کننده خون",
+            description: "یک داروی رایج برای تسکین درد، تب و التهاب. همچنین به عنوان یک عامل ضد پلاکت استفاده می شود."
         },
     });
 
@@ -49,8 +49,8 @@ export function FlagMedicationForm() {
             console.error(error);
             toast({
                 variant: 'destructive',
-                title: 'Error',
-                description: 'Failed to check for inconsistencies.'
+                title: 'خطا',
+                description: 'بررسی عدم انطباق ناموفق بود.'
             })
         } finally {
             setIsLoading(false);
@@ -60,55 +60,55 @@ export function FlagMedicationForm() {
     return (
         <div className="space-y-4">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-right">
                     <FormField control={form.control} name="drugName" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Drug Name</FormLabel>
+                            <FormLabel>نام دارو</FormLabel>
                             <FormControl>
-                                <Input placeholder="e.g., Atorvastatin" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: آتورواستاتین" {...field} className="neumorphic-input" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
                     <FormField control={form.control} name="drugCategory" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Drug Category</FormLabel>
+                            <FormLabel>دسته بندی دارو</FormLabel>
                             <FormControl>
-                                <Input placeholder="e.g., Statin" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: استاتین" {...field} className="neumorphic-input" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
                     <FormField control={form.control} name="drugTags" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Drug Tags (comma-separated)</FormLabel>
+                            <FormLabel>تگ های دارو (جدا شده با کاما)</FormLabel>
                             <FormControl>
-                                <Input placeholder="e.g., cholesterol, lipid-lowering" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: کلسترول, کاهش دهنده چربی" {...field} className="neumorphic-input" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel>توضیحات</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Describe the drug's use and properties." {...field} className="neumorphic-input" />
+                                <Textarea placeholder="کاربرد و خواص دارو را شرح دهید." {...field} className="neumorphic-input" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
                     <Button type="submit" disabled={isLoading} className="w-full neumorphic-button">
-                        {isLoading ? <><Loader2 className="mr-2 animate-spin" />Checking...</> : 'Check for Inconsistencies'}
+                        {isLoading ? <><Loader2 className="ml-2 animate-spin" />درحال بررسی...</> : 'بررسی عدم انطباق'}
                     </Button>
                 </form>
             </Form>
 
             {result && (
-                 <Alert className={`neumorphic-card ${result.isConsistent ? 'border-green-500/50' : 'border-destructive/50'}`}>
+                 <Alert dir='rtl' className={`neumorphic-card ${result.isConsistent ? 'border-green-500/50' : 'border-destructive/50'}`}>
                     {result.isConsistent ? <CheckCircle className="h-4 w-4 text-green-500" /> : <AlertTriangle className="h-4 w-4 text-destructive" />}
-                    <AlertTitle>{result.isConsistent ? 'Consistent' : 'Inconsistency Flagged'}</AlertTitle>
+                    <AlertTitle>{result.isConsistent ? 'مطابق' : 'عدم انطباق شناسایی شد'}</AlertTitle>
                     <AlertDescription>
-                        {result.isConsistent ? 'The medication information appears to be consistent.' : result.flagReason}
+                        {result.isConsistent ? 'اطلاعات دارو به نظر مطابق می آید.' : result.flagReason}
                     </AlertDescription>
                 </Alert>
             )}

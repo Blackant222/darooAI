@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function SignupPage() {
   return (
-    <div className="flex items-center justify-center min-h-dvh py-12 bg-background">
+    <div dir="rtl" className="flex items-center justify-center min-h-dvh py-12 bg-background">
       <Card className="mx-auto max-w-sm w-full neumorphic-card">
         <CardHeader>
           <Link
@@ -25,25 +25,25 @@ export default function SignupPage() {
             <Pill className="h-8 w-8 text-primary" />
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
-            Create your Account
+            ایجاد حساب کاربری
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your information to get started
+            برای شروع اطلاعات خود را وارد کنید
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <div className="grid gap-4 text-right">
             <div className="grid gap-2">
-              <Label htmlFor="full-name">Full Name</Label>
+              <Label htmlFor="full-name">نام کامل</Label>
               <Input
                 id="full-name"
-                placeholder="John Doe"
+                placeholder="جان دو"
                 required
                 className="neumorphic-input"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">ایمیل</Label>
               <Input
                 id="email"
                 type="email"
@@ -53,7 +53,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">رمز عبور</Label>
               <Input
                 id="password"
                 type="password"
@@ -63,28 +63,28 @@ export default function SignupPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="health-conditions">
-                Health Conditions (Optional)
+                شرایط سلامتی (اختیاری)
               </Label>
               <Textarea
                 id="health-conditions"
-                placeholder="e.g., Hypertension, Diabetes Type 2"
+                placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
                 className="neumorphic-input"
               />
               <p className="text-xs text-muted-foreground">
-                This helps us provide personalized insights.
+                این به ما کمک می کند تا بینش های شخصی سازی شده ارائه دهیم.
               </p>
             </div>
             <Button
               type="submit"
               className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Link href="/dashboard" className="w-full h-full flex items-center justify-center">Create an account</Link>
+              <Link href="/dashboard" className="w-full h-full flex items-center justify-center">ایجاد حساب کاربری</Link>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
+            قبلاً حساب کاربری ساخته‌اید؟{" "}
             <Link href="/login" className="underline" prefetch={false}>
-              Login
+              ورود
             </Link>
           </div>
         </CardContent>

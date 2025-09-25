@@ -23,35 +23,35 @@ export default function AdminPage() {
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight">داشبورد ادمین</h2>
       </div>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="drugs">Drug Management</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="feedback">AI Feedback</TabsTrigger>
+          <TabsTrigger value="overview">نمای کلی</TabsTrigger>
+          <TabsTrigger value="drugs">مدیریت داروها</TabsTrigger>
+          <TabsTrigger value="users">مدیریت کاربران</TabsTrigger>
+          <TabsTrigger value="feedback">بازخورد هوش مصنوعی</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className="neumorphic-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Users
+                  تعداد کل کاربران
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,257</div>
+                <div className="text-2xl font-bold">۱,۲۵۷</div>
               </CardContent>
             </Card>
             <Card className="neumorphic-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Drugs Managed
+                  تعداد کل داروهای مدیریت شده
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">342</div>
+                <div className="text-2xl font-bold">۳۴۲</div>
               </CardContent>
             </Card>
           </div>
@@ -59,14 +59,14 @@ export default function AdminPage() {
         <TabsContent value="drugs" className="space-y-4">
           <Card className="neumorphic-card">
             <CardHeader>
-              <CardTitle>All Medications</CardTitle>
+              <CardTitle>همه داروها</CardTitle>
               <CardDescription>
-                Manage all drugs in the system.
+                تمام داروهای موجود در سیستم را مدیریت کنید.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-center py-8">
-                Drug management table would go here...
+                جدول مدیریت داروها اینجا قرار می گیرد...
               </p>
             </CardContent>
           </Card>
@@ -74,12 +74,12 @@ export default function AdminPage() {
         <TabsContent value="users" className="space-y-4">
           <Card className="neumorphic-card">
             <CardHeader>
-              <CardTitle>All Users</CardTitle>
-              <CardDescription>Manage all users in the system.</CardDescription>
+              <CardTitle>همه کاربران</CardTitle>
+              <CardDescription>تمام کاربران سیستم را مدیریت کنید.</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-center py-8">
-                User management table would go here...
+                جدول مدیریت کاربران اینجا قرار می گیرد...
               </p>
             </CardContent>
           </Card>
@@ -87,23 +87,23 @@ export default function AdminPage() {
         <TabsContent value="feedback" className="space-y-4">
           <Card className="neumorphic-card">
             <CardHeader>
-              <CardTitle>AI Inconsistency Flags</CardTitle>
+              <CardTitle>پرچم های عدم انطباق هوش مصنوعی</CardTitle>
               <CardDescription>
-                Review medications flagged for inconsistency by the AI. This tool helps simulate that process.
+                داروهایی که توسط هوش مصنوعی برای عدم انطباق علامت گذاری شده اند را بررسی کنید. این ابزار به شبیه سازی این فرآیند کمک می کند.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="neumorphic-button">
-                    Flag Medication Inconsistencies
+                    پرچم گذاری عدم انطباق داروها
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="neumorphic-card">
                   <DialogHeader>
-                    <DialogTitle>AI Inconsistency Check</DialogTitle>
+                    <DialogTitle>بررسی عدم انطباق توسط هوش مصنوعی</DialogTitle>
                     <DialogDescription>
-                      Enter drug details to check for potential inconsistencies.
+                      برای بررسی عدم انطباق های احتمالی، جزئیات دارو را وارد کنید.
                     </DialogDescription>
                   </DialogHeader>
                   <FlagMedicationForm />

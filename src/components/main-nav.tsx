@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { href: "/dashboard", icon: Home, label: "Dashboard" },
-  { href: "/dashboard/pharmacy", icon: Pill, label: "My Pharmacy" },
-  { href: "/dashboard/insights", icon: Lightbulb, label: "AI Insights" },
-  { href: "/dashboard/profile", icon: User, label: "Profile" },
+  { href: "/dashboard", icon: Home, label: "داشبورد" },
+  { href: "/dashboard/pharmacy", icon: Pill, label: "داروخانه من" },
+  { href: "/dashboard/insights", icon: Lightbulb, label: "بینش هوش مصنوعی" },
+  { href: "/dashboard/profile", icon: User, label: "پروفایل" },
 ];
 
 export function MainNav() {
@@ -40,12 +40,12 @@ export function MainNav() {
         <SidebarMenuButton
           asChild
           isActive={pathname.startsWith("/ash")}
-          tooltip="Admin Panel"
+          tooltip="پنل ادمین"
           className="neumorphic-button"
         >
           <Link href="/ash">
             <Shield />
-            <span>Admin Panel</span>
+            <span>پنل ادمین</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

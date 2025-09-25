@@ -19,8 +19,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        body: ['"PT Sans"', "sans-serif"],
-        headline: ['"PT Sans"', "sans-serif"],
+        body: ['"Vazirmatn"', "sans-serif"],
+        headline: ['"Vazirmatn"', "sans-serif"],
         code: ["monospace"],
       },
       colors: {
@@ -77,6 +77,9 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      space: {
+        'x-reverse': 'space-x-reverse',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
