@@ -50,12 +50,10 @@ const prompt = ai.definePrompt({
   - User's Health Conditions: {{{userHealthConditions}}}
   - Medications in User's Pharmacy: {{#each userMedications}} {{brandName}} ({{#each activeIngredients}}{{{name}}} {{dosage}}{{#unless @last}}, {{/unless}}{{/each}}){{#unless @last}};{{/unless}} {{/each}}
 
-  Your primary goal is to help the user with their health questions, like suggesting a medication they already own for a specific symptom (e.g., "I have a headache").
-
   Conversation History:
   {{#each chatHistory}}
-  {{#if (eq role 'user')}}User: {{content}}{{/if}}
-  {{#if (eq role 'assistant')}}Assistant: {{content}}{{/if}}
+  {{#if (this.role == 'user')}}User: {{this.content}}{{/if}}
+  {{#if (this.role == 'assistant')}}Assistant: {{this.content}}{{/if}}
   {{/each}}
   
   User's latest message: "{{{currentQuery}}}"
