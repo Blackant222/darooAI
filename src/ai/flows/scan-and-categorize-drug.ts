@@ -36,13 +36,14 @@ const scanAndCategorizeDrugPrompt = ai.definePrompt({
     name: 'scanAndCategorizeDrugPrompt',
     input: { schema: ScanAndCategorizeDrugInputSchema },
     output: { schema: ScanAndCategorizeDrugOutputSchema },
-    prompt: `You are an expert pharmacist. Analyze the provided image of a medicine package. You must simulate performing a web search if you do not recognize the drug.
+    prompt: `You are an expert pharmacist with OCR capabilities and simulated web access. Your task is to analyze the provided image of a medicine or supplement package with absolute precision.
 
-Your tasks are:
-1.  From the image, identify the most prominent name on the package. This is the **brandName**. If no brand name is clear, you can omit it.
-2.  Identify all active ingredients in the drug. This may require you to "search" for the brand name to find its components. List them in the **activeIngredients** array.
-3.  Determine the drug's primary **category** (e.g., "Pain Reliever", "Antibiotic", "Dietary Supplement").
-4.  Generate 3-5 relevant **tags** (e.g., "Anti-inflammatory", "Fever reducer").
+Your process must be as follows:
+1.  **Extract Brand Name**: Carefully analyze the image to identify the most prominent text on the package. This is the **brandName**. If no clear brand name is visible, you may omit it.
+2.  **Simulated Web Search for Ingredients**: You MUST perform a simulated web search for the extracted brand name to find a comprehensive list of its active ingredients. Do not rely solely on the image for the ingredient list, as it might be incomplete or in a different language.
+3.  **Identify Active Ingredients**: List ALL active ingredients found in your search results. Be precise. For example, if you find "Curcumin" and "Piperine", you must list both in the **activeIngredients** array.
+4.  **Determine Category**: Based on the active ingredients, classify the product into a primary **category** (e.g., "Pain Reliever", "Antibiotic", "Dietary Supplement", "Anti-inflammatory").
+5.  **Generate Tags**: Create 3-5 relevant **tags** that describe the product's function or components (e.g., "Anti-inflammatory", "Fever reducer", "Joint Health").
 
 Return ONLY a valid JSON object with the keys "brandName", "activeIngredients", "category", and "tags".
 
@@ -63,13 +64,13 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
         throw new Error('The AI failed to return a valid structured response.');
     }
 
-    // Ensure activeIngredients is not empty
+    // Fallback logic: If after all that, activeIngredients is still empty, but we have a brand name,
+    // use the brand name as the ingredient. This prevents a total failure.
     if (!output.activeIngredients || output.activeIngredients.length === 0) {
-        // If brandName is also missing, it's a total failure
         if (!output.brandName) {
             throw new Error('AI could not identify any brand name or active ingredients.');
         }
-        // If we have a brand name, use it as the ingredient as a fallback
+        // As a last resort, use the brand name itself as the ingredient.
         output.activeIngredients = [output.brandName];
     }
 
