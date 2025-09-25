@@ -30,16 +30,18 @@ export async function scanAndCategorizeDrug(input: ScanAndCategorizeDrugInput): 
   return scanAndCategorizeDrugFlow(input);
 }
 
-const categorizeDrug = ai.defineTool({
-  name: 'categorizeDrug',
-  description: 'Categorizes a drug and extracts relevant tags.',
-  inputSchema: z.object({
-    drugName: z.string().describe('The name of the drug to categorize.'),
-  }),
-  outputSchema: z.object({
-    category: z.string().describe('The category of the drug.'),
-    tags: z.array(z.string()).describe('Relevant tags for the drug.'),
-  }),
+const categorizeDrug = ai.defineTool(
+  {
+    name: 'categorizeDrug',
+    description: 'Categorizes a drug and extracts relevant tags.',
+    inputSchema: z.object({
+      drugName: z.string().describe('The name of the drug to categorize.'),
+    }),
+    outputSchema: z.object({
+      category: z.string().describe('The category of the drug.'),
+      tags: z.array(z.string()).describe('Relevant tags for the drug.'),
+    }),
+  },
   async (input) => {
     const {text} = await ai.generate({
       prompt: `You are an expert at categorizing drugs and extracting relevant tags.
@@ -63,8 +65,8 @@ const categorizeDrug = ai.defineTool({
       category: category,
       tags: tags,
     };
-  },
-});
+  }
+);
 
 const prompt = ai.definePrompt({
   name: 'scanAndCategorizeDrugPrompt',
@@ -77,9 +79,6 @@ const prompt = ai.definePrompt({
   2.  Use the categorizeDrug tool to categorize the drug and extract relevant tags.
 
   Photo: {{media url=photoDataUri}}
-  Drug Name: {{drugName}}
-  Category: {{category}}
-  Tags: {{tags}}
   `,
 });
 
@@ -100,15 +99,13 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     if (!drugName) {
       throw new Error('Could not extract drug name from the image.');
     }
-
-    const {category, tags} = await categorizeDrug({
-      drugName: drugName,
-    });
+    
+    const toolResult = await categorizeDrug({ drugName });
 
     return {
-      drugName: drugName,
-      category: category,
-      tags: tags,
+        drugName: drugName,
+        category: toolResult.category,
+        tags: toolResult.tags,
     };
   }
 );
