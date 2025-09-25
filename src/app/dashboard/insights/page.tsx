@@ -94,7 +94,7 @@ export default function ChatbotPage() {
             {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                     <Bot className="w-12 h-12 mb-4" />
-                    <p className='font-bold'>سلام! من دستیار شما در دارو AI هستم.</p>
+                    <p className='font-bold'>سلام! من دستیار دارویی هوشمند شما هستم. چطور می‌توانم در مراقبت از سلامتی‌تان کمک کنم؟</p>
                     <p>می‌توانید از من بپرسید: «برای سردرد چه دارویی پیشنهاد می‌کنی؟»</p>
                 </div>
             )}
