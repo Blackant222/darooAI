@@ -8,6 +8,9 @@ export interface Drug {
     category: string;
     tags: string[];
     addedAt: string;
+    isTaking?: boolean;
+    frequency?: string;
+    startDate?: string;
 }
 
 interface DrugContextType {

@@ -15,11 +15,11 @@ The application is built with a mobile-first design, is fully translated into Pe
 The user journey is designed to be simple and intuitive:
 
 1.  **Landing Page**: New users arrive at a dedicated, professionally designed landing page (`/`) that explains the app's features and benefits, encouraging them to sign up.
-2.  **Authentication**: Users can navigate to login (`/login`) or signup (`/signup`) pages. Currently, this is a "fake" authentication system that navigates the user directly to the dashboard without real user accounts.
+2.  **Onboarding & Authentication**: Users go through a multi-step onboarding process (`/signup`) that collects essential health information in a UX-friendly manner. This includes account details, health conditions, allergies, and lifestyle factors. This process also handles user consent. For returning users, a simple login page (`/login`) is available.
 3.  **Dashboard**: The main hub of the application, providing a quick summary of the user's medication inventory.
-4.  **Scan & Add Drug**: Users can upload an image of a medicine label. The app uses a Genkit AI flow to process the image, identify the drug's name, determine its category, and generate relevant tags.
+4.  **Scan & Add Drug**: Users can upload an image of a medicine label. The app uses a Genkit AI flow to process the image, identify the drug's name, determine its category, and generate relevant tags. It then asks the user if they are currently taking the medication and prompts for frequency and start date if applicable.
 5.  **My Pharmacy**: This section lists all the drugs the user has added. They can view details and remove medications from their list.
-6.  **AI Chatbot**: A conversational interface where users can ask health-related questions. The chatbot is aware of the user's medications and health conditions. It can ask follow-up questions to understand the user's symptoms, check for potential drug interactions, and then recommend an appropriate medication from their existing pharmacy, while also mentioning potential side effects.
+6.  **AI Chatbot**: A conversational interface where users can ask health-related questions. The chatbot is aware of the user's medications and the health profile created during onboarding. It can ask follow-up questions, check for potential drug interactions, mention common side effects, and then recommend an appropriate medication from their existing pharmacy.
 7.  **Admin Panel**: A separate section for administrators, accessible via a secret URL (`/ash`). It allows admins to simulate flagging inconsistencies in drug data, and provides a space to manage blog content.
 
 ---
@@ -36,15 +36,15 @@ The application is built using a modern web stack, prioritizing performance, dev
 -   **Styling**: [Tailwind CSS](https://tailwindcss.com/) for utility-first styling. The UI features a "Neumorphic" design aesthetic.
 -   **State Management**:
     -   **UI State**: Managed locally within components using React Hooks (`useState`, `useEffect`).
-    -   **Global State (Local "Database")**: For the prototype, all application data (like the list of drugs) is managed by a React Context (`DrugContext` in `src/context/drug-context.tsx`). This context uses `localStorage` to persist the data across browser sessions, simulating a database without a backend.
+    -   **Global State (Local "Database")**: For the prototype, all application data (like the list of drugs and user profile) is managed by a React Context (`DrugContext` in `src/context/drug-context.tsx`). This context uses `localStorage` to persist the data across browser sessions, simulating a database without a backend.
 -   **Language & Layout**: The app is in Persian and uses a Right-to-Left (RTL) layout, configured in `tailwind.config.ts` and throughout the components.
 -   **Marketing Site**: A static, visually rich landing page is served from the root (`/`) and includes a blog.
 
 ### 3.2. Backend & AI
 
 -   **AI Framework**: [Genkit](https://firebase.google.com/docs/genkit) by Firebase. Genkit orchestrates calls to Google's Gemini AI models.
--   **AI Flows**: The core AI logic is encapsulated in three server-side flows located in `src/ai/flows/`:
-    1.  `scan-and-categorize-drug.ts`: Takes an image data URI, uses the Gemini Vision model to identify the drug name, and then uses a custom tool (`categorizeDrug`) to determine its category and tags. It also includes a fallback search tool.
+-   **AI Flows**: The core AI logic is encapsulated in server-side flows located in `src/ai/flows/`:
+    1.  `scan-and-categorize-drug.ts`: Takes an image data URI, uses the Gemini Vision model to identify the drug name, and then uses a custom tool (`categorizeDrug`) to determine its category and tags. It includes a fallback search tool if the name is unclear.
     2.  `get-chatbot-response.ts`: Manages the conversational AI. It takes the user's health conditions, medication list, chat history, and current query to generate an intelligent and contextual response. It is programmed to ask clarifying questions, check for interactions, and mention side effects before providing a recommendation.
     3.  `flag-medication-inconsistencies.ts`: An admin-facing tool to check for data consistency in drug information.
 
@@ -61,21 +61,22 @@ The primary data structure being stored is an array of `Drug` objects:
 ```typescript
 // Defined in src/context/drug-context.tsx
 export interface Drug {
-    id: string;       // A unique identifier (currently a timestamp)
-    drugName: string;   // Name of the drug
-    category: string;   // Pharmaceutical category
-    tags: string[];     // AI-generated tags
-    addedAt: string;    // ISO timestamp of when it was added
+    id: string;
+    drugName: string;
+    category: string;
+    tags: string[];
+    addedAt: string;
+    isTaking?: boolean;
+    frequency?: string;
+    startDate?: string;
 }
 ```
 
-This array is stored in `localStorage` under the key `drugs`.
+This array is stored in `localStorage` under the key `drugs`. User profile data from onboarding is not yet persisted but is designed to be.
 
-### 4.2. Proposed Production Database Structure
+### 4.2. Proposed Production Database Structure (PostgreSQL/Supabase)
 
-For a production-level application, you would move from `localStorage` to a proper database. The structure would be normalized to support multiple users and more complex data relationships.
-
-Here is a proposed schema using a relational model (like in Supabase/PostgreSQL):
+For a production-level application, you would move from `localStorage` to a proper database. The structure would be normalized to support multiple users and the detailed data collected during onboarding.
 
 1.  **`users` Table**: Stores user authentication data from Supabase Auth.
     -   `id` (UUID, Primary Key) - Matches the `auth.users` table ID.
@@ -87,9 +88,13 @@ Here is a proposed schema using a relational model (like in Supabase/PostgreSQL)
     -   `user_id` (UUID, Primary Key, Foreign Key to `users.id`)
     -   `full_name` (text)
     -   `avatar_url` (text, nullable)
-    -   `health_conditions` (text, nullable) - A text blob or could be a JSONB field.
-    -   `allergies` (text, nullable)
+    -   `health_conditions` (text, nullable) - A text blob for comma-separated values.
+    -   `allergies` (text, nullable) - A text blob for comma-separated values.
     -   `health_goals` (text, nullable)
+    -   `activity_level` (text, nullable) - e.g., 'low', 'moderate', 'high'
+    -   `diet` (text, nullable)
+    -   `smoking_status` (text, nullable) - e.g., 'yes', 'no', 'occasionally'
+    -   `alcohol_consumption` (text, nullable)
     -   `updated_at` (timestamp with time zone)
 
 3.  **`pharmacy_items` Table**: Stores the medications for each user.
@@ -98,16 +103,18 @@ Here is a proposed schema using a relational model (like in Supabase/PostgreSQL)
     -   `drug_name` (text)
     -   `category` (text)
     -   `tags` (text[]) - An array of strings, well-supported by PostgreSQL.
-    -   `quantity` (integer, nullable) - For tracking remaining doses.
+    -   `dosage` (text, nullable)
+    -   `is_taking` (boolean, default: false)
+    -   `frequency` (text, nullable) - e.g., 'Once a day', 'Weekly'
+    -   `start_date` (date, nullable)
     -   `added_at` (timestamp with time zone)
 
-4.  **`medication_reminders` Table**: Stores reminders for users.
+4.  **`user_consents` Table**: Stores user consent for legal and privacy compliance.
     - `id` (UUID, Primary Key)
     - `user_id` (UUID, Foreign Key to `users.id`)
-    - `pharmacy_item_id` (UUID, Foreign Key to `pharmacy_items.id`)
-    - `reminder_time` (time with time zone)
-    - `frequency` (text) - e.g., 'daily', 'weekly'
-    - `is_active` (boolean, default: true)
+    - `consent_type` (text) - e.g., 'terms_of_service', 'privacy_policy'
+    - `is_agreed` (boolean, default: false)
+    - `timestamp` (timestamp with time zone)
 
 5.  **`blog_posts` Table**: Stores content for the blog.
     -   `id` (UUID, Primary Key)
@@ -122,9 +129,9 @@ Here is a proposed schema using a relational model (like in Supabase/PostgreSQL)
 
 ---
 
-## 5. Migrating to a Production Backend
+## 5. Migrating to a Production Backend (Supabase + Next.js)
 
-To evolve this prototype into a production-ready application, you would need to implement a robust backend. The following sections outline how to achieve this using **Supabase** for the database and authentication, and **Next.js Server Components/Actions** for the backend logic.
+To evolve this prototype into a production-ready application, you would need to implement a robust backend.
 
 ### 5.1. Set Up Supabase
 
@@ -140,24 +147,19 @@ To evolve this prototype into a production-ready application, you would need to 
     ```bash
     npm install @supabase/supabase-js @supabase/ssr
     ```
-
-2.  **Environment Variables**: Create a `.env.local` file and add your Supabase credentials:
-    ```
-    NEXT_PUBLIC_SUPABASE_URL=YOUR_PROJECT_URL
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
-    ```
-
-3.  **Create a Supabase Client**: Create utility files (`src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`) to initialize Supabase clients for client-side and server-side operations, as recommended by the `@supabase/ssr` documentation.
+2.  **Environment Variables**: Create a `.env.local` file with your Supabase credentials.
+3.  **Create Supabase Client Utilities**: Set up `src/lib/supabase/client.ts` and `src/lib/supabase/server.ts` to initialize Supabase clients for client-side and server-side use, as recommended by the `@supabase/ssr` documentation.
 
 ### 5.3. Refactor Application Logic
 
-1.  **Authentication**:
-    -   Replace the "fake" auth flow in the login and signup pages with Supabase's authentication methods (`supabase.auth.signInWithPassword`, `supabase.auth.signUp`).
-    -   Use Supabase's auth helpers for Next.js (`@supabase/ssr`) to manage user sessions on both the client and server.
+1.  **Authentication & Onboarding**:
+    -   Replace the fake auth flow with Supabase's auth methods (`supabase.auth.signUp`).
+    -   In the final step of the signup process, create a new user in `auth.users` and then insert the collected profile data into your `profiles` and `user_consents` tables.
+    -   Use Supabase's auth helpers (`@supabase/ssr`) to manage user sessions.
 
 2.  **Data Fetching (Server Components)**:
     -   Refactor pages like `/dashboard/pharmacy/page.tsx` to be **Server Components**.
-    -   Instead of `useDrugContext`, you would fetch data directly within the component from Supabase.
+    -   Instead of `useDrugContext`, fetch data directly within the component from Supabase using a server-side client.
 
     *Example (`pharmacy/page.tsx`)*:
     ```tsx
@@ -186,7 +188,7 @@ To evolve this prototype into a production-ready application, you would need to 
 
 3.  **Data Mutations (Server Actions)**:
     -   Replace the `addDrug` and `removeDrug` functions from `DrugContext`.
-    -   Create **Server Actions** to handle database writes. These are functions that run securely on the server and can be called from client components.
+    -   Create **Server Actions** to handle database writes. These are functions that run securely on the server.
 
     *Example (`scan-drug-dialog.tsx`)*:
     ```tsx
@@ -210,10 +212,10 @@ To evolve this prototype into a production-ready application, you would need to 
 
         if (error) throw error;
 
-        revalidatePath('/dashboard/pharmacy');
+        revalidatePath('/dashboard/pharmacy'); // Invalidate cache to show new data
     }
 
-    // 2. Call it from the client component
+    // 2. Call it from the client component:
     // In scan-drug-dialog.tsx, you would call `addDrugToPharmacy(...)`
     ```
 
@@ -221,27 +223,25 @@ To evolve this prototype into a production-ready application, you would need to 
 
 ## 6. Production-Level Enhancements (Roadmap)
 
-This section outlines key features and considerations for taking DarooAI to a full production release.
-
 ### 6.1. Security & Privacy
 
--   **Data Encryption**: For production, ensure sensitive fields in the `profiles` table (like `health_conditions` and `allergies`) are encrypted at rest in the database.
--   **Role-Based Access Control (RBAC)**: Implement a role system in your database (e.g., `users.role` with values like `user`, `admin`). Use this in Supabase RLS policies to restrict access. For example, only users with the `admin` role should be able to write to the `blog_posts` table.
+-   **Data Encryption**: Ensure sensitive fields in the `profiles` table (like `health_conditions`) are encrypted at rest. Supabase offers extensions like `pgsodium` for this.
+-   **Role-Based Access Control (RBAC)**: Use the `role` column in the `users` table and Supabase RLS policies to restrict access. For example, only users with an `admin` role should be able to write to the `blog_posts` table.
 
 ### 6.2. Performance
--   **Caching**: To reduce latency and API costs for AI responses, implement a caching layer. Use a service like **Redis** to cache responses from the Genkit flows, especially the chatbot and drug categorization endpoints.
+-   **Caching**: To reduce latency and API costs for AI responses, implement a caching layer. Use a service like **Redis** or Vercel's Edge Cache to cache responses from the Genkit flows.
 
 ### 6.3. User Personalization
--   **Medication Reminders**: Build a system for users to set custom reminders for their medications. This would involve a new `medication_reminders` table and a service (e.g., using Supabase Edge Functions or a cron job provider) to send out push notifications or emails.
--   **Health Insights**: Develop a dashboard to provide users with proactive health insights based on their data, such as tracking medication adherence or offering dietary tips related to their conditions.
+-   **Medication Reminders**: Build a system for users to set custom reminders. This would involve a new `medication_reminders` table and a service (e.g., using Supabase Edge Functions or a cron job provider like Vercel Cron Jobs) to send out push notifications or emails.
+-   **Health Insights Dashboard**: Develop a dashboard to provide users with proactive health insights based on their data, such as tracking medication adherence or offering dietary tips related to their conditions.
 
 ### 6.4. AI-Driven Features
 -   **Symptom Checker**: Enhance the AI chatbot to function as a symptom checker. A user could input symptoms, and the AI would provide a list of possible conditions or suggest appropriate medications from their inventory.
 
 ### 6.5. Admin Panel Features
--   **Analytics Dashboard**: Expand the admin panel to include an analytics dashboard. Track key metrics like most common drugs, frequently asked AI questions, and user retention rates to gain insights into app usage.
--   **Content Management**: Add full CRUD (Create, Read, Update, Delete) functionality to the "Manage Blog" section of the admin panel, allowing admins to manage posts and their publication status.
+-   **Analytics Dashboard**: Expand the admin panel to include an analytics dashboard. Track key metrics like most common drugs, frequently asked AI questions, and user retention rates.
+-   **Content Management**: Add full CRUD (Create, Read, Update, Delete) functionality to the "Manage Blog" section of the admin panel.
 
 ### 6.6. UX Improvements
--   **Progressive Onboarding**: Refine the onboarding process to be more interactive. Use tooltips or a guided tour to introduce users to key features like scanning their first drug or asking the chatbot a question.
--   **Accessibility**: Conduct an accessibility audit to ensure the app is usable by everyone, including users with visual impairments. Check for sufficient color contrast, ARIA labels, and text size options.
+-   **Progressive Onboarding**: Refine the onboarding process with tooltips or a guided tour to introduce users to key features.
+-   **Accessibility**: Conduct an accessibility audit to ensure the app is usable by everyone, checking for sufficient color contrast, ARIA labels, and text size options.
