@@ -91,7 +91,8 @@ Your process must be as follows:
 1.  **Extract Brand Name**: Carefully analyze the image to identify the most prominent text on the package. This is the **brandName**.
 2.  **Use Search Tool**: You MUST use the 'searchForDrugInfo' tool to look up the extracted brandName. This will provide you with the accurate active ingredients, their dosages, and the drug's category.
 3.  **Generate Tags**: Based on the information from the search tool, generate 3-5 relevant **tags** that describe the product's function or components (e.g., "Anti-inflammatory", "Pain Reliever", "Joint Health").
-4.  **Format Output**: Compile all the information into the required JSON output format. Ensure the 'activeIngredients' array from the tool is correctly placed.
+4.  **Translate to Persian**: The 'category' and 'tags' fields in your JSON output MUST be in Persian. The brand name and active ingredients should remain in their original language.
+5.  **Format Output**: Compile all the information into the required JSON output format. Ensure the 'activeIngredients' array from the tool is correctly placed.
 
 Return ONLY the valid JSON object.
 

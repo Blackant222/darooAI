@@ -62,7 +62,8 @@ The primary data structure being stored is an array of `Drug` objects:
 // Defined in src/context/drug-context.tsx
 export interface Drug {
     id: string;
-    drugName: string;
+    brandName?: string;
+    activeIngredients: { name: string; dosage?: string; }[];
     category: string;
     tags: string[];
     addedAt: string;
@@ -100,10 +101,10 @@ For a production-level application, you would move from `localStorage` to a prop
 3.  **`pharmacy_items` Table**: Stores the medications for each user.
     -   `id` (UUID, Primary Key)
     -   `user_id` (UUID, Foreign Key to `users.id`)
-    -   `drug_name` (text)
+    -   `brand_name` (text, nullable)
+    -   `active_ingredients` (jsonb) - e.g., `[{"name": "Ibuprofen", "dosage": "200mg"}]`
     -   `category` (text)
     -   `tags` (text[]) - An array of strings, well-supported by PostgreSQL.
-    -   `dosage` (text, nullable)
     -   `is_taking` (boolean, default: false)
     -   `frequency` (text, nullable) - e.g., 'Once a day', 'Weekly'
     -   `start_date` (date, nullable)
@@ -227,9 +228,11 @@ To evolve this prototype into a production-ready application, you would need to 
 
 -   **Data Encryption**: Ensure sensitive fields in the `profiles` table (like `health_conditions`) are encrypted at rest. Supabase offers extensions like `pgsodium` for this.
 -   **Role-Based Access Control (RBAC)**: Use the `role` column in the `users` table and Supabase RLS policies to restrict access. For example, only users with an `admin` role should be able to write to the `blog_posts` table.
+-   **Compliance**: Ensure full compliance with health data regulations like HIPAA if the app targets users in specific regions.
 
 ### 6.2. Performance
 -   **Caching**: To reduce latency and API costs for AI responses, implement a caching layer. Use a service like **Redis** or Vercel's Edge Cache to cache responses from the Genkit flows.
+-   **Image Optimization**: Ensure uploaded images for drug scans are optimized before being processed to reduce bandwidth and processing time.
 
 ### 6.3. User Personalization
 -   **Medication Reminders**: Build a system for users to set custom reminders. This would involve a new `medication_reminders` table and a service (e.g., using Supabase Edge Functions or a cron job provider like Vercel Cron Jobs) to send out push notifications or emails.
@@ -237,11 +240,14 @@ To evolve this prototype into a production-ready application, you would need to 
 
 ### 6.4. AI-Driven Features
 -   **Symptom Checker**: Enhance the AI chatbot to function as a symptom checker. A user could input symptoms, and the AI would provide a list of possible conditions or suggest appropriate medications from their inventory.
+-   **Drug Interaction Checker**: Create a dedicated tool that allows users to select multiple medications from their pharmacy and have the AI check for potential interactions, explaining the risks in simple terms.
 
 ### 6.5. Admin Panel Features
 -   **Analytics Dashboard**: Expand the admin panel to include an analytics dashboard. Track key metrics like most common drugs, frequently asked AI questions, and user retention rates.
--   **Content Management**: Add full CRUD (Create, Read, Update, Delete) functionality to the "Manage Blog" section of the admin panel.
+-   **Content Management**: Add full CRUD (Create, Read, Update, Delete) functionality to the "Manage Blog" section of the admin panel, including an approval workflow.
+-   **User Management**: Implement features to view and manage users, such as disabling accounts or resetting passwords.
 
 ### 6.6. UX Improvements
 -   **Progressive Onboarding**: Refine the onboarding process with tooltips or a guided tour to introduce users to key features.
 -   **Accessibility**: Conduct an accessibility audit to ensure the app is usable by everyone, checking for sufficient color contrast, ARIA labels, and text size options.
+-   **Internationalization (i18n)**: While currently in Persian, the app could be structured to support multiple languages. This would involve extracting all UI strings into translation files (e.g., JSON files) and using a library like `next-intl` to manage them.
