@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, MoreHorizontal, Trash2 } from "lucide-react";
 import { ScanDrugDialog } from "@/components/scan-drug-dialog";
 import { useDrugContext } from "@/context/drug-context";
-import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from 'date-fns-jalali';
 import {
   DropdownMenu,
@@ -27,6 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 
 export default function PharmacyPage() {
@@ -52,7 +52,6 @@ export default function PharmacyPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>نام دارو</TableHead>
-                <TableHead>ماده موثره</TableHead>
                 <TableHead>دسته بندی</TableHead>
                 <TableHead>زمان افزودن</TableHead>
                 <TableHead className="text-left">اقدامات</TableHead>
@@ -68,9 +67,17 @@ export default function PharmacyPage() {
               ) : (
                 drugs.map((drug) => (
                     <TableRow key={drug.id}>
-                        <TableCell className="font-medium">{drug.brandName || drug.activeIngredients.join(', ')}</TableCell>
-                        <TableCell>{drug.activeIngredients.join(', ')}</TableCell>
-                        <TableCell>{drug.category}</TableCell>
+                        <TableCell className="font-medium">
+                            <div>
+                                <p className="font-bold">{drug.brandName || drug.activeIngredients.map(i => i.name).join(', ')}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    {drug.activeIngredients.map(i => `${i.name} ${i.dosage || ''}`).join(', ')}
+                                </p>
+                            </div>
+                        </TableCell>
+                        <TableCell>
+                            <Badge variant="outline">{drug.category}</Badge>
+                        </TableCell>
                         <TableCell>{formatDistanceToNow(new Date(drug.addedAt))} پیش</TableCell>
                         <TableCell className="text-left">
                            <DropdownMenu>

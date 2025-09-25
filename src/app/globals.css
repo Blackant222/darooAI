@@ -94,11 +94,17 @@
   .neumorphic-card {
     @apply bg-card dark:neumorphic-dark neumorphic-light border-0;
   }
+    .neumorphic-card-inset {
+    @apply bg-card dark:neumorphic-dark-inset neumorphic-light-inset border-0;
+  }
   .neumorphic-input {
      @apply dark:neumorphic-dark-inset neumorphic-light-inset bg-transparent dark:bg-background border-0;
   }
   .neumorphic-button {
     @apply neumorphic-card active:shadow-none active:scale-[0.98] border-0;
+  }
+  .neumorphic-badge {
+     @apply dark:neumorphic-dark neumorphic-light border-border;
   }
   .bg-grid-pattern {
     background-image:

@@ -11,7 +11,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowRight } from 'lucide-react';
+import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowRight, Pill, Tag, List, Beaker } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
@@ -21,6 +21,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Card, CardContent } from './ui/card';
 
 export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -125,7 +126,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
     addDrug(newDrug);
     toast({
       title: 'دارو اضافه شد',
-      description: `${result.brandName || result.activeIngredients.join(', ')} به داروخانه مجازی شما اضافه شد.`,
+      description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه مجازی شما اضافه شد.`,
     });
     handleOpenChange(false);
   };
@@ -186,17 +187,45 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
       </DialogHeader>
       <div className="space-y-4 py-4 text-right">
         {result && (
-          <div className="space-y-3 p-4 bg-muted/20 dark:bg-muted/50 rounded-lg border text-right">
-              <h4 className="font-semibold text-lg flex items-center gap-2"><CheckCircle className="h-5 w-5 text-primary ml-2"/>اسکن موفقیت‌آمیز بود</h4>
-              <div>
-                <p className='text-sm text-muted-foreground'>نام برند</p>
-                <p><strong>{result.brandName || '-'}</strong></p>
-              </div>
-              <div>
-                <p className='text-sm text-muted-foreground'>ماده(های) موثره</p>
-                <p><strong>{result.activeIngredients.join(', ')}</strong></p>
-              </div>
-          </div>
+          <Card className='neumorphic-card-inset p-4'>
+            <CardContent className='p-0 space-y-4'>
+                 <div className="flex items-center gap-3">
+                    <Pill className='text-primary' />
+                    <div>
+                        <p className='text-sm text-muted-foreground'>نام برند</p>
+                        <p className="font-bold text-lg">{result.brandName || '-'}</p>
+                    </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                    <Beaker className='text-primary mt-1' />
+                    <div>
+                        <p className='text-sm text-muted-foreground'>ماده(های) موثره</p>
+                        <ul className='list-none p-0 m-0'>
+                            {result.activeIngredients.map((ing, i) => (
+                                <li key={i} className='font-semibold'>{ing.name} <span className='text-muted-foreground font-normal'>({ing.dosage || 'N/A'})</span></li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-3">
+                    <List className='text-primary' />
+                    <div>
+                        <p className='text-sm text-muted-foreground'>دسته بندی</p>
+                        <p className='font-semibold'>{result.category}</p>
+                    </div>
+                </div>
+                 <div className="flex items-start gap-3">
+                    <Tag className='text-primary mt-1' />
+                    <div>
+                        <p className='text-sm text-muted-foreground'>تگ ها</p>
+                        <div className="flex flex-wrap gap-2 pt-1">
+                            {result.tags.map((tag, i) => <Badge key={i} variant='secondary' className='neumorphic-badge'>{tag}</Badge>)}
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+          </Card>
         )}
         <div className="space-y-3 pt-2">
           <Label>آیا در حال حاضر این دارو را مصرف می‌کنید؟</Label>

@@ -2,10 +2,15 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+export interface Ingredient {
+    name: string;
+    dosage?: string;
+}
+
 export interface Drug {
     id: string;
     brandName?: string;
-    activeIngredients: string[];
+    activeIngredients: Ingredient[];
     category: string;
     tags: string[];
     addedAt: string;
