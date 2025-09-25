@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Pill, Bot, User, Shield } from 'lucide-react';
+import { Home, Pill, Bot, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -10,7 +10,6 @@ const navItems = [
   { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه من' },
   { href: '/dashboard/insights', icon: Bot, label: 'چت‌بات AI' },
   { href: '/dashboard/profile', icon: User, label: 'پروفایل' },
-  { href: '/ash', icon: Shield, label: 'ادمین' },
 ];
 
 export function BottomNav() {
@@ -18,7 +17,7 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-0 right-0 z-50 w-full h-16 border-t bg-background/95 backdrop-blur-sm">
-      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
