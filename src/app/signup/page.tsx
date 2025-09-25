@@ -13,9 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -24,11 +22,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { MultiSelectChip } from '@/components/multi-select-chip';
+
 
 const totalSteps = 4;
 
 export default function SignupPage() {
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+      fullName: '',
+      email: '',
+      password: '',
+      healthConditions: [] as string[],
+      allergies: [] as string[],
+      healthGoals: [] as string[],
+      activityLevel: '',
+      smokingStatus: '',
+      agreedToTerms: false,
+      agreedToPrivacy: false,
+  });
+
+  const handleChange = (field: string, value: any) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
@@ -46,6 +62,7 @@ export default function SignupPage() {
             prefetch={false}
           >
             <Pill className="h-8 w-8 text-primary" />
+             <span className="mr-2 text-xl font-bold font-headline">دارو AI</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
             {step === totalSteps ? 'تکمیل ثبت‌نام' : 'ایجاد پروفایل سلامتی'}
@@ -59,12 +76,12 @@ export default function SignupPage() {
           <Progress value={(step / totalSteps) * 100} className="w-full mt-4" />
         </CardHeader>
         <CardContent>
-          <form className="space-y-4 text-right">
-            {step === 1 && <Step1 />}
-            {step === 2 && <Step2 />}
-            {step === 3 && <Step3 />}
-            {step === 4 && <Step4 />}
-          </form>
+          <div className="space-y-4 text-right">
+            {step === 1 && <Step1 formData={formData} onChange={handleChange} />}
+            {step === 2 && <Step2 formData={formData} onChange={handleChange} />}
+            {step === 3 && <Step3 formData={formData} onChange={handleChange} />}
+            {step === 4 && <Step4 formData={formData} onChange={handleChange} />}
+          </div>
 
           <div className="mt-6 flex gap-4">
             {step > 1 && (
@@ -112,7 +129,12 @@ export default function SignupPage() {
   );
 }
 
-function Step1() {
+interface StepProps {
+    formData: any;
+    onChange: (field: string, value: any) => void;
+}
+
+function Step1({ formData, onChange }: StepProps) {
   return (
     <div className="grid gap-4">
       <div className="grid gap-2">
@@ -122,6 +144,8 @@ function Step1() {
           placeholder="مثال: سارا محمدی"
           required
           className="neumorphic-input"
+          value={formData.fullName}
+          onChange={(e) => onChange('fullName', e.target.value)}
         />
       </div>
       <div className="grid gap-2">
@@ -132,57 +156,67 @@ function Step1() {
           placeholder="sara@example.com"
           required
           className="neumorphic-input"
+          value={formData.email}
+          onChange={(e) => onChange('email', e.target.value)}
         />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="password">رمز عبور</Label>
-        <Input id="password" type="password" required className="neumorphic-input" />
+        <Input id="password" type="password" required className="neumorphic-input" value={formData.password} onChange={(e) => onChange('password', e.target.value)} />
       </div>
     </div>
   );
 }
 
-function Step2() {
+const healthConditionOptions = ["فشار خون بالا", "دیابت نوع ۲", "آسم", "کلسترول بالا", "آرتروز", "میگرن"];
+const allergyOptions = ["پنی‌سیلین", "آسپرین", "سولفا", "ایبوپروفن", "کدئین"];
+
+function Step2({ formData, onChange }: StepProps) {
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-6">
       <div className="grid gap-2">
         <Label htmlFor="health-conditions">شرایط سلامتی</Label>
-        <Textarea
-          id="health-conditions"
-          placeholder="مثال: فشار خون بالا, دیابت نوع ۲, آسم"
-          className="neumorphic-input"
+        <MultiSelectChip
+            options={healthConditionOptions}
+            selected={formData.healthConditions}
+            onChange={(selected) => onChange('healthConditions', selected)}
+            placeholder="شرایط دیگر را وارد کنید..."
         />
         <p className="text-xs text-muted-foreground">
-          شرایط مزمن یا موجود خود را با کاما جدا کنید.
+          گزینه‌های رایج را انتخاب یا مورد خود را تایپ کنید.
         </p>
       </div>
       <div className="grid gap-2">
         <Label htmlFor="allergies">آلرژی‌های دارویی (اختیاری)</Label>
-        <Textarea
-          id="allergies"
-          placeholder="مثال: پنی‌سیلین, آسپرین"
-          className="neumorphic-input"
+        <MultiSelectChip
+            options={allergyOptions}
+            selected={formData.allergies}
+            onChange={(selected) => onChange('allergies', selected)}
+            placeholder="آلرژی دیگر را وارد کنید..."
         />
       </div>
     </div>
   );
 }
 
-function Step3() {
+const healthGoalOptions = ["کاهش وزن", "مدیریت فشار خون", "خواب بهتر", "کاهش استرس", "افزایش انرژی"];
+
+function Step3({ formData, onChange }: StepProps) {
   return (
-    <div className="grid gap-4">
-      <div className="grid gap-2">
+    <div className="grid gap-6">
+       <div className="grid gap-2">
         <Label htmlFor="health-goals">اهداف سلامتی (اختیاری)</Label>
-        <Input
-          id="health-goals"
-          placeholder="مثال: کاهش وزن, مدیریت فشار خون"
-          className="neumorphic-input"
+        <MultiSelectChip
+            options={healthGoalOptions}
+            selected={formData.healthGoals}
+            onChange={(selected) => onChange('healthGoals', selected)}
+            placeholder="هدف دیگر را وارد کنید..."
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
           <Label htmlFor="activity-level">سطح فعالیت</Label>
-          <Select>
+          <Select value={formData.activityLevel} onValueChange={(value) => onChange('activityLevel', value)}>
             <SelectTrigger id="activity-level" className="neumorphic-input">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
@@ -195,7 +229,7 @@ function Step3() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="smoking">مصرف سیگار</Label>
-          <Select>
+          <Select value={formData.smokingStatus} onValueChange={(value) => onChange('smokingStatus', value)}>
             <SelectTrigger id="smoking" className="neumorphic-input">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
@@ -211,11 +245,11 @@ function Step3() {
   );
 }
 
-function Step4() {
+function Step4({ formData, onChange }: StepProps) {
   return (
     <div className="grid gap-4">
        <div className="items-top flex space-x-2 space-x-reverse">
-        <Checkbox id="terms" />
+        <Checkbox id="terms" checked={formData.agreedToTerms} onCheckedChange={(checked) => onChange('agreedToTerms', !!checked)} />
         <div className="grid gap-1.5 leading-none">
           <label
             htmlFor="terms"
@@ -229,7 +263,7 @@ function Step4() {
         </div>
       </div>
        <div className="items-top flex space-x-2 space-x-reverse">
-        <Checkbox id="privacy" />
+        <Checkbox id="privacy" checked={formData.agreedToPrivacy} onCheckedChange={(checked) => onChange('agreedToPrivacy', !!checked)} />
         <div className="grid gap-1.5 leading-none">
           <label
             htmlFor="privacy"
