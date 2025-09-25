@@ -33,14 +33,14 @@ export default function ProfilePage() {
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">نام کامل</Label>
-            <Input id="name" defaultValue="کاربر" className="neumorphic-input" />
+            <Input id="name" placeholder="نام خود را وارد کنید" className="neumorphic-input" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">ایمیل</Label>
             <Input
               id="email"
               type="email"
-              defaultValue="user@example.com"
+              placeholder="user@example.com"
               disabled
               className="neumorphic-input"
             />
@@ -50,7 +50,7 @@ export default function ProfilePage() {
           <Label htmlFor="health-conditions">شرایط سلامتی</Label>
           <Textarea
             id="health-conditions"
-            defaultValue="فشار خون بالا, دیابت نوع ۲"
+            placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
             className="neumorphic-input"
           />
         </div>

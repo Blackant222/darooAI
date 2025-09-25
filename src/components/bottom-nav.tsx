@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'داشبورد' },
-  { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه' },
+  { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه من' },
   { href: '/dashboard/insights', icon: Lightbulb, label: 'بینش' },
   { href: '/dashboard/profile', icon: User, label: 'پروفایل' },
   { href: '/ash', icon: Shield, label: 'ادمین' },

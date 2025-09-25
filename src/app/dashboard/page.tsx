@@ -28,7 +28,7 @@ export default function DashboardPage() {
             <Pill className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">۵</div>
+            <div className="text-2xl font-bold">۰</div>
             <p className="text-xs text-muted-foreground">
               در داروخانه مجازی شما
             </p>
@@ -40,7 +40,7 @@ export default function DashboardPage() {
             <Lightbulb className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">۲</div>
+            <div className="text-2xl font-bold">۰</div>
             <p className="text-xs text-muted-foreground">
               توصیه جدید در دسترس است
             </p>
