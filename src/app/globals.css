@@ -73,6 +73,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {
@@ -96,5 +99,12 @@
   }
   .neumorphic-button {
     @apply neumorphic-card active:shadow-none active:scale-[0.98] border-0;
+  }
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    background-position: center center;
   }
 }

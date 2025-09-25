@@ -22,12 +22,13 @@ export default function LoginPage() {
             prefetch={false}
           >
             <Pill className="h-8 w-8 text-primary" />
+             <span className="mr-2 text-xl font-bold font-headline">دارو AI</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
-            ورود به دارو AI
+            ورود به حساب کاربری
           </CardTitle>
           <CardDescription className="text-center">
-            برای ورود به حساب کاربری، ایمیل خود را وارد کنید
+            برای ادامه، ایمیل و رمز عبور خود را وارد کنید.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,7 +61,7 @@ export default function LoginPage() {
                 className="neumorphic-input"
               />
             </div>
-            <Button
+            <Button asChild
               type="submit"
               className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
             >
