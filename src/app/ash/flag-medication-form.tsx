@@ -30,9 +30,9 @@ export function FlagMedicationForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             drugName: "آسپرین",
-            drugCategory: "تسکین دهنده درد",
-            drugTags: "NSAID, ضد التهاب, کاهش دهنده تب, رقیق کننده خون",
-            description: "یک داروی رایج برای تسکین درد، تب و التهاب. همچنین به عنوان یک عامل ضد پلاکت استفاده می شود."
+            drugCategory: "داروی ضد پلاکت",
+            drugTags: "NSAID, ضد التهاب, کاهش دهنده تب",
+            description: "برای کاهش خطر حمله قلبی و سکته مغزی استفاده می شود، اما به عنوان مسکن نیز استفاده می شود."
         },
     });
 
