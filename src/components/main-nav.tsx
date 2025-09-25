@@ -27,7 +27,6 @@ export function MainNav() {
             asChild
             isActive={pathname === item.href}
             tooltip={item.label}
-            className="neumorphic-button"
           >
             <Link href={item.href}>
               <item.icon />
@@ -41,7 +40,6 @@ export function MainNav() {
           asChild
           isActive={pathname.startsWith("/ash")}
           tooltip="پنل ادمین"
-          className="neumorphic-button"
         >
           <Link href="/ash">
             <Shield />
