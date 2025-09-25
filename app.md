@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-DarooAI is a Next.js web application designed to be a personal pharmacy assistant. It empowers users to manage their medications by leveraging AI. Users can scan medicine labels to automatically identify, categorize, and tag them, maintain a digital inventory of their medications, and receive personalized health insights and drug interaction alerts.
+DarooAI is a Next.js web application designed to be a personal pharmacy assistant. It empowers users to manage their medications by leveraging AI. Users can scan medicine labels to automatically identify and categorize them, maintain a digital inventory, and receive personalized health advice through an interactive AI chatbot.
 
 The application is built with a mobile-first design, is fully translated into Persian, and supports a right-to-left (RTL) layout.
 
@@ -18,7 +18,7 @@ The user journey is designed to be simple and intuitive:
 2.  **Dashboard**: The main hub of the application, providing a quick summary of the user's medication inventory.
 3.  **Scan & Add Drug**: Users can upload an image of a medicine label. The app uses a Genkit AI flow to process the image, identify the drug's name, determine its category, and generate relevant tags.
 4.  **My Pharmacy**: This section lists all the drugs the user has added. They can view details and remove medications from their list.
-5.  **AI Insights**: Users can input their health conditions and current medications to receive personalized advice and warnings about potential drug interactions, powered by another AI flow.
+5.  **AI Chatbot**: A conversational interface where users can ask health-related questions. The chatbot is aware of the user's medications and health conditions. It can ask follow-up questions to understand the user's symptoms and then recommend an appropriate medication from their existing pharmacy.
 6.  **Admin Panel**: A separate section for administrators to simulate flagging inconsistencies in drug data, using an AI model to check for mismatches between a drug's name, category, and description.
 
 ---
@@ -43,7 +43,7 @@ The application is built using a modern web stack, prioritizing performance, dev
 -   **AI Framework**: [Genkit](https://firebase.google.com/docs/genkit) by Firebase. Genkit orchestrates calls to Google's Gemini AI models.
 -   **AI Flows**: The core AI logic is encapsulated in three server-side flows located in `src/ai/flows/`:
     1.  `scan-and-categorize-drug.ts`: Takes an image data URI, uses the Gemini Vision model to identify the drug name, and then uses a custom tool (`categorizeDrug`) to determine its category and tags.
-    2.  `get-personalized-health-insights.ts`: Accepts a user's health conditions and medication list, and returns AI-generated recommendations and interaction alerts.
+    2.  `get-chatbot-response.ts`: Manages the conversational AI. It takes the user's health conditions, medication list, chat history, and current query to generate an intelligent and contextual response. It is programmed to ask clarifying questions before providing a recommendation.
     3.  `flag-medication-inconsistencies.ts`: An admin-facing tool to check for data consistency in drug information.
 
 ---

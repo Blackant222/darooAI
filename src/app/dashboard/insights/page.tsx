@@ -1,123 +1,162 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { AlertCircle, FileWarning, Lightbulb, Loader2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Loader2, Send, User, Bot } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
-import { getPersonalizedHealthInsights, type PersonalizedHealthInsightsOutput } from '@/ai/flows/get-personalized-health-insights';
+import { getChatbotResponse } from '@/ai/flows/get-chatbot-response';
+import { useDrugContext } from '@/context/drug-context';
+import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-export default function InsightsPage() {
-  const [healthConditions, setHealthConditions] = useState("فشار خون بالا, دیابت نوع ۲");
-  const [medications, setMedications] = useState("لیزینوپریل, متفورمین, سیمواستاتین, آملودیپین");
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export default function ChatbotPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState<PersonalizedHealthInsightsOutput | null>(null);
   const { toast } = useToast();
+  const { drugs } = useDrugContext();
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const handleGetInsights = async () => {
+  // TODO: Get health conditions from user profile once available
+  const userHealthConditions = "فشار خون بالا, دیابت نوع ۲";
+  const userMedications = drugs.map(d => d.drugName);
+
+  useEffect(() => {
+    // Scroll to the bottom when a new message is added
+    if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTo({
+            top: scrollAreaRef.current.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+  }, [messages]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage: Message = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
     setIsLoading(true);
-    setResults(null);
+
     try {
-      const insights = await getPersonalizedHealthInsights({ healthConditions, medications });
-      setResults(insights);
+      const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
+      
+      const response = await getChatbotResponse({
+        userHealthConditions,
+        userMedications,
+        currentQuery: input,
+        chatHistory: chatHistory,
+      });
+
+      const assistantMessage: Message = { role: 'assistant', content: response.response };
+      setMessages(prev => [...prev, assistantMessage]);
+
     } catch (error) {
-      console.error("Failed to get health insights:", error);
+      console.error("Failed to get chatbot response:", error);
       toast({
         variant: "destructive",
         title: "خطا",
-        description: "دریافت اطلاعات از هوش مصنوعی با مشکل مواجه شد. لطفاً بعداً دوباره امتحان کنید.",
+        description: "پاسخ از چت‌بات با مشکل مواجه شد. لطفاً بعداً دوباره امتحان کنید.",
       });
+       // Restore user message on error
+       setMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
-    <div className="space-y-8">
-      <Card className="neumorphic-card">
-        <CardHeader>
-          <CardTitle>اطلاعات سلامتی مبتنی بر هوش مصنوعی</CardTitle>
-          <CardDescription>
-            توصیه‌های دارویی شخصی‌سازی‌شده و هشدارهای تداخل دارویی را بر اساس پروفایل سلامتی خود دریافت کنید.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="health-conditions">شرایط سلامتی شما</Label>
-            <Textarea
-              id="health-conditions"
-              value={healthConditions}
-              onChange={(e) => setHealthConditions(e.target.value)}
-              placeholder="مثال: فشار خون بالا, آسم"
-              className="neumorphic-input"
-              rows={3}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="medications">داروهای فعلی شما</Label>
-            <Textarea
-              id="medications"
-              value={medications}
-              onChange={(e) => setMedications(e.target.value)}
-              placeholder="مثال: لیزینوپریل, آلبوترول"
-              className="neumorphic-input"
-              rows={3}
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button onClick={handleGetInsights} disabled={isLoading} className="neumorphic-button">
-            {isLoading ? (
-              <>
-                <Loader2 className="ml-2 animate-spin" /> در حال دریافت اطلاعات...
-              </>
-            ) : (
-               <>
-                <Lightbulb className="ml-2" /> دریافت اطلاعات
-              </>
+    <Card className="neumorphic-card w-full h-[calc(100vh-150px)] flex flex-col">
+      <CardHeader>
+        <CardTitle>چت‌بات هوش مصنوعی دارو AI</CardTitle>
+        <CardDescription>
+          سوالات خود در مورد سلامتی و داروها را بپرسید.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col p-0">
+        <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+          <div className="space-y-4">
+            {messages.length === 0 && (
+                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                    <Bot className="w-12 h-12 mb-4" />
+                    <p className='font-bold'>سلام! من دستیار شما در دارو AI هستم.</p>
+                    <p>می‌توانید از من بپرسید: «برای سردرد چه دارویی پیشنهاد می‌کنی؟»</p>
+                </div>
             )}
-          </Button>
-        </CardFooter>
-      </Card>
-
-      {isLoading && (
-         <div className="flex justify-center items-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-         </div>
-      )}
-
-      {results && (
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold font-headline">نتایج شما</h3>
-          {results.interactionAlerts && (
-            <Alert variant="destructive" className="neumorphic-card">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>تداخل دارویی بالقوه</AlertTitle>
-              <AlertDescription>
-                {results.interactionAlerts}
-              </AlertDescription>
-            </Alert>
-          )}
-          {results.recommendations && (
-            <Alert className="neumorphic-card">
-              <FileWarning className="h-4 w-4" />
-              <AlertTitle>توصیه دارویی</AlertTitle>
-              <AlertDescription>
-                {results.recommendations}
-              </AlertDescription>
-            </Alert>
-          )}
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex items-start gap-3",
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                )}
+              >
+                {message.role === 'assistant' && (
+                  <AvatarIcon role='assistant' />
+                )}
+                <div
+                  className={cn(
+                    "p-3 rounded-lg max-w-sm md:max-w-md",
+                    message.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted'
+                  )}
+                >
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                </div>
+                 {message.role === 'user' && (
+                  <AvatarIcon role='user' />
+                )}
+              </div>
+            ))}
+            {isLoading && (
+                <div className="flex items-start gap-3 justify-start">
+                    <AvatarIcon role='assistant' />
+                    <div className="p-3 rounded-lg bg-muted flex items-center">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                    </div>
+                </div>
+            )}
+          </div>
+        </ScrollArea>
+        <div className="p-4 border-t">
+          <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="پیام خود را تایپ کنید..."
+              className="neumorphic-input flex-1"
+              disabled={isLoading}
+            />
+            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="neumorphic-button">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
+}
+
+function AvatarIcon({role}: {role: 'user' | 'assistant'}) {
+    return (
+        <div className='flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-card neumorphic-card'>
+            {role === 'user' ? <User className='w-4 h-4' /> : <Bot className='w-4 h-4 text-primary' />}
+        </div>
+    )
 }

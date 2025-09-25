@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Pill, Lightbulb, User, Shield } from 'lucide-react';
+import { Home, Pill, Bot, User, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'داشبورد' },
   { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه من' },
-  { href: '/dashboard/insights', icon: Lightbulb, label: 'بینش' },
+  { href: '/dashboard/insights', icon: Bot, label: 'چت‌بات AI' },
   { href: '/dashboard/profile', icon: User, label: 'پروفایل' },
   { href: '/ash', icon: Shield, label: 'ادمین' },
 ];
