@@ -30,54 +30,39 @@ export async function scanAndCategorizeDrug(input: ScanAndCategorizeDrugInput): 
   return scanAndCategorizeDrugFlow(input);
 }
 
-const categorizeDrug = ai.defineTool(
+const identifyAndCategorizeDrug = ai.defineTool(
     {
-      name: 'categorizeDrug',
-      description: 'Categorizes a drug and extracts 5 relevant tags. Should be called after the drug name is extracted from an image.',
+      name: 'identifyAndCategorizeDrug',
+      description: 'Identifies a drug from text, categorizes it, and extracts 5 relevant tags. If the name is a brand name or in a foreign language, it should be converted to the standard drug name.',
       inputSchema: z.object({
-        drugName: z.string().describe('The name of the drug to categorize.'),
+        extractedText: z.string().describe('The text extracted from the medicine label which may contain the drug name.'),
       }),
       outputSchema: z.object({
+        drugName: z.string().describe('The identified official drug name.'),
         category: z.string().describe('The category of the drug.'),
         tags: z.array(z.string()).describe('An array of 5 relevant tags for the drug.'),
       }),
     },
-    async ({ drugName }) => {
-        const { text } = await ai.generate({
-            prompt: `You are a drug categorization expert. For the drug "${drugName}", provide its category and 5 relevant tags. Format your response with "Category:" on one line and "Tags:" on the next.`,
+    async ({ extractedText }) => {
+        const { output } = await ai.generate({
+            prompt: `You are a drug identification and categorization expert. Based on the following text extracted from a medicine package, identify the official drug name, its category, and 5 relevant tags.
+
+            Extracted Text: "${extractedText}"
+            
+            If the text is a brand name or in a foreign language, find the generic/official name.
+            
+            Provide the response as a JSON object with the keys "drugName", "category", and "tags".`,
+            output: {
+                schema: z.object({
+                    drugName: z.string(),
+                    category: z.string(),
+                    tags: z.array(z.string()),
+                })
+            }
         });
-
-        const lines = text.split('\n');
-        const categoryLine = lines.find(line => line.startsWith('Category:'));
-        const tagsLine = lines.find(line => line.startsWith('Tags:'));
         
-        const category = categoryLine ? categoryLine.substring('Category:'.length).trim() : 'Unknown';
-        const tagsString = tagsLine ? tagsLine.substring('Tags:'.length).trim() : '';
-        const tags = tagsString.split(',').map(tag => tag.trim()).filter(Boolean);
-
-        return { category, tags };
+        return output!;
     },
-);
-
-const searchForDrugName = ai.defineTool(
-  {
-    name: 'searchForDrugName',
-    description: 'Performs a search to identify a drug name if it is not immediately clear from the image due to brand names, language, or poor quality.',
-    inputSchema: z.object({
-      query: z.string().describe('The search query, which should be text extracted from the image.'),
-    }),
-    outputSchema: z.object({
-      drugName: z.string().describe('The identified official drug name from the search.'),
-    }),
-  },
-  async ({ query }) => {
-    // In a real application, this would call a Google Search API.
-    // For this prototype, we'll use a powerful AI prompt to "simulate" a search and distill the name.
-    const { text } = await ai.generate({
-      prompt: `Based on the following text which might be a brand name or a foreign name from a drug package: "${query}", what is the most likely official/generic drug name? Respond with only the drug name.`,
-    });
-    return { drugName: text.trim() };
-  }
 );
 
 const scanAndCategorizeDrugFlow = ai.defineFlow(
@@ -87,45 +72,18 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     outputSchema: ScanAndCategorizeDrugOutputSchema,
   },
   async (input) => {
-    const { text: initialExtraction, toolRequest } = await ai.generate({
+    const { text: initialExtraction } = await ai.generate({
       model: 'googleai/gemini-2.5-flash',
-      tools: [categorizeDrug, searchForDrugName],
-      prompt: `Analyze the provided image of a medicine label. Your goal is to identify the drug name and then categorize it.
-
-      1. First, try to extract the primary drug name directly from the image text.
-      2. If the name is a common drug, use the 'categorizeDrug' tool immediately with the extracted name.
-      3. If the text is unclear, seems like a brand name, or is in a foreign language, use the 'searchForDrugName' tool to find the official drug name. Once you have the official name, pass it to the 'categorizeDrug' tool.
-
+      prompt: `Analyze the provided image of a medicine label and extract the most prominent text that likely represents the drug's name. Respond with only the extracted text.
       Image: {{media url=photoDataUri}}`,
     });
     
-    if (toolRequest) {
-        const toolResponse = await toolRequest.run();
-        
-        // Find the output from the categorizeDrug tool call, as that's the final step
-        const finalCategorization = toolResponse.find(res => res.toolName === 'categorizeDrug');
-
-        if (finalCategorization && finalCategorization.output) {
-             const output = finalCategorization.output as { category: string; tags: string[] };
-             const inputArgs = JSON.parse(finalCategorization.input as string) as {drugName: string};
-            return {
-                drugName: inputArgs.drugName,
-                category: output.category,
-                tags: output.tags,
-            };
-        }
-    }
-    
-    // Fallback if the model returns text directly or if tool logic fails
-    if (initialExtraction) {
-        const toolResult = await categorizeDrug({ drugName: initialExtraction });
-        return {
-            drugName: initialExtraction,
-            category: toolResult.category,
-            tags: toolResult.tags,
-        };
+    if (!initialExtraction) {
+        throw new Error('Could not extract any text from the image.');
     }
 
-    throw new Error('Could not identify or categorize the drug from the image.');
+    const finalResult = await identifyAndCategorizeDrug({ extractedText: initialExtraction });
+
+    return finalResult;
   }
 );
