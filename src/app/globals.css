@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%; /* Light cream #F9F9F9 */
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 123 39% 41%; /* Soft green #3E8E41 */
+    --primary-foreground: 60 9.1% 97.8%;
+
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 18 100% 72%; /* Soft orange #FF9B70 */
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 123 39% 41%;
+
+    --radius: 0.8rem;
+  }
+
+  .dark {
+    --background: 0 0% 7%; /* Darker tone #121212 */
+    --foreground: 0 0% 95%;
+
+    --card: 180 13% 20%; /* Muted charcoal #2A3A3A */
+    --card-foreground: 0 0% 95%;
+
+    --popover: 180 13% 20%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 180 50% 54%; /* Pale teal #4EC4C4 */
+    --primary-foreground: 0 0% 7%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 287 28% 58%; /* Soft purple #A672B5 */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 180 50% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .neumorphic-light {
+    @apply shadow-[5px_5px_10px_#d1d1d1,-5px_-5px_10px_#ffffff] transition-all duration-200;
+  }
+  .neumorphic-light-inset {
+    @apply shadow-[inset_5px_5px_10px_#d1d1d1,inset_-5px_-5px_10px_#ffffff] transition-all duration-200;
+  }
+  .neumorphic-dark {
+    @apply shadow-[5px_5px_10px_#0c0c0c,-5px_-5px_10px_#181818] transition-all duration-200;
+  }
+  .neumorphic-dark-inset {
+    @apply shadow-[inset_5px_5px_10px_#0c0c0c,inset_-5px_-5px_10px_#181818] transition-all duration-200;
+  }
+  .neumorphic-card {
+    @apply bg-card dark:neumorphic-dark neumorphic-light border-0;
+  }
+    .neumorphic-card-inset {
+    @apply bg-card dark:neumorphic-dark-inset neumorphic-light-inset border-0;
+  }
+  .neumorphic-input {
+     @apply dark:neumorphic-dark-inset neumorphic-light-inset bg-transparent dark:bg-background border-0;
+  }
+  .neumorphic-button {
+    @apply neumorphic-card active:shadow-none active:scale-[0.98] border-0;
+  }
+  .neumorphic-badge {
+     @apply dark:neumorphic-dark neumorphic-light border-border;
+  }
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    background-position: center center;
+  }
+}

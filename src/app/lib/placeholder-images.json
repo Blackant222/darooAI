@@ -1,0 +1,58 @@
+{
+  "placeholderImages": [
+    {
+      "id": "app-dashboard-dark",
+      "description": "A dark mode screenshot of the main application dashboard.",
+      "imageUrl": "https://picsum.photos/seed/dashboard-dark/1200/675",
+      "imageHint": "app dark dashboard"
+    },
+    {
+      "id": "testimonial-woman",
+      "description": "A portrait of a woman for the testimonials section.",
+      "imageUrl": "https://picsum.photos/seed/woman-portrait/100/100",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "testimonial-man",
+      "description": "A portrait of a man for the testimonials section.",
+      "imageUrl": "https://picsum.photos/seed/man-portrait/100/100",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "testimonial-elderly",
+      "description": "A portrait of an elderly woman for the testimonials section.",
+      "imageUrl": "https://picsum.photos/seed/elderly-woman-portrait/100/100",
+      "imageHint": "elderly woman"
+    },
+    {
+      "id": "blog-pills",
+      "description": "An image of medicine pills for a blog post.",
+      "imageUrl": "https://picsum.photos/seed/medicine-pills/600/400",
+      "imageHint": "medicine pills"
+    },
+    {
+      "id": "blog-headache",
+      "description": "An image representing a person with a headache for a blog post.",
+      "imageUrl": "https://picsum.photos/seed/person-headache/600/400",
+      "imageHint": "person headache"
+    },
+    {
+      "id": "blog-ai-healthcare",
+      "description": "An abstract image representing AI in healthcare for a blog post.",
+      "imageUrl": "https://picsum.photos/seed/ai-healthcare/600/400",
+      "imageHint": "AI healthcare"
+    },
+    {
+      "id": "user-profile-avatar",
+      "description": "A placeholder avatar for a user profile page.",
+      "imageUrl": "https://picsum.photos/seed/user-profile-avatar/80/80",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-nav-avatar",
+      "description": "A small placeholder avatar for the user navigation menu.",
+      "imageUrl": "https://picsum.photos/seed/user-nav-avatar/40/40",
+      "imageHint": "person portrait"
+    }
+  ]
+}
