@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { DrugProvider } from "@/context/drug-context";
 
 function AppHeader() {
   return (
@@ -39,10 +40,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div dir="rtl" className="flex flex-col min-h-dvh">
-        <AppHeader />
-        <main className="flex-1 p-4 pb-24 md:p-8">{children}</main>
-        <BottomNav />
-    </div>
+    <DrugProvider>
+        <div dir="rtl" className="flex flex-col min-h-dvh">
+            <AppHeader />
+            <main className="flex-1 p-4 pb-24 md:p-8">{children}</main>
+            <BottomNav />
+        </div>
+    </DrugProvider>
   );
 }

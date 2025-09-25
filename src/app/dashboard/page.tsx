@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -6,10 +8,16 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileUp, Lightbulb, Pill } from "lucide-react";
+import { FileUp, Lightbulb, Pill, Activity } from "lucide-react";
 import { ScanDrugDialog } from "@/components/scan-drug-dialog";
+import { useDrugContext } from "@/context/drug-context";
+import { formatDistanceToNow } from 'date-fns-jalali';
 
 export default function DashboardPage() {
+  const { drugs } = useDrugContext();
+
+  const latestDrug = drugs.length > 0 ? drugs[drugs.length - 1] : null;
+
   return (
     <div className="space-y-8">
       <div>
@@ -28,7 +36,7 @@ export default function DashboardPage() {
             <Pill className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">۰</div>
+            <div className="text-2xl font-bold">{drugs.length}</div>
             <p className="text-xs text-muted-foreground">
               در داروخانه مجازی شما
             </p>
@@ -69,9 +77,27 @@ export default function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center py-8">
-            فعالیت اخیری وجود ندارد.
-          </p>
+          {drugs.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              فعالیت اخیری وجود ندارد.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {latestDrug && (
+                 <div className="flex items-center">
+                    <Activity className="h-5 w-5 text-muted-foreground ml-4" />
+                    <div className="flex-grow">
+                      <p className="font-medium">
+                        <span className='font-bold'>{latestDrug.drugName}</span> اضافه شد.
+                      </p>
+                       <p className="text-sm text-muted-foreground">
+                         {formatDistanceToNow(new Date(latestDrug.addedAt))} پیش
+                      </p>
+                    </div>
+                  </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

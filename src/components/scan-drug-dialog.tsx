@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
 import { Badge } from './ui/badge';
+import { useDrugContext, type Drug } from '@/context/drug-context';
 
 export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const [result, setResult] = useState<ScanAndCategorizeDrugOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { addDrug } = useDrugContext();
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -91,9 +94,16 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   };
   
   const handleAddToPharmacy = () => {
+    if (!result) return;
+    const newDrug: Drug = {
+        id: Date.now().toString(),
+        addedAt: new Date().toISOString(),
+        ...result,
+    };
+    addDrug(newDrug);
     toast({
       title: 'دارو اضافه شد',
-      description: `${result?.drugName} به داروخانه مجازی شما اضافه شد.`,
+      description: `${result.drugName} به داروخانه مجازی شما اضافه شد.`,
     });
     handleOpenChange(false);
   };
