@@ -28,26 +28,33 @@ interface DrugContextType {
 const DrugContext = createContext<DrugContextType | undefined>(undefined);
 
 export function DrugProvider({ children }: { children: ReactNode }) {
-    const [drugs, setDrugs] = useState<Drug[]>(() => {
-        if (typeof window === 'undefined') {
-            return [];
-        }
-        try {
-            const localData = localStorage.getItem('drugs');
-            return localData ? JSON.parse(localData) : [];
-        } catch (error) {
-            console.error("Failed to parse drugs from localStorage", error);
-            return [];
-        }
-    });
+    const [drugs, setDrugs] = useState<Drug[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
+    // Load from localStorage only on the client-side, after initial render
     useEffect(() => {
         try {
-            localStorage.setItem('drugs', JSON.stringify(drugs));
+            const localData = localStorage.getItem('drugs');
+            if (localData) {
+                setDrugs(JSON.parse(localData));
+            }
         } catch (error) {
-            console.error("Failed to save drugs to localStorage", error);
+            console.error("Failed to parse drugs from localStorage", error);
+        } finally {
+            setIsLoaded(true);
         }
-    }, [drugs]);
+    }, []);
+
+    // Save to localStorage whenever drugs change, but only after initial load
+    useEffect(() => {
+        if (isLoaded) {
+            try {
+                localStorage.setItem('drugs', JSON.stringify(drugs));
+            } catch (error) {
+                console.error("Failed to save drugs to localStorage", error);
+            }
+        }
+    }, [drugs, isLoaded]);
 
     const addDrug = (drug: Drug) => {
         setDrugs(prevDrugs => [...prevDrugs, drug]);
