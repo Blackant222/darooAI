@@ -4,7 +4,7 @@
 
 DarooAI is a Next.js web application designed to be a personal pharmacy assistant. It empowers users to manage their medications by leveraging AI. Users can scan medicine labels to automatically identify and categorize them, maintain a digital inventory, and receive personalized health advice through an interactive AI chatbot.
 
-The application is built with a mobile-first design, is fully translated into Persian, and supports a right-to-left (RTL) layout.
+The application is built with a mobile-first design, is fully translated into Persian, and supports a right-to-left (RTL) layout. It features a dedicated marketing landing page and a secret admin panel for application management.
 
 ---
 
@@ -14,12 +14,13 @@ The application is built with a mobile-first design, is fully translated into Pe
 
 The user journey is designed to be simple and intuitive:
 
-1.  **Authentication**: Users land on a homepage and can navigate to login or signup pages. Currently, this is a "fake" authentication system that navigates the user directly to the dashboard without real user accounts.
-2.  **Dashboard**: The main hub of the application, providing a quick summary of the user's medication inventory.
-3.  **Scan & Add Drug**: Users can upload an image of a medicine label. The app uses a Genkit AI flow to process the image, identify the drug's name, determine its category, and generate relevant tags.
-4.  **My Pharmacy**: This section lists all the drugs the user has added. They can view details and remove medications from their list.
-5.  **AI Chatbot**: A conversational interface where users can ask health-related questions. The chatbot is aware of the user's medications and health conditions. It can ask follow-up questions to understand the user's symptoms and then recommend an appropriate medication from their existing pharmacy.
-6.  **Admin Panel**: A separate section for administrators to simulate flagging inconsistencies in drug data, using an AI model to check for mismatches between a drug's name, category, and description.
+1.  **Landing Page**: New users arrive at a dedicated, professionally designed landing page (`/`) that explains the app's features and benefits, encouraging them to sign up.
+2.  **Authentication**: Users can navigate to login (`/login`) or signup (`/signup`) pages. Currently, this is a "fake" authentication system that navigates the user directly to the dashboard without real user accounts.
+3.  **Dashboard**: The main hub of the application, providing a quick summary of the user's medication inventory.
+4.  **Scan & Add Drug**: Users can upload an image of a medicine label. The app uses a Genkit AI flow to process the image, identify the drug's name, determine its category, and generate relevant tags.
+5.  **My Pharmacy**: This section lists all the drugs the user has added. They can view details and remove medications from their list.
+6.  **AI Chatbot**: A conversational interface where users can ask health-related questions. The chatbot is aware of the user's medications and health conditions. It can ask follow-up questions to understand the user's symptoms and then recommend an appropriate medication from their existing pharmacy.
+7.  **Admin Panel**: A separate section for administrators, accessible via a secret URL (`/ash`). It allows admins to simulate flagging inconsistencies in drug data, and provides a space to manage blog content.
 
 ---
 
@@ -37,6 +38,7 @@ The application is built using a modern web stack, prioritizing performance, dev
     -   **UI State**: Managed locally within components using React Hooks (`useState`, `useEffect`).
     -   **Global State (Local "Database")**: For the prototype, all application data (like the list of drugs) is managed by a React Context (`DrugContext` in `src/context/drug-context.tsx`). This context uses `localStorage` to persist the data across browser sessions, simulating a database without a backend.
 -   **Language & Layout**: The app is in Persian and uses a Right-to-Left (RTL) layout, configured in `tailwind.config.ts` and throughout the components.
+-   **Marketing Site**: A static, visually rich landing page is served from the root (`/`) and includes a blog.
 
 ### 3.2. Backend & AI
 
@@ -77,13 +79,13 @@ Here is a proposed schema using a relational model (like in Supabase/PostgreSQL)
 
 1.  **`users` Table**: Stores user authentication data.
     -   `id` (UUID, Primary Key) - Matches the auth user ID.
-    -   `full_name` (text)
     -   `email` (text, unique)
-    -   `avatar_url` (text, nullable)
     -   `created_at` (timestamp with time zone)
 
-2.  **`profiles` Table**: Stores user-specific health information.
+2.  **`profiles` Table**: Stores user-specific information from onboarding.
     -   `user_id` (UUID, Primary Key, Foreign Key to `users.id`)
+    -   `full_name` (text)
+    -   `avatar_url` (text, nullable)
     -   `health_conditions` (text, nullable) - A text blob or could be a JSONB field.
     -   `updated_at` (timestamp with time zone)
 
@@ -95,6 +97,16 @@ Here is a proposed schema using a relational model (like in Supabase/PostgreSQL)
     -   `tags` (text[]) - An array of strings, well-supported by PostgreSQL.
     -   `added_at` (timestamp with time zone)
 
+4.  **`blog_posts` Table**: Stores content for the blog.
+    -   `id` (UUID, Primary Key)
+    -   `slug` (text, unique)
+    -   `title` (text)
+    -   `excerpt` (text)
+    -   `content` (text) - The full markdown/HTML content of the post.
+    -   `author_id` (UUID, Foreign Key to `users.id` - if authors are app users)
+    -   `image_url` (text)
+    -   `published_at` (timestamp with time zone)
+
 ---
 
 ## 5. Migrating to Supabase + Next.js Server Components
@@ -104,9 +116,10 @@ To evolve this prototype into a production-ready application using Supabase for 
 ### 1. Set Up Supabase
 
 1.  **Create a Supabase Project**: Go to the [Supabase website](https://supabase.com/), create a new project, and get your Project URL and `anon` key.
-2.  **Define Schema**: Use the Supabase SQL editor or GUI to create the tables (`users`, `profiles`, `pharmacy_items`) as defined in section 4.2.
+2.  **Define Schema**: Use the Supabase SQL editor or GUI to create the tables (`users`, `profiles`, `pharmacy_items`, `blog_posts`) as defined in section 4.2.
 3.  **Enable Row Level Security (RLS)**: This is crucial for security.
     -   On `profiles` and `pharmacy_items`, create policies that only allow users to access and modify their own data (e.g., `user_id = auth.uid()`).
+    -   On `blog_posts`, set read access to public and write access to a specific role (e.g., `admin`).
 
 ### 2. Integrate Supabase with Next.js
 
@@ -118,10 +131,10 @@ To evolve this prototype into a production-ready application using Supabase for 
 2.  **Environment Variables**: Create a `.env.local` file and add your Supabase credentials:
     ```
     NEXT_PUBLIC_SUPABASE_URL=YOUR_PROJECT_URL
-    NEXT_PUBLIC_SUPABSE_ANON_KEY=YOUR_ANON_KEY
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
     ```
 
-3.  **Create a Supabase Client**: Create a utility file (`src/lib/supabase/client.ts`) to initialize the Supabase client for client-side operations.
+3.  **Create a Supabase Client**: Create utility files (`src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`) to initialize Supabase clients for client-side and server-side operations.
 
 ### 3. Refactor the Application
 

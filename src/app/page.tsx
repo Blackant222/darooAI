@@ -320,8 +320,8 @@ export default function LandingPage() {
             <div className="relative mt-16 flex justify-center">
               <div className="neumorphic-card rounded-xl p-2 w-full max-w-4xl">
                 <Image
-                  src="https://picsum.photos/seed/app-dashboard/1200/675"
-                  data-ai-hint="app dashboard"
+                  src="https://picsum.photos/seed/dashboard-dark/1200/675"
+                  data-ai-hint="app dark dashboard"
                   width={1200}
                   height={675}
                   alt="App Dashboard"

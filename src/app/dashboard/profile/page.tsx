@@ -23,7 +23,7 @@ export default function ProfilePage() {
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-20 w-20 neumorphic-card p-1">
-            <AvatarImage src="https://picsum.photos/seed/avatar1/80/80" data-ai-hint="person portrait"/>
+            <AvatarImage src="https://picsum.photos/seed/user-profile-avatar/80/80" data-ai-hint="person portrait"/>
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <Button variant="outline" className="neumorphic-button">

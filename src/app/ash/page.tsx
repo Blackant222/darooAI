@@ -29,6 +29,7 @@ export default function AdminPage() {
         <TabsList>
           <TabsTrigger value="overview">نمای کلی</TabsTrigger>
           <TabsTrigger value="drugs">مدیریت داروها</TabsTrigger>
+          <TabsTrigger value="blog">مدیریت بلاگ</TabsTrigger>
           <TabsTrigger value="users">مدیریت کاربران</TabsTrigger>
           <TabsTrigger value="feedback">بازخورد هوش مصنوعی</TabsTrigger>
         </TabsList>
@@ -54,6 +55,16 @@ export default function AdminPage() {
                 <div className="text-2xl font-bold">۳۴۲</div>
               </CardContent>
             </Card>
+             <Card className="neumorphic-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  تعداد پست های وبلاگ
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">۳</div>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
         <TabsContent value="drugs" className="space-y-4">
@@ -67,6 +78,21 @@ export default function AdminPage() {
             <CardContent>
               <p className="text-muted-foreground text-center py-8">
                 جدول مدیریت داروها اینجا قرار می گیرد...
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="blog" className="space-y-4">
+          <Card className="neumorphic-card">
+            <CardHeader>
+              <CardTitle>پست های وبلاگ</CardTitle>
+              <CardDescription>
+                تمام پست های وبلاگ را از اینجا مدیریت کنید.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground text-center py-8">
+                جدول مدیریت پست های وبلاگ اینجا قرار می گیرد...
               </p>
             </CardContent>
           </Card>

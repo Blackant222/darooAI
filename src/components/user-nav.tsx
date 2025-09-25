@@ -18,7 +18,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10 neumorphic-card p-0.5">
             <AvatarImage
-              src="https://picsum.photos/seed/avatar1/40/40"
+              src="https://picsum.photos/seed/user-profile-avatar/40/40"
               alt="آواتار کاربر"
               data-ai-hint="person portrait"
             />
