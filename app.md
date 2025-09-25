@@ -44,7 +44,7 @@ The application is built using a modern web stack, prioritizing performance, dev
 
 -   **AI Framework**: [Genkit](https://firebase.google.com/docs/genkit) by Firebase. Genkit orchestrates calls to Google's Gemini AI models.
 -   **AI Flows**: The core AI logic is encapsulated in three server-side flows located in `src/ai/flows/`:
-    1.  `scan-and-categorize-drug.ts`: Takes an image data URI, uses the Gemini Vision model to identify the drug name, and then uses a custom tool (`categorizeDrug`) to determine its category and tags.
+    1.  `scan-and-categorize-drug.ts`: Takes an image data URI, uses the Gemini Vision model to identify the drug name, and then uses a custom tool (`categorizeDrug`) to determine its category and tags. It also includes a fallback search tool.
     2.  `get-chatbot-response.ts`: Manages the conversational AI. It takes the user's health conditions, medication list, chat history, and current query to generate an intelligent and contextual response. It is programmed to ask clarifying questions before providing a recommendation.
     3.  `flag-medication-inconsistencies.ts`: An admin-facing tool to check for data consistency in drug information.
 
@@ -77,8 +77,8 @@ For a production-level application, you would move from `localStorage` to a prop
 
 Here is a proposed schema using a relational model (like in Supabase/PostgreSQL):
 
-1.  **`users` Table**: Stores user authentication data.
-    -   `id` (UUID, Primary Key) - Matches the auth user ID.
+1.  **`users` Table**: Stores user authentication data from Supabase Auth.
+    -   `id` (UUID, Primary Key) - Matches the `auth.users` table ID.
     -   `email` (text, unique)
     -   `created_at` (timestamp with time zone)
 
@@ -125,7 +125,7 @@ To evolve this prototype into a production-ready application using Supabase for 
 
 1.  **Install Supabase Client**:
     ```bash
-    npm install @supabase/supabase-js
+    npm install @supabase/supabase-js @supabase/ssr
     ```
 
 2.  **Environment Variables**: Create a `.env.local` file and add your Supabase credentials:
@@ -134,7 +134,7 @@ To evolve this prototype into a production-ready application using Supabase for 
     NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
     ```
 
-3.  **Create a Supabase Client**: Create utility files (`src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`) to initialize Supabase clients for client-side and server-side operations.
+3.  **Create a Supabase Client**: Create utility files (`src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`) to initialize Supabase clients for client-side and server-side operations, as recommended by the `@supabase/ssr` documentation.
 
 ### 3. Refactor the Application
 
@@ -151,9 +151,11 @@ To evolve this prototype into a production-ready application using Supabase for 
     ```tsx
     // src/app/dashboard/pharmacy/page.tsx
     import { createServerClient } from '@/lib/supabase/server'; // You would create this
+    import { cookies } from 'next/headers';
 
     export default async function PharmacyPage() {
-        const supabase = createServerClient();
+        const cookieStore = cookies();
+        const supabase = createServerClient(cookieStore);
         const { data: { user } } = await supabase.auth.getUser();
 
         let drugs = [];
@@ -166,7 +168,7 @@ To evolve this prototype into a production-ready application using Supabase for 
             drugs = data || [];
         }
 
-        // ... return the JSX, passing `drugs` to the table component.
+        // ... return the JSX, passing `drugs` to a client component table.
     }
     ```
 
@@ -179,24 +181,35 @@ To evolve this prototype into a production-ready application using Supabase for 
     // 1. Create a server action file: src/app/actions.ts
     'use server';
     import { createServerClient } from '@/lib/supabase/server';
+    import { cookies } from 'next/headers';
+    import { revalidatePath } from 'next/cache';
 
     export async function addDrugToPharmacy(drugData) {
-        const supabase = createServerClient();
+        const cookieStore = cookies();
+        const supabase = createServerClient(cookieStore);
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) throw new Error("Not authenticated");
 
-        await supabase.from('pharmacy_items').insert({
+        const { error } = await supabase.from('pharmacy_items').insert({
             user_id: user.id,
             ...drugData
         });
+
+        if (error) throw error;
+
+        revalidatePath('/dashboard/pharmacy');
     }
 
     // 2. Call it from the client component
     // In scan-drug-dialog.tsx
     const handleAddToPharmacy = async () => {
         if (!result) return;
-        await addDrugToPharmacy(result); // Call the server action
+        await addDrugToPharmacy({
+            drug_name: result.drugName,
+            category: result.category,
+            tags: result.tags,
+        }); // Call the server action
         // ... show toast and close dialog
     };
     ```

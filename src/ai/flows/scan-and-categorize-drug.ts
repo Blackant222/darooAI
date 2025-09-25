@@ -59,6 +59,27 @@ const categorizeDrug = ai.defineTool(
     },
 );
 
+const searchForDrugName = ai.defineTool(
+  {
+    name: 'searchForDrugName',
+    description: 'Performs a search to identify a drug name if it is not immediately clear from the image due to brand names, language, or poor quality.',
+    inputSchema: z.object({
+      query: z.string().describe('The search query, which should be text extracted from the image.'),
+    }),
+    outputSchema: z.object({
+      drugName: z.string().describe('The identified official drug name from the search.'),
+    }),
+  },
+  async ({ query }) => {
+    // In a real application, this would call a Google Search API.
+    // For this prototype, we'll use a powerful AI prompt to "simulate" a search and distill the name.
+    const { text } = await ai.generate({
+      prompt: `Based on the following text which might be a brand name or a foreign name from a drug package: "${query}", what is the most likely official/generic drug name? Respond with only the drug name.`,
+    });
+    return { drugName: text.trim() };
+  }
+);
+
 const scanAndCategorizeDrugFlow = ai.defineFlow(
   {
     name: 'scanAndCategorizeDrugFlow',
@@ -66,35 +87,45 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     outputSchema: ScanAndCategorizeDrugOutputSchema,
   },
   async (input) => {
-    const { text: drugName, toolRequest } = await ai.generate({
+    const { text: initialExtraction, toolRequest } = await ai.generate({
       model: 'googleai/gemini-2.5-flash',
-      tools: [categorizeDrug],
-      prompt: `From the provided image of a medicine label, first extract the drug's name. Then, use the provided tool to categorize it and get tags.
-      
+      tools: [categorizeDrug, searchForDrugName],
+      prompt: `Analyze the provided image of a medicine label. Your goal is to identify the drug name and then categorize it.
+
+      1. First, try to extract the primary drug name directly from the image text.
+      2. If the name is a common drug, use the 'categorizeDrug' tool immediately with the extracted name.
+      3. If the text is unclear, seems like a brand name, or is in a foreign language, use the 'searchForDrugName' tool to find the official drug name. Once you have the official name, pass it to the 'categorizeDrug' tool.
+
       Image: {{media url=photoDataUri}}`,
     });
-
-    if (!drugName) {
-        throw new Error('Could not extract drug name from the image.');
-    }
     
     if (toolRequest) {
         const toolResponse = await toolRequest.run();
-        const output = toolResponse[0].output as { category: string; tags: string[] };
+        
+        // Find the output from the categorizeDrug tool call, as that's the final step
+        const finalCategorization = toolResponse.find(res => res.toolName === 'categorizeDrug');
+
+        if (finalCategorization && finalCategorization.output) {
+             const output = finalCategorization.output as { category: string; tags: string[] };
+             const inputArgs = JSON.parse(finalCategorization.input as string) as {drugName: string};
+            return {
+                drugName: inputArgs.drugName,
+                category: output.category,
+                tags: output.tags,
+            };
+        }
+    }
+    
+    // Fallback if the model returns text directly or if tool logic fails
+    if (initialExtraction) {
+        const toolResult = await categorizeDrug({ drugName: initialExtraction });
         return {
-            drugName: JSON.parse(toolResponse[0].input as string).drugName,
-            category: output.category,
-            tags: output.tags,
+            drugName: initialExtraction,
+            category: toolResult.category,
+            tags: toolResult.tags,
         };
     }
 
-    // Fallback if the tool is not called
-    const toolResult = await categorizeDrug({ drugName });
-
-    return {
-        drugName: drugName,
-        category: toolResult.category,
-        tags: toolResult.tags,
-    };
+    throw new Error('Could not identify or categorize the drug from the image.');
   }
 );
