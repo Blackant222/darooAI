@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Scans a medicine label, identifies the drug, categorizes it, and extracts relevant tags.
+ * @fileOverview Scans a medicine label, identifies the drug's brand name and active ingredients, categorizes it, and extracts relevant tags.
  *
  * - scanAndCategorizeDrug - A function that handles the drug scanning and categorization process.
  * - ScanAndCategorizeDrugInput - The input type for the scanAndCategorizeDrug function.
@@ -20,9 +20,10 @@ const ScanAndCategorizeDrugInputSchema = z.object({
 export type ScanAndCategorizeDrugInput = z.infer<typeof ScanAndCategorizeDrugInputSchema>;
 
 const ScanAndCategorizeDrugOutputSchema = z.object({
-  drugName: z.string().describe('The name of the identified drug.'),
-  category: z.string().describe('The category of the drug.'),
-  tags: z.array(z.string()).describe('Relevant tags for the drug.'),
+  brandName: z.string().optional().describe('The brand name of the drug, if available.'),
+  activeIngredients: z.array(z.string()).describe('A list of one or more active ingredients (generic names).'),
+  category: z.string().describe('The primary category of the drug (e.g., "Pain Reliever", "Antibiotic", "Dietary Supplement").'),
+  tags: z.array(z.string()).describe('A list of 3-5 relevant tags for the drug.'),
 });
 export type ScanAndCategorizeDrugOutput = z.infer<typeof ScanAndCategorizeDrugOutputSchema>;
 
@@ -35,15 +36,15 @@ const scanAndCategorizeDrugPrompt = ai.definePrompt({
     name: 'scanAndCategorizeDrugPrompt',
     input: { schema: ScanAndCategorizeDrugInputSchema },
     output: { schema: ScanAndCategorizeDrugOutputSchema },
-    prompt: `You are an expert pharmacist. Analyze the provided image of a medicine package.
-      
-Your tasks are:
-1. Identify the most prominent name on the package. This could be a brand name or a generic name.
-2. Determine the official generic drug name. If the name is a brand name (like 'Advil'), find its active ingredient (like 'Ibuprofen'). If it's a supplement, use the supplement's primary ingredient name.
-3. Determine the drug's primary category (e.g., "Pain Reliever", "Antibiotic", "Dietary Supplement").
-4. Generate 3-5 relevant tags (e.g., "Anti-inflammatory", "Fever reducer").
+    prompt: `You are an expert pharmacist. Analyze the provided image of a medicine package. You must simulate performing a web search if you do not recognize the drug.
 
-Return ONLY a valid JSON object with the keys "drugName", "category", and "tags".
+Your tasks are:
+1.  From the image, identify the most prominent name on the package. This is the **brandName**. If no brand name is clear, you can omit it.
+2.  Identify all active ingredients in the drug. This may require you to "search" for the brand name to find its components. List them in the **activeIngredients** array.
+3.  Determine the drug's primary **category** (e.g., "Pain Reliever", "Antibiotic", "Dietary Supplement").
+4.  Generate 3-5 relevant **tags** (e.g., "Anti-inflammatory", "Fever reducer").
+
+Return ONLY a valid JSON object with the keys "brandName", "activeIngredients", "category", and "tags".
 
 Image: {{media url=photoDataUri}}`
 });
@@ -60,6 +61,16 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     
     if (!output) {
         throw new Error('The AI failed to return a valid structured response.');
+    }
+
+    // Ensure activeIngredients is not empty
+    if (!output.activeIngredients || output.activeIngredients.length === 0) {
+        // If brandName is also missing, it's a total failure
+        if (!output.brandName) {
+            throw new Error('AI could not identify any brand name or active ingredients.');
+        }
+        // If we have a brand name, use it as the ingredient as a fallback
+        output.activeIngredients = [output.brandName];
     }
 
     return output;

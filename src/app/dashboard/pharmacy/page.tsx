@@ -52,8 +52,8 @@ export default function PharmacyPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>نام دارو</TableHead>
+                <TableHead>ماده موثره</TableHead>
                 <TableHead>دسته بندی</TableHead>
-                <TableHead>تگ ها</TableHead>
                 <TableHead>زمان افزودن</TableHead>
                 <TableHead className="text-left">اقدامات</TableHead>
               </TableRow>
@@ -68,13 +68,9 @@ export default function PharmacyPage() {
               ) : (
                 drugs.map((drug) => (
                     <TableRow key={drug.id}>
-                        <TableCell className="font-medium">{drug.drugName}</TableCell>
+                        <TableCell className="font-medium">{drug.brandName || drug.activeIngredients.join(', ')}</TableCell>
+                        <TableCell>{drug.activeIngredients.join(', ')}</TableCell>
                         <TableCell>{drug.category}</TableCell>
-                        <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                                {drug.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
-                            </div>
-                        </TableCell>
                         <TableCell>{formatDistanceToNow(new Date(drug.addedAt))} پیش</TableCell>
                         <TableCell className="text-left">
                            <DropdownMenu>

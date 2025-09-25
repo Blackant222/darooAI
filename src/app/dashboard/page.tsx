@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const { drugs } = useDrugContext();
 
   const latestDrug = drugs.length > 0 ? drugs[drugs.length - 1] : null;
+  const drugDisplayName = latestDrug?.brandName || latestDrug?.activeIngredients.join(', ');
 
   return (
     <div className="space-y-8">
@@ -88,7 +89,7 @@ export default function DashboardPage() {
                     <Activity className="h-5 w-5 text-muted-foreground ml-4" />
                     <div className="flex-grow">
                       <p className="font-medium">
-                        <span className='font-bold'>{latestDrug.drugName}</span> اضافه شد.
+                        <span className='font-bold'>{drugDisplayName}</span> اضافه شد.
                       </p>
                        <p className="text-sm text-muted-foreground">
                          {formatDistanceToNow(new Date(latestDrug.addedAt))} پیش

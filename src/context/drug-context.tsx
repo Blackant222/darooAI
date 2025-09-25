@@ -4,7 +4,8 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 
 export interface Drug {
     id: string;
-    drugName: string;
+    brandName?: string;
+    activeIngredients: string[];
     category: string;
     tags: string[];
     addedAt: string;

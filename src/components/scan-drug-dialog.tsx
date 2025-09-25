@@ -125,7 +125,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
     addDrug(newDrug);
     toast({
       title: 'دارو اضافه شد',
-      description: `${result.drugName} به داروخانه مجازی شما اضافه شد.`,
+      description: `${result.brandName || result.activeIngredients.join(', ')} به داروخانه مجازی شما اضافه شد.`,
     });
     handleOpenChange(false);
   };
@@ -186,12 +186,19 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
       </DialogHeader>
       <div className="space-y-4 py-4 text-right">
         {result && (
-          <div className="space-y-2 p-4 bg-muted/20 dark:bg-muted/50 rounded-lg border text-right">
+          <div className="space-y-3 p-4 bg-muted/20 dark:bg-muted/50 rounded-lg border text-right">
               <h4 className="font-semibold text-lg flex items-center gap-2"><CheckCircle className="h-5 w-5 text-primary ml-2"/>اسکن موفقیت‌آمیز بود</h4>
-              <p><strong>نام دارو:</strong> {result.drugName}</p>
+              <div>
+                <p className='text-sm text-muted-foreground'>نام برند</p>
+                <p><strong>{result.brandName || '-'}</strong></p>
+              </div>
+              <div>
+                <p className='text-sm text-muted-foreground'>ماده(های) موثره</p>
+                <p><strong>{result.activeIngredients.join(', ')}</strong></p>
+              </div>
           </div>
         )}
-        <div className="space-y-3">
+        <div className="space-y-3 pt-2">
           <Label>آیا در حال حاضر این دارو را مصرف می‌کنید؟</Label>
           <RadioGroup dir="ltr" onValueChange={(val: "yes" | "no") => setIsTaking(val)} value={isTaking} className="flex justify-end gap-4">
             <div className="flex items-center space-x-2 space-x-reverse">
