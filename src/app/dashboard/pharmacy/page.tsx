@@ -17,7 +17,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MoreHorizontal, Trash2, Loader2, Tag } from "lucide-react";
+import { PlusCircle, MoreHorizontal, Trash2, Loader2, Eye } from "lucide-react";
 import { ScanDrugDialog } from "@/components/scan-drug-dialog";
 import { useDrugContext, type Drug } from "@/context/drug-context";
 import { formatDistanceToNow } from 'date-fns-jalali';
@@ -30,6 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DrugDetailDialog } from "@/components/drug-detail-dialog";
+import { cn } from "@/lib/utils";
 
 
 export default function PharmacyPage() {
@@ -37,7 +38,8 @@ export default function PharmacyPage() {
     const { toast } = useToast();
     const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
 
-    const handleRemove = async (id: string) => {
+    const handleRemove = async (e: React.MouseEvent, id: string) => {
+        e.stopPropagation(); // Prevent row click when deleting
         try {
             await removeDrug(id);
             toast({
@@ -99,11 +101,13 @@ export default function PharmacyPage() {
                   </TableRow>
                 ) : (
                   drugs.map((drug) => (
-                      <TableRow key={drug.id}>
+                      <TableRow 
+                        key={drug.id} 
+                        onClick={() => setSelectedDrug(drug)}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      >
                           <TableCell className="font-medium">
-                              <button onClick={() => setSelectedDrug(drug)} className="text-right hover:underline hover:text-primary transition-colors">
-                                  <p className="font-bold">{drug.brandName || drug.activeIngredients.map(i => i.name).join(', ')}</p>
-                              </button>
+                              <p className="font-bold">{drug.brandName || drug.activeIngredients.map(i => i.name).join(', ')}</p>
                               <div className="text-xs text-muted-foreground md:hidden mt-1 space-y-1">
                                   <div><Badge variant="outline" className="ml-1">{drug.category}</Badge></div>
                                   <p>{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</p>
@@ -119,15 +123,19 @@ export default function PharmacyPage() {
                           </TableCell>
                           <TableCell className="hidden md:table-cell">{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</TableCell>
                           <TableCell className="text-left">
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedDrug(drug)}>
+                                <Eye className="ml-2"/>
+                                مشاهده
+                            </Button>
                             <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
+                                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                                   <Button variant="ghost" className="h-8 w-8 p-0">
                                     <span className="sr-only">باز کردن منو</span>
                                     <MoreHorizontal className="h-4 w-4" />
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" dir="rtl">
-                                  <DropdownMenuItem onClick={() => handleRemove(drug.id)} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+                                  <DropdownMenuItem onClick={(e) => handleRemove(e, drug.id)} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                                     <Trash2 className="ml-2 h-4 w-4" />
                                     حذف
                                   </DropdownMenuItem>

@@ -12,13 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Send, User, Bot } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
-import { getChatbotResponse } from '@/ai/flows/get-chatbot-response';
+import { getChatbotResponse } from '@/genkit/flows/get-chatbot-response';
 import { useDrugContext } from '@/context/drug-context';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/auth-context';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/firebase/client';
 
 interface Message {
   role: 'user' | 'assistant';

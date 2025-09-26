@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '@/firebase/client';
 import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { useAuth } from './auth-context';
 
@@ -16,6 +16,8 @@ export interface Drug {
     activeIngredients: Ingredient[];
     category: string;
     tags: string[];
+    summary: string;
+    sideEffects: string;
     addedAt: string;
     isTaking?: boolean;
     frequency?: string;

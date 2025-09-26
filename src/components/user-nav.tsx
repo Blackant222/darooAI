@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/firebase/client";
 import { signOut } from "firebase/auth";
 import { LifeBuoy, LogOut, Settings, User as UserIcon } from "lucide-react";
 

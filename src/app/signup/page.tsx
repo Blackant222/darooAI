@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { MultiSelectChip } from '@/components/multi-select-chip';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '@/firebase/client';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 

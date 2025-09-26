@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { flagMedicationInconsistencies, type FlagMedicationInconsistenciesOutput } from '@/ai/flows/flag-medication-inconsistencies';
+import { flagMedicationInconsistencies, type FlagMedicationInconsistenciesOutput } from '@/genkit/flows/flag-medication-inconsistencies';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

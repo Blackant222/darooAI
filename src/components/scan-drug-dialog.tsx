@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowRight, Pill, Tag, List, Beaker } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
-import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
+import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/genkit/flows/scan-and-categorize-drug';
 import { Badge } from './ui/badge';
 import { useDrugContext } from '@/context/drug-context';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -117,6 +117,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
       activeIngredients: result.activeIngredients,
       category: result.category,
       tags: result.tags,
+      summary: result.summary,
+      sideEffects: result.sideEffects,
       isTaking: isTaking === 'yes',
       ...(isTaking === 'yes' && { frequency, startDate }),
     };

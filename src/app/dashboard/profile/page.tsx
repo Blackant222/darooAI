@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProfileData {
