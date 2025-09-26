@@ -100,7 +100,7 @@ export default function SignupPage() {
       dir="rtl"
       className="flex items-center justify-center min-h-dvh py-12 bg-background"
     >
-      <Card className="mx-auto max-w-md w-full neumorphic-card">
+      <Card className="mx-auto max-w-md w-full shadow-xl border-t-4 border-primary">
         <CardHeader>
           <Link
             href="/"
@@ -108,7 +108,7 @@ export default function SignupPage() {
             prefetch={false}
           >
             <Pill className="h-8 w-8 text-primary" />
-             <span className="mr-2 text-xl font-bold font-headline">دارو AI</span>
+             <span className="mr-2 text-xl font-bold font-headline">Avicenna (ابن سینا)</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
             {step === totalSteps ? 'تکمیل ثبت‌نام' : 'ایجاد پروفایل سلامتی'}
@@ -140,7 +140,7 @@ export default function SignupPage() {
               <Button
                 variant="outline"
                 onClick={prevStep}
-                className="w-full neumorphic-button"
+                className="w-full"
                 disabled={isLoading}
               >
                 <ArrowRight className="ml-2" />
@@ -150,7 +150,7 @@ export default function SignupPage() {
             {step < totalSteps ? (
               <Button
                 onClick={nextStep}
-                className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 بعدی
                 <ArrowLeft className="mr-2" />
@@ -158,7 +158,7 @@ export default function SignupPage() {
             ) : (
               <Button
                 onClick={handleSignup}
-                className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                 disabled={isLoading || !formData.agreedToTerms || !formData.agreedToPrivacy}
               >
                 {isLoading ? <Loader2 className='animate-spin' /> : 'ایجاد حساب کاربری'}
@@ -192,7 +192,6 @@ function Step1({ formData, onChange }: StepProps) {
           id="full-name"
           placeholder="مثال: سارا محمدی"
           required
-          className="neumorphic-input"
           value={formData.fullName}
           onChange={(e) => onChange('fullName', e.target.value)}
         />
@@ -204,14 +203,13 @@ function Step1({ formData, onChange }: StepProps) {
           type="email"
           placeholder="sara@example.com"
           required
-          className="neumorphic-input"
           value={formData.email}
           onChange={(e) => onChange('email', e.target.value)}
         />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="password">رمز عبور</Label>
-        <Input id="password" type="password" required className="neumorphic-input" value={formData.password} onChange={(e) => onChange('password', e.target.value)} />
+        <Input id="password" type="password" required value={formData.password} onChange={(e) => onChange('password', e.target.value)} />
       </div>
     </div>
   );
@@ -266,7 +264,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="activity-level">سطح فعالیت</Label>
           <Select value={formData.activityLevel} onValueChange={(value) => onChange('activityLevel', value)}>
-            <SelectTrigger id="activity-level" className="neumorphic-input">
+            <SelectTrigger id="activity-level">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>
@@ -279,7 +277,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="smoking">مصرف سیگار</Label>
           <Select value={formData.smokingStatus} onValueChange={(value) => onChange('smokingStatus', value)}>
-            <SelectTrigger id="smoking" className="neumorphic-input">
+            <SelectTrigger id="smoking">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>

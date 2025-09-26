@@ -84,9 +84,9 @@ export default function ChatbotPage() {
   };
 
   return (
-    <Card className="neumorphic-card w-full h-[calc(100vh-150px)] flex flex-col">
+    <Card className="w-full h-[calc(100vh-150px)] flex flex-col shadow-lg">
       <CardHeader>
-        <CardTitle>چت‌بات هوش مصنوعی دارو AI</CardTitle>
+        <CardTitle>چت‌بات هوشمند Avicenna</CardTitle>
         <CardDescription>
           سوالات خود در مورد سلامتی و داروها را بپرسید.
         </CardDescription>
@@ -143,10 +143,10 @@ export default function ChatbotPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="پیام خود را تایپ کنید..."
-              className="neumorphic-input flex-1"
+              className="flex-1"
               disabled={isLoading}
             />
-            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="neumorphic-button">
+            <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
               <Send className="h-4 w-4" />
             </Button>
           </form>
@@ -158,7 +158,7 @@ export default function ChatbotPage() {
 
 function AvatarIcon({role}: {role: 'user' | 'assistant'}) {
     return (
-        <div className='flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-card neumorphic-card'>
+        <div className='flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-card border'>
             {role === 'user' ? <User className='w-4 h-4' /> : <Bot className='w-4 h-4 text-primary' />}
         </div>
     )

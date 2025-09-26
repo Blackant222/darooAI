@@ -65,7 +65,7 @@ export function FlagMedicationForm() {
                         <FormItem>
                             <FormLabel>نام دارو</FormLabel>
                             <FormControl>
-                                <Input placeholder="مثال: آتورواستاتین" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: آتورواستاتین" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -74,7 +74,7 @@ export function FlagMedicationForm() {
                         <FormItem>
                             <FormLabel>دسته بندی دارو</FormLabel>
                             <FormControl>
-                                <Input placeholder="مثال: استاتین" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: استاتین" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -83,7 +83,7 @@ export function FlagMedicationForm() {
                         <FormItem>
                             <FormLabel>تگ های دارو (جدا شده با کاما)</FormLabel>
                             <FormControl>
-                                <Input placeholder="مثال: کلسترول, کاهش دهنده چربی" {...field} className="neumorphic-input" />
+                                <Input placeholder="مثال: کلسترول, کاهش دهنده چربی" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -92,19 +92,19 @@ export function FlagMedicationForm() {
                         <FormItem>
                             <FormLabel>توضیحات</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="کاربرد و خواص دارو را شرح دهید." {...field} className="neumorphic-input" />
+                                <Textarea placeholder="کاربرد و خواص دارو را شرح دهید." {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
-                    <Button type="submit" disabled={isLoading} className="w-full neumorphic-button">
+                    <Button type="submit" disabled={isLoading} className="w-full">
                         {isLoading ? <><Loader2 className="ml-2 animate-spin" />درحال بررسی...</> : 'بررسی عدم انطباق'}
                     </Button>
                 </form>
             </Form>
 
             {result && (
-                 <Alert dir='rtl' className={`neumorphic-card ${result.isConsistent ? 'border-green-500/50' : 'border-destructive/50'}`}>
+                 <Alert dir='rtl' className={`${result.isConsistent ? 'border-green-500/50' : 'border-destructive/50'}`}>
                     {result.isConsistent ? <CheckCircle className="h-4 w-4 text-green-500" /> : <AlertTriangle className="h-4 w-4 text-destructive" />}
                     <AlertTitle>{result.isConsistent ? 'مطابق' : 'عدم انطباق شناسایی شد'}</AlertTitle>
                     <AlertDescription>

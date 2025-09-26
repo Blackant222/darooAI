@@ -35,7 +35,7 @@ export default function AdminPage() {
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="neumorphic-card">
+            <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   تعداد کل کاربران
@@ -45,7 +45,7 @@ export default function AdminPage() {
                 <div className="text-2xl font-bold">۱,۲۵۷</div>
               </CardContent>
             </Card>
-            <Card className="neumorphic-card">
+            <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   تعداد کل داروهای مدیریت شده
@@ -55,7 +55,7 @@ export default function AdminPage() {
                 <div className="text-2xl font-bold">۳۴۲</div>
               </CardContent>
             </Card>
-             <Card className="neumorphic-card">
+             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   تعداد پست های وبلاگ
@@ -68,7 +68,7 @@ export default function AdminPage() {
           </div>
         </TabsContent>
         <TabsContent value="drugs" className="space-y-4">
-          <Card className="neumorphic-card">
+          <Card>
             <CardHeader>
               <CardTitle>همه داروها</CardTitle>
               <CardDescription>
@@ -83,7 +83,7 @@ export default function AdminPage() {
           </Card>
         </TabsContent>
         <TabsContent value="blog" className="space-y-4">
-          <Card className="neumorphic-card">
+          <Card>
             <CardHeader>
               <CardTitle>پست های وبلاگ</CardTitle>
               <CardDescription>
@@ -98,7 +98,7 @@ export default function AdminPage() {
           </Card>
         </TabsContent>
         <TabsContent value="users" className="space-y-4">
-          <Card className="neumorphic-card">
+          <Card>
             <CardHeader>
               <CardTitle>همه کاربران</CardTitle>
               <CardDescription>تمام کاربران سیستم را مدیریت کنید.</CardDescription>
@@ -111,7 +111,7 @@ export default function AdminPage() {
           </Card>
         </TabsContent>
         <TabsContent value="feedback" className="space-y-4">
-          <Card className="neumorphic-card">
+          <Card>
             <CardHeader>
               <CardTitle>پرچم های عدم انطباق هوش مصنوعی</CardTitle>
               <CardDescription>
@@ -121,11 +121,11 @@ export default function AdminPage() {
             <CardContent>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="neumorphic-button">
+                  <Button>
                     پرچم گذاری عدم انطباق داروها
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="neumorphic-card">
+                <DialogContent>
                   <DialogHeader>
                     <DialogTitle>بررسی عدم انطباق توسط هوش مصنوعی</DialogTitle>
                     <DialogDescription>

@@ -24,7 +24,7 @@ export function UserNav() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push('/login');
+    router.push('/');
   };
   
   if (!user) {
@@ -35,7 +35,7 @@ export function UserNav() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10 neumorphic-card p-0.5">
+          <Avatar className="h-10 w-10 border p-0.5">
             <AvatarImage
               src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/40/40"}
               alt="آواتار کاربر"
@@ -45,7 +45,7 @@ export function UserNav() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent dir="rtl" className="w-56 neumorphic-card" align="end" forceMount>
+      <DropdownMenuContent dir="rtl" className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.displayName || 'کاربر'}</p>

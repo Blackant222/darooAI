@@ -110,7 +110,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <Card className="neumorphic-card">
+    <Card className="shadow-lg">
       <CardHeader>
         <CardTitle>پروفایل من</CardTitle>
         <CardDescription>
@@ -119,18 +119,18 @@ export default function ProfilePage() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-4 space-x-reverse">
-          <Avatar className="h-20 w-20 neumorphic-card p-1">
+          <Avatar className="h-20 w-20 border p-1">
             <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
             <AvatarFallback>{user.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
-          <Button variant="outline" className="neumorphic-button">
+          <Button variant="outline">
             تغییر عکس
           </Button>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="fullName">نام کامل</Label>
-            <Input id="fullName" placeholder="نام خود را وارد کنید" value={profileData.fullName} onChange={handleInputChange} className="neumorphic-input" />
+            <Input id="fullName" placeholder="نام خود را وارد کنید" value={profileData.fullName} onChange={handleInputChange} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">ایمیل</Label>
@@ -140,7 +140,6 @@ export default function ProfilePage() {
               placeholder="user@example.com"
               defaultValue={user.email || ""}
               disabled
-              className="neumorphic-input"
             />
           </div>
         </div>
@@ -149,7 +148,6 @@ export default function ProfilePage() {
           <Textarea
             id="healthConditions"
             placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
-            className="neumorphic-input"
             value={profileData.healthConditions}
             onChange={handleInputChange}
           />
@@ -158,7 +156,7 @@ export default function ProfilePage() {
             </p>
         </div>
         <div className="flex justify-end">
-          <Button onClick={handleSaveChanges} disabled={isSaving} className="neumorphic-button">
+          <Button onClick={handleSaveChanges} disabled={isSaving}>
             {isSaving ? <Loader2 className='ml-2 animate-spin' /> : null}
             ذخیره تغییرات
           </Button>

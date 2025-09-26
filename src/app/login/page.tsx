@@ -49,11 +49,11 @@ export default function LoginPage() {
 
   return (
     <div dir="rtl" className="flex items-center justify-center min-h-dvh bg-background">
-      <Card className="mx-auto max-w-sm w-full neumorphic-card">
+      <Card className="mx-auto max-w-sm w-full shadow-xl border-t-4 border-primary">
         <CardHeader>
           <Link href="/" className="flex items-center justify-center mb-4" prefetch={false}>
             <Pill className="h-8 w-8 text-primary" />
-            <span className="mr-2 text-xl font-bold font-headline">دارو AI</span>
+            <span className="mr-2 text-xl font-bold font-headline">Avicenna (ابن سینا)</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">ورود به حساب کاربری</CardTitle>
           <CardDescription className="text-center">برای ادامه، ایمیل و رمز عبور خود را وارد کنید.</CardDescription>
@@ -73,7 +73,6 @@ export default function LoginPage() {
                 type="email"
                 placeholder="m@example.com"
                 required
-                className="neumorphic-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -90,13 +89,12 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 required
-                className="neumorphic-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
               {isLoading ? <Loader2 className="animate-spin" /> : 'ورود'}
             </Button>
           </form>

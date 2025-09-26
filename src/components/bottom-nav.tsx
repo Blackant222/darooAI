@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'داشبورد' },
-  { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه من' },
-  { href: '/dashboard/insights', icon: Bot, label: 'چت‌بات AI' },
+  { href: '/dashboard/pharmacy', icon: Pill, label: 'داروخانه' },
+  { href: '/dashboard/insights', icon: Bot, label: 'چت‌بات' },
   { href: '/dashboard/profile', icon: User, label: 'پروفایل' },
 ];
 
@@ -34,7 +34,7 @@ export function BottomNav() {
               <item.icon
                 className={cn(
                   'w-5 h-5 mb-1 transition-transform group-hover:scale-110',
-                   isActive ? 'text-primary' : 'text-gray-400'
+                   isActive ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
                 )}
               />
               <span className="text-xs">{item.label}</span>

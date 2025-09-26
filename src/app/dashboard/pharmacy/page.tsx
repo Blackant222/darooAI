@@ -51,7 +51,7 @@ export default function PharmacyPage() {
     }
 
   return (
-    <Card className="neumorphic-card">
+    <Card className="shadow-lg">
       <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <CardTitle>داروخانه من</CardTitle>
@@ -60,7 +60,7 @@ export default function PharmacyPage() {
           </CardDescription>
         </div>
         <ScanDrugDialog>
-          <Button className="neumorphic-button w-full md:w-auto">
+          <Button className="w-full md:w-auto">
             <PlusCircle className="ml-2 h-4 w-4" /> افزودن دارو
           </Button>
         </ScanDrugDialog>
@@ -116,7 +116,7 @@ export default function PharmacyPage() {
                                   <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" dir="rtl" className="neumorphic-card">
+                              <DropdownMenuContent align="end" dir="rtl">
                                 <DropdownMenuItem onClick={() => handleRemove(drug.id)} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                                   <Trash2 className="ml-2 h-4 w-4" />
                                   حذف

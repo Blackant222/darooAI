@@ -13,7 +13,7 @@ export default function AdminLayout({
         <Link href="/ash" className="flex items-center gap-2" prefetch={false}>
           <Pill className="h-6 w-6 text-primary" />
           <span className="text-lg font-bold font-headline">
-            ادمین دارو AI
+            ادمین Avicenna
           </span>
         </Link>
         <nav className="flex items-center gap-4">

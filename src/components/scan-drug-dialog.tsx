@@ -171,7 +171,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
         )}
       </div>
       <DialogFooter>
-        <Button onClick={handleScan} disabled={!file || isAiLoading} className="w-full neumorphic-button">
+        <Button onClick={handleScan} disabled={!file || isAiLoading} className="w-full">
           {isAiLoading ? (
             <>
               <Loader2 className="ml-2 animate-spin" /> در حال اسکن...
@@ -194,7 +194,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
       </DialogHeader>
       <div className="space-y-4 py-4 text-right">
         {result && (
-          <Card className='neumorphic-card-inset p-4'>
+          <Card className='bg-muted/50 p-4'>
             <CardContent className='p-0 space-y-4'>
                  <div className="flex items-center gap-3">
                     <Pill className='text-primary' />
@@ -227,7 +227,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
                     <div>
                         <p className='text-sm text-muted-foreground'>تگ ها</p>
                         <div className="flex flex-wrap gap-2 pt-1">
-                            {result.tags.map((tag, i) => <Badge key={i} variant='secondary' className='neumorphic-badge'>{tag}</Badge>)}
+                            {result.tags.map((tag, i) => <Badge key={i} variant='secondary'>{tag}</Badge>)}
                         </div>
                     </div>
                 </div>
@@ -253,7 +253,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
               <div className="grid gap-2">
                 <Label htmlFor="frequency">تکرار مصرف</Label>
                 <Select dir='rtl' onValueChange={setFrequency} value={frequency}>
-                    <SelectTrigger id="frequency" className="neumorphic-input">
+                    <SelectTrigger id="frequency">
                         <SelectValue placeholder="انتخاب کنید..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -266,16 +266,16 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="start-date">تاریخ شروع</Label>
-                <Input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="neumorphic-input" />
+                <Input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} />
               </div>
           </div>
         )}
       </div>
        <DialogFooter className='flex-row justify-between'>
-          <Button onClick={() => setStep(1)} variant='outline' className="neumorphic-button">
+          <Button onClick={() => setStep(1)} variant='outline'>
             <ArrowRight className="ml-2"/> بازگشت
           </Button>
-          <Button onClick={handleAddToPharmacy} disabled={!isTaking} className="neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button onClick={handleAddToPharmacy} disabled={!isTaking} className="bg-primary text-primary-foreground hover:bg-primary/90">
             <PlusCircle className="ml-2"/> افزودن به داروخانه
           </Button>
       </DialogFooter>
@@ -285,7 +285,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent dir="rtl" className="sm:max-w-md neumorphic-card">
+      <DialogContent dir="rtl" className="sm:max-w-md">
         {step === 1 && renderStepOne()}
         {step === 2 && renderStepTwo()}
       </DialogContent>

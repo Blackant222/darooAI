@@ -4,65 +4,65 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%; /* Light cream #F9F9F9 */
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 20% 98%; /* Light, slightly cool off-white */
+    --foreground: 210 10% 23%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 210 20% 98%;
+    --card-foreground: 210 10% 23%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 210 20% 98%;
+    --popover-foreground: 210 10% 23%;
 
-    --primary: 123 39% 41%; /* Soft green #3E8E41 */
-    --primary-foreground: 60 9.1% 97.8%;
+    --primary: 195 80% 30%; /* Deep Teal */
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 60 4.8% 95.9%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 10% 90%;
+    --secondary-foreground: 210 10% 23%;
 
-    --muted: 60 4.8% 95.9%;
+    --muted: 210 10% 90%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 18 100% 72%; /* Soft orange #FF9B70 */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 90% 60%; /* Warm Gold */
+    --accent-foreground: 45 90% 5%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 123 39% 41%;
+    --ring: 195 80% 30%;
 
-    --radius: 0.8rem;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 0% 7%; /* Darker tone #121212 */
-    --foreground: 0 0% 95%;
+    --background: 210 15% 12%; /* Very dark desaturated blue */
+    --foreground: 210 40% 98%;
 
-    --card: 180 13% 20%; /* Muted charcoal #2A3A3A */
-    --card-foreground: 0 0% 95%;
+    --card: 210 15% 16%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 180 13% 20%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 210 15% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 180 50% 54%; /* Pale teal #4EC4C4 */
-    --primary-foreground: 0 0% 7%;
+    --primary: 185 70% 55%; /* Luminous Teal */
+    --primary-foreground: 185 90% 5%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 210 15% 20%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 210 15% 20%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 287 28% 58%; /* Soft purple #A672B5 */
-    --accent-foreground: 0 0% 98%;
+    --accent: 40 80% 55%; /* Antique Gold */
+    --accent-foreground: 40 90% 5%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 180 50% 54%;
+    --border: 210 15% 25%;
+    --input: 210 15% 25%;
+    --ring: 185 70% 55%;
   }
 }
 
@@ -79,33 +79,7 @@
 }
 
 @layer components {
-  .neumorphic-light {
-    @apply shadow-[5px_5px_10px_#d1d1d1,-5px_-5px_10px_#ffffff] transition-all duration-200;
-  }
-  .neumorphic-light-inset {
-    @apply shadow-[inset_5px_5px_10px_#d1d1d1,inset_-5px_-5px_10px_#ffffff] transition-all duration-200;
-  }
-  .neumorphic-dark {
-    @apply shadow-[5px_5px_10px_#0c0c0c,-5px_-5px_10px_#181818] transition-all duration-200;
-  }
-  .neumorphic-dark-inset {
-    @apply shadow-[inset_5px_5px_10px_#0c0c0c,inset_-5px_-5px_10px_#181818] transition-all duration-200;
-  }
-  .neumorphic-card {
-    @apply bg-card dark:neumorphic-dark neumorphic-light border-0;
-  }
-    .neumorphic-card-inset {
-    @apply bg-card dark:neumorphic-dark-inset neumorphic-light-inset border-0;
-  }
-  .neumorphic-input {
-     @apply dark:neumorphic-dark-inset neumorphic-light-inset bg-transparent dark:bg-background border-0;
-  }
-  .neumorphic-button {
-    @apply neumorphic-card active:shadow-none active:scale-[0.98] border-0;
-  }
-  .neumorphic-badge {
-     @apply dark:neumorphic-dark neumorphic-light border-border;
-  }
+  /* Removing all neumorphic styles */
   .bg-grid-pattern {
     background-image:
       linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),

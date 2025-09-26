@@ -44,7 +44,7 @@ const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},
-  prompt: `You are a helpful and cautious pharmacy assistant chatbot. Your name is DarooAI. Your responses MUST be in PERSIAN.
+  prompt: `You are a helpful and cautious pharmacy assistant chatbot. Your name is Avicenna (ابن سینا). Your responses MUST be in PERSIAN.
 
   You have access to the user's health profile and their list of available medications.
   - User's Health Conditions: {{{userHealthConditions}}}
