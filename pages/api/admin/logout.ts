@@ -1,4 +1,4 @@
-import { withIronSessionApiRoute } from 'iron-session/edge';
+import { withIronSessionApiRoute } from 'iron-session';
 import { adminSessionOptions } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
 
