@@ -72,21 +72,18 @@ export default function SignupPage() {
         const user = userCredential.user;
 
         await updateProfile(user, { displayName: formData.fullName });
-
-        // Temporarily disable saving profile to Firestore to unblock signup.
-        // This can be re-enabled after Firestore is fully provisioned in the Firebase console.
         
-        // const userDocRef = doc(db, 'users', user.uid);
-        // await setDoc(userDocRef, {
-        //     fullName: formData.fullName,
-        //     email: formData.email,
-        //     healthConditions: formData.healthConditions,
-        //     allergies: formData.allergies,
-        //     healthGoals: formData.healthGoals,
-        //     activityLevel: formData.activityLevel,
-        //     smokingStatus: formData.smokingStatus,
-        //     createdAt: new Date().toISOString(),
-        // });
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            fullName: formData.fullName,
+            email: formData.email,
+            healthConditions: formData.healthConditions,
+            allergies: formData.allergies,
+            healthGoals: formData.healthGoals,
+            activityLevel: formData.activityLevel,
+            smokingStatus: formData.smokingStatus,
+            createdAt: new Date().toISOString(),
+        });
 
         router.push('/dashboard');
 

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,9 +16,86 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
+
+interface ProfileData {
+    fullName: string;
+    healthConditions: string;
+}
 
 export default function ProfilePage() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+  const [profileData, setProfileData] = useState<ProfileData>({
+    fullName: '',
+    healthConditions: '',
+  });
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    async function fetchProfileData() {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      const userDocRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(userDocRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setProfileData({
+            fullName: data.fullName || user.displayName || '',
+            healthConditions: (data.healthConditions || []).join(', '),
+        });
+      } else {
+        // Prefill with auth data if no profile doc exists
+         setProfileData({
+            fullName: user.displayName || '',
+            healthConditions: '',
+        });
+      }
+      setLoading(false);
+    }
+
+    fetchProfileData();
+  }, [user]);
+
+  const handleSaveChanges = async () => {
+    if (!user) return;
+
+    setIsSaving(true);
+    const userDocRef = doc(db, 'users', user.uid);
+    try {
+      // We merge to avoid overwriting other fields like email, createdAt etc.
+      await setDoc(userDocRef, {
+        fullName: profileData.fullName,
+        healthConditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
+      }, { merge: true });
+
+      toast({
+        title: "پروفایل به‌روزرسانی شد",
+        description: "تغییرات شما با موفقیت ذخیره شد.",
+      });
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+      toast({
+        variant: "destructive",
+        title: "خطا",
+        description: "ذخیره تغییرات ناموفق بود.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setProfileData(prev => ({...prev, [id]: value}));
+  }
 
   if (loading) {
     return (
@@ -51,8 +129,8 @@ export default function ProfilePage() {
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name">نام کامل</Label>
-            <Input id="name" placeholder="نام خود را وارد کنید" defaultValue={user.displayName || ""} className="neumorphic-input" />
+            <Label htmlFor="fullName">نام کامل</Label>
+            <Input id="fullName" placeholder="نام خود را وارد کنید" value={profileData.fullName} onChange={handleInputChange} className="neumorphic-input" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">ایمیل</Label>
@@ -67,19 +145,23 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="health-conditions">شرایط سلامتی</Label>
+          <Label htmlFor="healthConditions">شرایط سلامتی</Label>
           <Textarea
-            id="health-conditions"
+            id="healthConditions"
             placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
             className="neumorphic-input"
-            defaultValue="فشار خون بالا, دیابت نوع ۲"
+            value={profileData.healthConditions}
+            onChange={handleInputChange}
           />
            <p className="text-xs text-muted-foreground pt-1">
-              این اطلاعات به چت‌بات هوش مصنوعی کمک می‌کند تا توصیه‌های دقیق‌تری به شما ارائه دهد.
+              این اطلاعات به چت‌بات هوش مصنوعی کمک می‌کند تا توصیه‌های دقیق‌تری به شما ارائه دهد. شرایط را با کاما جدا کنید.
             </p>
         </div>
         <div className="flex justify-end">
-          <Button className="neumorphic-button">ذخیره تغییرات</Button>
+          <Button onClick={handleSaveChanges} disabled={isSaving} className="neumorphic-button">
+            {isSaving ? <Loader2 className='ml-2 animate-spin' /> : null}
+            ذخیره تغییرات
+          </Button>
         </div>
       </CardContent>
     </Card>
