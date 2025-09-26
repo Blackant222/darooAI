@@ -8,21 +8,23 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileUp, Lightbulb, Pill, Activity } from "lucide-react";
+import { FileUp, Lightbulb, Pill, Activity, Loader2 } from "lucide-react";
 import { ScanDrugDialog } from "@/components/scan-drug-dialog";
 import { useDrugContext } from "@/context/drug-context";
 import { formatDistanceToNow } from 'date-fns-jalali';
+import { useAuth } from "@/context/auth-context";
 
 export default function DashboardPage() {
-  const { drugs } = useDrugContext();
+  const { drugs, loading } = useDrugContext();
+  const { user } = useAuth();
 
-  const latestDrug = drugs.length > 0 ? drugs[drugs.length - 1] : null;
-  const drugDisplayName = latestDrug?.brandName || latestDrug?.activeIngredients.join(', ');
+  const latestDrug = drugs.length > 0 ? drugs.sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())[0] : null;
+  const drugDisplayName = latestDrug?.brandName || latestDrug?.activeIngredients.map(i => i.name).join(', ');
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold font-headline">خوش آمدید!</h1>
+        <h1 className="text-3xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
         <p className="text-muted-foreground">
           در اینجا یک نمای کلی از داروخانه شما آورده شده است.
         </p>
@@ -37,7 +39,7 @@ export default function DashboardPage() {
             <Pill className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{drugs.length}</div>
+            {loading ? <Loader2 className="h-6 w-6 animate-spin"/> : <div className="text-2xl font-bold">{drugs.length}</div>}
             <p className="text-xs text-muted-foreground">
               در داروخانه مجازی شما
             </p>
@@ -78,7 +80,12 @@ export default function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {drugs.length === 0 ? (
+          {loading ? (
+             <div className="flex justify-center items-center py-8">
+                <Loader2 className="ml-2 h-5 w-5 animate-spin" />
+                <span>در حال بارگذاری فعالیت‌ها...</span>
+            </div>
+          ) : drugs.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">
               فعالیت اخیری وجود ندارد.
             </p>

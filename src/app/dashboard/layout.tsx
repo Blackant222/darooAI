@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DrugProvider } from "@/context/drug-context";
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 function AppHeader() {
   return (
@@ -39,6 +42,24 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div dir="rtl" className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="mr-4">در حال بارگذاری اطلاعات کاربری...</p>
+      </div>
+    );
+  }
+
   return (
     <DrugProvider>
         <div dir="rtl" className="flex flex-col min-h-dvh">

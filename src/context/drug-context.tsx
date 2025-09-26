@@ -1,6 +1,9 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { db, auth } from '@/lib/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, query, where, onSnapshot } from 'firebase/firestore';
+import { useAuth } from './auth-context';
 
 export interface Ingredient {
     name: string;
@@ -21,51 +24,61 @@ export interface Drug {
 
 interface DrugContextType {
     drugs: Drug[];
-    addDrug: (drug: Drug) => void;
-    removeDrug: (id: string) => void;
+    addDrug: (drug: Omit<Drug, 'id' | 'addedAt'>) => Promise<void>;
+    removeDrug: (id: string) => Promise<void>;
+    loading: boolean;
 }
 
 const DrugContext = createContext<DrugContextType | undefined>(undefined);
 
 export function DrugProvider({ children }: { children: ReactNode }) {
     const [drugs, setDrugs] = useState<Drug[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
-    // Load from localStorage only on the client-side, after initial render
     useEffect(() => {
-        try {
-            const localData = localStorage.getItem('drugs');
-            if (localData) {
-                setDrugs(JSON.parse(localData));
-            }
-        } catch (error) {
-            console.error("Failed to parse drugs from localStorage", error);
-        } finally {
-            setIsLoaded(true);
+        if (!user) {
+            setDrugs([]);
+            setLoading(false);
+            return;
         }
-    }, []);
 
-    // Save to localStorage whenever drugs change, but only after initial load
-    useEffect(() => {
-        if (isLoaded) {
-            try {
-                localStorage.setItem('drugs', JSON.stringify(drugs));
-            } catch (error) {
-                console.error("Failed to save drugs to localStorage", error);
-            }
-        }
-    }, [drugs, isLoaded]);
+        setLoading(true);
+        const drugsCollectionRef = collection(db, 'users', user.uid, 'drugs');
+        
+        const unsubscribe = onSnapshot(drugsCollectionRef, (snapshot) => {
+            const drugsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            } as Drug));
+            setDrugs(drugsData);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching drugs:", error);
+            setLoading(false);
+        });
 
-    const addDrug = (drug: Drug) => {
-        setDrugs(prevDrugs => [...prevDrugs, drug]);
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [user]);
+
+    const addDrug = async (drug: Omit<Drug, 'id' | 'addedAt'>) => {
+        if (!user) throw new Error("User not authenticated");
+        const drugsCollectionRef = collection(db, 'users', user.uid, 'drugs');
+        await addDoc(drugsCollectionRef, {
+            ...drug,
+            addedAt: new Date().toISOString(),
+        });
     };
 
-    const removeDrug = (id: string) => {
-        setDrugs(prevDrugs => prevDrugs.filter(drug => drug.id !== id));
+    const removeDrug = async (id: string) => {
+        if (!user) throw new Error("User not authenticated");
+        const drugDocRef = doc(db, 'users', user.uid, 'drugs', id);
+        await deleteDoc(drugDocRef);
     };
 
     return (
-        <DrugContext.Provider value={{ drugs, addDrug, removeDrug }}>
+        <DrugContext.Provider value={{ drugs, addDrug, removeDrug, loading }}>
             {children}
         </DrugContext.Provider>
     );

@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pill, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Pill, ArrowRight, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -23,6 +24,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { MultiSelectChip } from '@/components/multi-select-chip';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { auth, db } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 
 
 const totalSteps = 4;
@@ -41,6 +46,10 @@ export default function SignupPage() {
       agreedToTerms: false,
       agreedToPrivacy: false,
   });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
 
   const handleChange = (field: string, value: any) => {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,6 +57,44 @@ export default function SignupPage() {
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
+  
+  const handleSignup = async () => {
+    if (!formData.agreedToTerms || !formData.agreedToPrivacy) {
+        setError("برای ادامه باید با شرایط و سیاست حفظ حریم خصوصی موافقت کنید.");
+        return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        const user = userCredential.user;
+
+        await updateProfile(user, { displayName: formData.fullName });
+
+        // Save profile data to Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            fullName: formData.fullName,
+            email: formData.email,
+            healthConditions: formData.healthConditions,
+            allergies: formData.allergies,
+            healthGoals: formData.healthGoals,
+            activityLevel: formData.activityLevel,
+            smokingStatus: formData.smokingStatus,
+            createdAt: new Date().toISOString(),
+        });
+
+        router.push('/dashboard');
+
+    } catch (err: any) {
+        setError(getFirebaseErrorMessage(err));
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
 
   return (
     <div
@@ -77,6 +124,12 @@ export default function SignupPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4 text-right">
+             {error && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             {step === 1 && <Step1 formData={formData} onChange={handleChange} />}
             {step === 2 && <Step2 formData={formData} onChange={handleChange} />}
             {step === 3 && <Step3 formData={formData} onChange={handleChange} />}
@@ -89,6 +142,7 @@ export default function SignupPage() {
                 variant="outline"
                 onClick={prevStep}
                 className="w-full neumorphic-button"
+                disabled={isLoading}
               >
                 <ArrowRight className="ml-2" />
                 قبلی
@@ -104,15 +158,11 @@ export default function SignupPage() {
               </Button>
             ) : (
               <Button
-                asChild
+                onClick={handleSignup}
                 className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                disabled={isLoading || !formData.agreedToTerms || !formData.agreedToPrivacy}
               >
-                <Link
-                  href="/dashboard"
-                  className="w-full h-full flex items-center justify-center"
-                >
-                  ایجاد حساب کاربری
-                </Link>
+                {isLoading ? <Loader2 className='animate-spin' /> : 'ایجاد حساب کاربری'}
               </Button>
             )}
           </div>
@@ -278,4 +328,17 @@ function Step4({ formData, onChange }: StepProps) {
       </div>
     </div>
   );
+}
+
+function getFirebaseErrorMessage(error: any): string {
+  switch (error.code) {
+    case 'auth/email-already-in-use':
+      return 'این ایمیل قبلاً ثبت‌نام کرده است.';
+    case 'auth/invalid-email':
+      return 'فرمت ایمیل نامعتبر است.';
+    case 'auth/weak-password':
+      return 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+    default:
+      return 'خطایی در هنگام ثبت‌نام رخ داد. لطفاً دوباره امتحان کنید.';
+  }
 }

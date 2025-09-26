@@ -16,7 +16,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
 import { Badge } from './ui/badge';
-import { useDrugContext, type Drug } from '@/context/drug-context';
+import { useDrugContext } from '@/context/drug-context';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -27,7 +27,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const [result, setResult] = useState<ScanAndCategorizeDrugOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState(1);
@@ -57,7 +57,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const resetState = () => {
     setFile(null);
     setPreview(null);
-    setIsLoading(false);
+    setIsAiLoading(false);
     setResult(null);
     setError(null);
     setStep(1);
@@ -77,7 +77,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const handleScan = async () => {
     if (!file) return;
 
-    setIsLoading(true);
+    setIsAiLoading(true);
     setError(null);
     setResult(null);
 
@@ -99,36 +99,43 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
           description: 'امکان تحلیل برچسب دارو وجود نداشت. لطفاً از تصویر واضح‌تری استفاده کنید.',
         });
       } finally {
-        setIsLoading(false);
+        setIsAiLoading(false);
       }
     };
     reader.onerror = (err) => {
       console.error("FileReader error:", err);
       setError('خواندن فایل ناموفق بود.');
-      setIsLoading(false);
+      setIsAiLoading(false);
     };
   };
   
-  const handleAddToPharmacy = () => {
+  const handleAddToPharmacy = async () => {
     if (!result) return;
     
-    let newDrug: Drug = {
-      id: Date.now().toString(),
-      addedAt: new Date().toISOString(),
-      ...result,
+    let newDrug = {
+      brandName: result.brandName,
+      activeIngredients: result.activeIngredients,
+      category: result.category,
+      tags: result.tags,
       isTaking: isTaking === 'yes',
+      ...(isTaking === 'yes' && { frequency, startDate }),
     };
 
-    if (isTaking === 'yes') {
-        newDrug = { ...newDrug, frequency, startDate };
+    try {
+        await addDrug(newDrug);
+        toast({
+          title: 'دارو اضافه شد',
+          description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه شما اضافه شد.`,
+        });
+        handleOpenChange(false);
+    } catch (error) {
+        console.error("Failed to add drug:", error)
+        toast({
+            variant: "destructive",
+            title: "خطا",
+            description: "افزودن دارو به داروخانه ناموفق بود."
+        })
     }
-
-    addDrug(newDrug);
-    toast({
-      title: 'دارو اضافه شد',
-      description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه مجازی شما اضافه شد.`,
-    });
-    handleOpenChange(false);
   };
 
   const renderStepOne = () => (
@@ -164,8 +171,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
         )}
       </div>
       <DialogFooter>
-        <Button onClick={handleScan} disabled={!file || isLoading} className="w-full neumorphic-button">
-          {isLoading ? (
+        <Button onClick={handleScan} disabled={!file || isAiLoading} className="w-full neumorphic-button">
+          {isAiLoading ? (
             <>
               <Loader2 className="ml-2 animate-spin" /> در حال اسکن...
             </>
