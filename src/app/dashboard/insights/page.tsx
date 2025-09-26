@@ -115,7 +115,7 @@ export default function ChatbotPage() {
   return (
     <div className="flex flex-col h-full pb-16">
         <CardHeader className="px-0 pt-0">
-            <CardTitle>چت‌بات هوشمند Avicenna</CardTitle>
+            <CardTitle>چت‌بات هوشمند ابن سینا</CardTitle>
             <CardDescription>
             سوالات خود در مورد سلامتی و داروها را بپرسید.
             </CardDescription>

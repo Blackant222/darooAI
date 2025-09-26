@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Pill, Loader2, Users, LogOut, Package, FileText } from "lucide-react";
+import { Loader2, Users, LogOut, Package, FileText } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -34,6 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns-jalali";
+import { IbnSinaLogo } from "@/components/ibn-sina-logo";
 
 interface Stats {
     users: number;
@@ -88,9 +89,9 @@ export function AdminDashboard() {
     <>
       <header className="flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
         <Link href="/ash" className="flex items-center gap-2" prefetch={false}>
-          <Pill className="h-6 w-6 text-primary" />
+          <IbnSinaLogo className="h-6 w-6 text-primary" />
           <span className="text-lg font-bold font-headline">
-            ادمین Avicenna
+            ادمین ابن سینا
           </span>
         </Link>
         <nav className="flex items-center gap-4">

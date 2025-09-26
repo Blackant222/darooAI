@@ -173,7 +173,7 @@ const blogPosts = [
     title: 'بهترین داروهای بدون نسخه برای سرماخوردگی',
     excerpt:
       'با شروع فصل سرما، شناخت بهترین و موثرترین داروهای بدون نسخه برای مقابله با علائم سرماخوردگی اهمیت پیدا می‌کند...',
-    author: 'تیم Avicenna',
+    author: 'تیم ابن سینا',
     date: '۱۴۰۳/۰۴/۱۰',
     image: 'https://picsum.photos/seed/blog1/600/400',
     imageHint: 'medicine pills',
@@ -193,7 +193,7 @@ const blogPosts = [
     title: 'نقش هوش مصنوعی در آینده مراقبت‌های بهداشتی',
     excerpt:
       'هوش مصنوعی در حال ایجاد انقلابی در صنعت بهداشت و درمان است. از تشخیص بیماری‌ها تا شخصی‌سازی درمان، با آینده پزشکی آشنا شوید.',
-    author: 'تیم Avicenna',
+    author: 'تیم ابن سینا',
     date: '۱۴۰۳/۰۴/۰۵',
     image: 'https://picsum.photos/seed/blog3/600/400',
     imageHint: 'AI healthcare',
@@ -207,7 +207,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/seed/person1/100/100',
     avatarHint: 'woman portrait',
     quote:
-      '"Avicenna زندگی من را متحول کرده است. مدیریت داروهای خانواده‌ام همیشه یک چالش بود، اما حالا با یک اسکن ساده همه چیز مرتب است. چت‌بات هوشمندش هم همیشه بهترین راهنمایی را می‌کند."',
+      '"ابن سینا زندگی من را متحول کرده است. مدیریت داروهای خانواده‌ام همیشه یک چالش بود، اما حالا با یک اسکن ساده همه چیز مرتب است. چت‌بات هوشمندش هم همیشه بهترین راهنمایی را می‌کند."',
   },
   {
     name: 'رضا قاسمی',
@@ -223,7 +223,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/seed/person3/100/100',
     avatarHint: 'elderly woman portrait',
     quote:
-      '"من همیشه نگران تداخل دارویی بودم. با Avicenna، لیستی از تمام داروهایم دارم و چت‌بات به من کمک می‌کند تا با اطمینان بیشتری از آن‌ها استفاده کنم. استفاده از آن هم بسیار آسان است."',
+      '"من همیشه نگران تداخل دارویی بودم. با ابن سینا، لیستی از تمام داروهایم دارم و چت‌بات به من کمک می‌کند تا با اطمینان بیشتری از آن‌ها استفاده کنم. استفاده از آن هم بسیار آسان است."',
   },
 ];
 
@@ -288,7 +288,7 @@ export default function LandingPage() {
                 </h1>
                 <p className="mx-auto max-w-[700px] text-foreground/80 md:text-xl">
                   داروهای خود را با قدرت هوش مصنوعی اسکن، ردیابی و درک کنید.
-                  Avicenna به شما کمک می‌کند تا سلامتی خود را با سهولت و اطمینان
+                  ابن سینا به شما کمک می‌کند تا سلامتی خود را با سهولت و اطمینان
                   مدیریت کنید.
                 </p>
               </div>
@@ -367,7 +367,7 @@ export default function LandingPage() {
                   فقط در سه مرحله ساده
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  ما فرایند مدیریت داروها را برای شما ساده کرده‌ایم. با Avicenna،
+                  ما فرایند مدیریت داروها را برای شما ساده کرده‌ایم. با ابن سینا،
                   سلامتی در دستان شماست.
                 </p>
               </div>
@@ -415,7 +415,7 @@ export default function LandingPage() {
                 کاربران ما چه می‌گویند؟
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                نگاهی به تجربیات افرادی که با Avicenna سلامتی خود را بهتر مدیریت
+                نگاهی به تجربیات افرادی که با ابن سینا سلامتی خود را بهتر مدیریت
                 می‌کنند.
               </p>
             </div>
@@ -458,7 +458,7 @@ export default function LandingPage() {
                 از بلاگ ما بخوانید
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                جدیدترین مقالات و نکات سلامتی از تیم متخصصین Avicenna.
+                جدیدترین مقالات و نکات سلامتی از تیم متخصصین ابن سینا.
               </p>
             </div>
             <div className="mx-auto mt-12 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -514,9 +514,9 @@ export default function LandingPage() {
             </div>
             <Accordion type="single" collapsible className="mt-12 w-full">
               <AccordionItem value="item-1" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
-                <AccordionTrigger>آیا Avicenna رایگان است؟</AccordionTrigger>
+                <AccordionTrigger>آیا ابن سینا رایگان است؟</AccordionTrigger>
                 <AccordionContent>
-                  بله، نسخه فعلی Avicenna با تمام ویژگی‌های اصلی شامل اسکن دارو،
+                  بله، نسخه فعلی ابن سینا با تمام ویژگی‌های اصلی شامل اسکن دارو،
                   مدیریت داروخانه و چت‌بات هوشمند کاملاً رایگان است.
                 </AccordionContent>
               </AccordionItem>
@@ -536,7 +536,7 @@ export default function LandingPage() {
                   آیا توصیه‌های چت‌بات جایگزین مشاوره پزشک است؟
                 </AccordionTrigger>
                 <AccordionContent>
-                  خیر. چت‌بات Avicenna یک ابزار کمکی هوشمند برای راهنمایی اولیه
+                  خیر. چت‌بات ابن سینا یک ابزار کمکی هوشمند برای راهنمایی اولیه
                   است و هرگز نباید جایگزین مشاوره با یک پزشک یا داروساز
                   متخصص شود. همیشه برای نگرانی‌های جدی پزشکی با یک متخصص مشورت
                   کنید.
@@ -608,7 +608,7 @@ export default function LandingPage() {
         </div>
         <div className="border-t py-6">
           <p className="text-center text-xs text-muted-foreground">
-            &copy; ۲۰۲۴ Avicenna. تمام حقوق محفوظ است.
+            &copy; ۲۰۲۴ ابن سینا. تمام حقوق محفوظ است.
           </p>
         </div>
       </footer>

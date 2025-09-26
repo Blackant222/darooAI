@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Pill, Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { auth } from '@/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAuth } from '@/context/auth-context';
+import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -52,8 +53,8 @@ export default function LoginPage() {
       <Card className="mx-auto max-w-sm w-full bg-secondary neumorphic-light dark:neumorphic-dark border-none">
         <CardHeader>
           <Link href="/" className="flex items-center justify-center mb-4" prefetch={false}>
-            <Pill className="h-8 w-8 text-primary" />
-            <span className="mr-2 text-xl font-bold font-headline">Avicenna (ابن سینا)</span>
+            <IbnSinaLogo className="h-8 w-8 text-primary" />
+            <span className="mr-2 text-xl font-bold font-headline">ابن سینا</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">ورود به حساب کاربری</CardTitle>
           <CardDescription className="text-center">برای ادامه، ایمیل و رمز عبور خود را وارد کنید.</CardDescription>

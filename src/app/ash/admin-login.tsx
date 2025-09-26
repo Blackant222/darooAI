@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Pill, Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAdminAuth } from '@/context/admin-auth-context';
+import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
 export function AdminLogin() {
   const { login } = useAdminAuth();
@@ -32,8 +33,8 @@ export function AdminLogin() {
       <Card className="mx-auto max-w-sm w-full bg-secondary neumorphic-light dark:neumorphic-dark border-none">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <Pill className="h-8 w-8 text-primary" />
-            <span className="mr-2 text-xl font-bold font-headline">پنل ادمین Avicenna</span>
+            <IbnSinaLogo className="h-8 w-8 text-primary" />
+            <span className="mr-2 text-xl font-bold font-headline">پنل ادمین ابن سینا</span>
           </div>
           <CardTitle className="text-2xl font-headline">ورود</CardTitle>
           <CardDescription>برای دسترسی به پنل ادمین وارد شوید.</CardDescription>

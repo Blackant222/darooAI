@@ -6,7 +6,7 @@ import { AuthProvider } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Avicenna - ابن سینا",
+  title: "ابن سینا - دستیار دارویی شما",
   description: "دستیار داروخانه شخصی شما",
 };
 

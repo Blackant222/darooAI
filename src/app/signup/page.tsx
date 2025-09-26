@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Pill, ArrowRight, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -28,6 +28,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { auth, db } from '@/firebase/client';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
+import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
 
 const totalSteps = 4;
@@ -108,8 +109,8 @@ export default function SignupPage() {
             className="flex items-center justify-center mb-4"
             prefetch={false}
           >
-            <Pill className="h-8 w-8 text-primary" />
-             <span className="mr-2 text-xl font-bold font-headline">Avicenna (ابن سینا)</span>
+            <IbnSinaLogo className="h-8 w-8 text-primary" />
+             <span className="mr-2 text-xl font-bold font-headline">ابن سینا</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
             {step === totalSteps ? 'تکمیل ثبت‌نام' : 'ایجاد پروفایل سلامتی'}
