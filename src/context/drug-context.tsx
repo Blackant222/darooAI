@@ -1,8 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { db, auth } from '@/lib/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { useAuth } from './auth-context';
 
 export interface Ingredient {
@@ -51,6 +51,8 @@ export function DrugProvider({ children }: { children: ReactNode }) {
                 id: doc.id,
                 ...doc.data(),
             } as Drug));
+            // Sort by addedAt descending
+            drugsData.sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
             setDrugs(drugsData);
             setLoading(false);
         }, (error) => {

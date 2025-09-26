@@ -17,11 +17,18 @@ import { useDrugContext } from '@/context/drug-context';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/auth-context';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
+
+interface ProfileData {
+    healthConditions: string[];
+}
+
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -29,12 +36,11 @@ export default function ChatbotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { drugs } = useDrugContext();
-  const { user } = useAuth(); // Get user from auth context
-  const [profile, setProfile] = useState<{healthConditions: string}>({healthConditions: ''});
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<ProfileData>({healthConditions: []});
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // Get health conditions from user profile once available
-  const userHealthConditions = profile.healthConditions || "اطلاعاتی ثبت نشده";
+  const userHealthConditions = (profile.healthConditions || []).join(', ') || "اطلاعاتی ثبت نشده";
   const userMedications = drugs.map(d => ({ 
       brandName: d.brandName, 
       activeIngredients: d.activeIngredients.map(i => ({ name: i.name, dosage: i.dosage })) 
@@ -43,9 +49,13 @@ export default function ChatbotPage() {
   useEffect(() => {
     async function fetchProfile() {
         if (user) {
-            const storedProfile = localStorage.getItem(`profile_${user.uid}`);
-            if (storedProfile) {
-                setProfile(JSON.parse(storedProfile));
+            const userDocRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(userDocRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                setProfile({
+                    healthConditions: data.healthConditions || [],
+                });
             }
         }
     }
@@ -103,7 +113,7 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-16">
         <CardHeader className="px-0 pt-0">
             <CardTitle>چت‌بات هوشمند Avicenna</CardTitle>
             <CardDescription>

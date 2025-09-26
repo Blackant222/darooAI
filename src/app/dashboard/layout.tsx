@@ -1,13 +1,14 @@
-"use client";
-import React from "react";
-import { Logo } from "@/components/logo";
-import { UserNav } from "@/components/user-nav";
-import { BottomNav } from "@/components/bottom-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { DrugProvider } from "@/context/drug-context";
-import { useAuth } from "@/context/auth-context";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+'use client';
+import React from 'react';
+import { Logo } from '@/components/logo';
+import { UserNav } from '@/components/user-nav';
+import { BottomNav } from '@/components/bottom-nav';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { DrugProvider } from '@/context/drug-context';
+import { useAuth } from '@/context/auth-context';
+import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+import { AuthProvider } from '@/context/auth-context';
 
 function AppHeader() {
   return (
@@ -24,7 +25,7 @@ function AppHeader() {
   );
 }
 
-export default function DashboardLayout({
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -56,4 +57,17 @@ export default function DashboardLayout({
         </div>
     </DrugProvider>
   );
+}
+
+
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <AuthProvider>
+            <DashboardLayoutContent>{children}</DashboardLayoutContent>
+        </AuthProvider>
+    )
 }

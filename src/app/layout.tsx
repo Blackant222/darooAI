@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="fa" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap"
           rel="stylesheet"
@@ -26,10 +26,8 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <ThemeProvider>
-          <AuthProvider>
             {children}
             <Toaster />
-          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
