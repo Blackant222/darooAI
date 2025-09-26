@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +8,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { type Drug } from '@/context/drug-context';
+import { type Drug, useDrugContext } from '@/context/drug-context';
 import { Badge } from './ui/badge';
-import { Pill, List, Tag, FileText, AlertTriangle, Sparkles, Beaker } from 'lucide-react';
+import { Pill, List, Tag, FileText, AlertTriangle, Sparkles, Beaker, GitCompareArrows, Clock, GlassWater, Loader2 } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { getDrugInteraction, type GetDrugInteractionOutput } from '@/ai/flows/get-drug-interaction';
 
 interface DrugDetailDialogProps {
   drug: Drug;
@@ -20,6 +22,38 @@ interface DrugDetailDialogProps {
 
 export function DrugDetailDialog({ drug, open, onOpenChange }: DrugDetailDialogProps) {
   
+  const { drugs } = useDrugContext();
+  const [interactionResult, setInteractionResult] = useState<GetDrugInteractionOutput | null>(null);
+  const [isLoadingInteraction, setIsLoadingInteraction] = useState(false);
+
+  useEffect(() => {
+    if (open && drug) {
+      const fetchInteractions = async () => {
+        setIsLoadingInteraction(true);
+        setInteractionResult(null);
+        try {
+          const otherDrugNames = drugs
+            .filter(d => d.id !== drug.id)
+            .map(d => d.brandName || d.activeIngredients.map(i => i.name).join(', '));
+          
+          const result = await getDrugInteraction({
+            drugName: drug.brandName || drug.activeIngredients.map(i => i.name).join(', '),
+            userDrugs: otherDrugNames,
+          });
+          setInteractionResult(result);
+        } catch (error) {
+          console.error("Failed to fetch drug interactions:", error);
+          // Optionally set an error state to show in the UI
+        } finally {
+          setIsLoadingInteraction(false);
+        }
+      };
+      
+      fetchInteractions();
+    }
+  }, [open, drug, drugs]);
+
+
   const drugDisplayName = drug.brandName || drug.activeIngredients.map(ing => ing.name).join(', ');
 
   return (
@@ -59,7 +93,34 @@ export function DrugDetailDialog({ drug, open, onOpenChange }: DrugDetailDialogP
                     <Sparkles className="h-5 w-5" />
                     تحلیل هوش مصنوعی
                 </h3>
-                
+                 {isLoadingInteraction ? (
+                    <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>در حال بررسی تداخلات دارویی...</span>
+                    </div>
+                 ) : interactionResult ? (
+                    <>
+                        <InfoItem icon={GitCompareArrows} label="تداخل با داروهای شما">
+                            <p className="text-foreground leading-relaxed">{interactionResult.interactionsWithUserDrugs}</p>
+                        </InfoItem>
+                         <InfoItem icon={GlassWater} label="تداخلات عمومی">
+                            <p className="text-foreground leading-relaxed">{interactionResult.generalInteractions}</p>
+                        </InfoItem>
+                         <InfoItem icon={Clock} label="نحوه مصرف">
+                            <p className="text-foreground leading-relaxed">{interactionResult.usageAdvice}</p>
+                        </InfoItem>
+                    </>
+                 ) : (
+                    <div className="flex items-center justify-center gap-2 text-destructive text-sm">
+                        <AlertTriangle className="h-4 w-4"/>
+                        <span>اطلاعات تداخل دارویی بارگذاری نشد.</span>
+                    </div>
+                 )}
+            </div>
+
+            <Separator />
+            
+            <div className="space-y-4">
                 <InfoItem icon={FileText} label="خلاصه کاربرد">
                     <p className="text-foreground leading-relaxed">{drug.summary || 'خلاصه‌ای یافت نشد.'}</p>
                 </InfoItem>
