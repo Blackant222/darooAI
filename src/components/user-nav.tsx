@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
+import { LifeBuoy, LogOut, Settings, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export function UserNav() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push('/');
+    router.push('/login');
   };
   
   if (!user) {
@@ -56,12 +57,23 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/profile">پروفایل</Link>
+            <Link href="/dashboard/profile">
+                <UserIcon className="ml-2" />
+                پروفایل
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>تنظیمات</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="ml-2" />
+            تنظیمات
+          </DropdownMenuItem>
+           <DropdownMenuItem>
+            <LifeBuoy className="ml-2" />
+            پشتیبانی
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="ml-2" />
           خروج
         </DropdownMenuItem>
       </DropdownMenuContent>

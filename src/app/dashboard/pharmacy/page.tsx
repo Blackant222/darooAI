@@ -52,7 +52,7 @@ export default function PharmacyPage() {
 
   return (
     <Card className="neumorphic-card">
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <CardTitle>داروخانه من</CardTitle>
           <CardDescription>
@@ -60,7 +60,7 @@ export default function PharmacyPage() {
           </CardDescription>
         </div>
         <ScanDrugDialog>
-          <Button className="neumorphic-button">
+          <Button className="neumorphic-button w-full md:w-auto">
             <PlusCircle className="ml-2 h-4 w-4" /> افزودن دارو
           </Button>
         </ScanDrugDialog>
@@ -71,8 +71,8 @@ export default function PharmacyPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>نام دارو</TableHead>
-                <TableHead>دسته بندی</TableHead>
-                <TableHead>زمان افزودن</TableHead>
+                <TableHead className="hidden md:table-cell">دسته بندی</TableHead>
+                <TableHead className="hidden md:table-cell">زمان افزودن</TableHead>
                 <TableHead className="text-left">اقدامات</TableHead>
               </TableRow>
             </TableHeader>
@@ -98,15 +98,16 @@ export default function PharmacyPage() {
                         <TableCell className="font-medium">
                             <div>
                                 <p className="font-bold">{drug.brandName || drug.activeIngredients.map(i => i.name).join(', ')}</p>
-                                <p className="text-xs text-muted-foreground">
-                                    {drug.activeIngredients.map(i => `${i.name} ${i.dosage || ''}`).join(', ')}
-                                </p>
+                                <div className="text-xs text-muted-foreground md:hidden mt-1 space-y-1">
+                                    <p><Badge variant="outline" className="ml-1">{drug.category}</Badge></p>
+                                    <p>{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</p>
+                                </div>
                             </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden md:table-cell">
                             <Badge variant="outline">{drug.category}</Badge>
                         </TableCell>
-                        <TableCell>{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</TableCell>
+                        <TableCell className="hidden md:table-cell">{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</TableCell>
                         <TableCell className="text-left">
                            <DropdownMenu>
                               <DropdownMenuTrigger asChild>
