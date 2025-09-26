@@ -52,8 +52,12 @@ const prompt = ai.definePrompt({
 
   Conversation History:
   {{#each chatHistory}}
-  {{#if (this.role == 'user')}}User: {{this.content}}{{/if}}
-  {{#if (this.role == 'assistant')}}Assistant: {{this.content}}{{/if}}
+    {{#if (eq this.role 'user')}}
+      User: {{this.content}}
+    {{/if}}
+    {{#if (eq this.role 'assistant')}}
+      Assistant: {{this.content}}
+    {{/if}}
   {{/each}}
   
   User's latest message: "{{{currentQuery}}}"
