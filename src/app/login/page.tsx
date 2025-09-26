@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <div dir="rtl" className="flex items-center justify-center min-h-dvh bg-background">
-      <Card className="mx-auto max-w-sm w-full shadow-xl border-t-4 border-primary">
+      <Card className="mx-auto max-w-sm w-full bg-secondary neumorphic-light dark:neumorphic-dark border-none">
         <CardHeader>
           <Link href="/" className="flex items-center justify-center mb-4" prefetch={false}>
             <Pill className="h-8 w-8 text-primary" />
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? <Loader2 className="animate-spin" /> : 'ورود'}
             </Button>
           </form>

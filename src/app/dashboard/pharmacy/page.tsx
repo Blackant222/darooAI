@@ -51,7 +51,7 @@ export default function PharmacyPage() {
     }
 
   return (
-    <Card className="shadow-lg">
+    <Card className="bg-secondary">
       <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <CardTitle>داروخانه من</CardTitle>
@@ -66,7 +66,7 @@ export default function PharmacyPage() {
         </ScanDrugDialog>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-xl border neumorphic-light dark:neumorphic-dark">
           <Table>
             <TableHeader>
               <TableRow>

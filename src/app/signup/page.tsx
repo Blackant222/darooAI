@@ -100,7 +100,7 @@ export default function SignupPage() {
       dir="rtl"
       className="flex items-center justify-center min-h-dvh py-12 bg-background"
     >
-      <Card className="mx-auto max-w-md w-full shadow-xl border-t-4 border-primary">
+      <Card className="mx-auto max-w-md w-full bg-secondary neumorphic-light dark:neumorphic-dark border-none">
         <CardHeader>
           <Link
             href="/"
@@ -150,7 +150,7 @@ export default function SignupPage() {
             {step < totalSteps ? (
               <Button
                 onClick={nextStep}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full"
               >
                 بعدی
                 <ArrowLeft className="mr-2" />
@@ -158,7 +158,7 @@ export default function SignupPage() {
             ) : (
               <Button
                 onClick={handleSignup}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full"
                 disabled={isLoading || !formData.agreedToTerms || !formData.agreedToPrivacy}
               >
                 {isLoading ? <Loader2 className='animate-spin' /> : 'ایجاد حساب کاربری'}
@@ -264,7 +264,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="activity-level">سطح فعالیت</Label>
           <Select value={formData.activityLevel} onValueChange={(value) => onChange('activityLevel', value)}>
-            <SelectTrigger id="activity-level">
+            <SelectTrigger id="activity-level" className="neumorphic-light dark:neumorphic-dark bg-background border-none">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>
@@ -277,7 +277,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="smoking">مصرف سیگار</Label>
           <Select value={formData.smokingStatus} onValueChange={(value) => onChange('smokingStatus', value)}>
-            <SelectTrigger id="smoking">
+            <SelectTrigger id="smoking" className="neumorphic-light dark:neumorphic-dark bg-background border-none">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>

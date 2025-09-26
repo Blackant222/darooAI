@@ -17,9 +17,7 @@ function AppHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden sm:block">
-            <ThemeToggle />
-        </div>
+        <ThemeToggle />
         <UserNav />
       </div>
     </header>
@@ -51,7 +49,7 @@ export default function DashboardLayout({
 
   return (
     <DrugProvider>
-        <div dir="rtl" className="flex flex-col min-h-dvh">
+        <div dir="rtl" className="flex flex-col min-h-dvh bg-background">
             <AppHeader />
             <main className="flex-1 p-4 pb-24 md:p-8">{children}</main>
             <BottomNav />

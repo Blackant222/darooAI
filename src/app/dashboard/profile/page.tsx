@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -110,7 +109,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <Card className="shadow-lg">
+    <Card className="bg-secondary">
       <CardHeader>
         <CardTitle>پروفایل من</CardTitle>
         <CardDescription>
@@ -119,7 +118,7 @@ export default function ProfilePage() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-4 space-x-reverse">
-          <Avatar className="h-20 w-20 border p-1">
+          <Avatar className="h-20 w-20 border-2 border-primary/50 p-1">
             <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
             <AvatarFallback>{user.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
@@ -140,6 +139,7 @@ export default function ProfilePage() {
               placeholder="user@example.com"
               defaultValue={user.email || ""}
               disabled
+              className="disabled:opacity-75"
             />
           </div>
         </div>
@@ -150,6 +150,7 @@ export default function ProfilePage() {
             placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
             value={profileData.healthConditions}
             onChange={handleInputChange}
+            className="neumorphic-light dark:neumorphic-dark bg-background border-none min-h-[120px]"
           />
            <p className="text-xs text-muted-foreground pt-1">
               این اطلاعات به چت‌بات هوش مصنوعی کمک می‌کند تا توصیه‌های دقیق‌تری به شما ارائه دهد. شرایط را با کاما جدا کنید.

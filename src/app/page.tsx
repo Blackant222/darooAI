@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle, ChevronDown, Feather } from 'lucide-react';
+import { ArrowRight, ChevronDown, Feather } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -270,7 +270,6 @@ export default function LandingPage() {
             </Button>
             <Button
               asChild
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Link href="/signup">رایگان شروع کنید</Link>
             </Button>
@@ -284,7 +283,7 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-6 text-center">
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline bg-clip-text text-transparent primary-gradient">
                   دستیار دارویی هوشمند شما
                 </h1>
                 <p className="mx-auto max-w-[700px] text-foreground/80 md:text-xl">
@@ -297,7 +296,7 @@ export default function LandingPage() {
                 <Button
                   asChild
                   size="lg"
-                  className="group bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="group"
                 >
                   <Link href="/signup">
                     شروع رایگان
@@ -308,7 +307,7 @@ export default function LandingPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="group bg-background hover:bg-accent/10"
+                  className="group"
                 >
                   <Link href="#how-it-works">
                     بیشتر بدانید
@@ -318,7 +317,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="relative mt-16 flex justify-center">
-              <div className="border shadow-2xl rounded-xl p-2 w-full max-w-4xl bg-card">
+              <div className="border shadow-2xl rounded-2xl p-2 w-full max-w-4xl bg-card">
                 <Image
                   src="https://picsum.photos/seed/dashboard-dark/1200/675"
                   data-ai-hint="app dark dashboard"
@@ -337,7 +336,7 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="mx-auto grid max-w-5xl items-center gap-6 lg:grid-cols-3 lg:gap-12">
               {features.map((feature, index) => (
-                <div key={index} className="flex flex-col items-center text-center">
+                <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl glass-light dark:glass-dark">
                   <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                     {feature.icon}
                   </div>
@@ -424,7 +423,7 @@ export default function LandingPage() {
               {testimonials.map((testimonial, index) => (
                 <div
                   key={index}
-                  className="border bg-card flex flex-col justify-between rounded-lg p-6 shadow-md"
+                  className="bg-secondary flex flex-col justify-between rounded-2xl p-6 neumorphic-light dark:neumorphic-dark"
                 >
                   <p className="text-sm text-foreground/80">
                     {testimonial.quote}
@@ -469,7 +468,7 @@ export default function LandingPage() {
                   href={`/blog/${post.slug}`}
                   className="group"
                 >
-                  <div className="overflow-hidden rounded-lg bg-card border shadow-md h-full flex flex-col">
+                  <div className="overflow-hidden rounded-2xl bg-secondary neumorphic-light dark:neumorphic-dark h-full flex flex-col">
                     <Image
                       src={post.image}
                       data-ai-hint={post.imageHint}
@@ -514,14 +513,14 @@ export default function LandingPage() {
               </p>
             </div>
             <Accordion type="single" collapsible className="mt-12 w-full">
-              <AccordionItem value="item-1" className="bg-card border shadow-sm mb-4 rounded-lg px-4">
+              <AccordionItem value="item-1" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>آیا Avicenna رایگان است؟</AccordionTrigger>
                 <AccordionContent>
                   بله، نسخه فعلی Avicenna با تمام ویژگی‌های اصلی شامل اسکن دارو،
                   مدیریت داروخانه و چت‌بات هوشمند کاملاً رایگان است.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-2" className="bg-card border shadow-sm mb-4 rounded-lg px-4">
+              <AccordionItem value="item-2" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   اطلاعات پزشکی من چگونه استفاده می‌شود؟
                 </AccordionTrigger>
@@ -532,7 +531,7 @@ export default function LandingPage() {
                   ثالثی به اشتراک گذاشته نمی‌شود.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-3" className="bg-card border shadow-sm mb-4 rounded-lg px-4">
+              <AccordionItem value="item-3" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   آیا توصیه‌های چت‌بات جایگزین مشاوره پزشک است؟
                 </AccordionTrigger>
@@ -543,7 +542,7 @@ export default function LandingPage() {
                   کنید.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-4" className="bg-card border shadow-sm mb-4 rounded-lg px-4">
+              <AccordionItem value="item-4" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   چه نوع داروهایی را می‌توانم اسکن کنم؟
                 </AccordionTrigger>
@@ -571,7 +570,7 @@ export default function LandingPage() {
             <Button
               asChild
               size="lg"
-              className="group bg-primary text-primary-foreground hover:bg-primary/90 mt-4"
+              className="group mt-4"
             >
               <Link href="/signup">
                 همین حالا شروع کنید
@@ -583,7 +582,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-background border-t">
+      <footer className="bg-secondary border-t">
         <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-4 py-12 md:px-6">
           <div className="grid gap-2">
             <Logo collapsed={false} />

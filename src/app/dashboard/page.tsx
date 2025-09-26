@@ -31,7 +31,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="shadow-lg">
+        <Card className="bg-secondary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               تعداد کل داروها
@@ -45,7 +45,7 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-lg">
+        <Card className="bg-secondary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">بینش هوش مصنوعی</CardTitle>
             <Lightbulb className="h-4 w-4 text-muted-foreground" />
@@ -57,7 +57,7 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-lg col-span-full lg:col-span-1 flex flex-col justify-center items-center p-6">
+        <Card className="bg-secondary col-span-full lg:col-span-1 flex flex-col justify-center items-center p-6">
           <CardTitle className="text-lg font-semibold mb-2">
             افزودن داروی جدید
           </CardTitle>
@@ -65,14 +65,14 @@ export default function DashboardPage() {
             برای شروع، برچسب دارو را اسکن کنید.
           </CardDescription>
           <ScanDrugDialog>
-            <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button className="w-full">
               <FileUp className="ml-2 h-4 w-4" /> اسکن کن
             </Button>
           </ScanDrugDialog>
         </Card>
       </div>
 
-      <Card className="shadow-lg">
+      <Card className="bg-secondary">
         <CardHeader>
           <CardTitle>فعالیت اخیر</CardTitle>
           <CardDescription>
