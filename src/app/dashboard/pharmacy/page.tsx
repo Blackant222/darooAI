@@ -105,7 +105,7 @@ export default function PharmacyPage() {
                                   <p className="font-bold">{drug.brandName || drug.activeIngredients.map(i => i.name).join(', ')}</p>
                               </button>
                               <div className="text-xs text-muted-foreground md:hidden mt-1 space-y-1">
-                                  <p><Badge variant="outline" className="ml-1">{drug.category}</Badge></p>
+                                  <div><Badge variant="outline" className="ml-1">{drug.category}</Badge></div>
                                   <p>{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</p>
                               </div>
                           </TableCell>
