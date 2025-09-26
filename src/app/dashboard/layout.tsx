@@ -55,7 +55,7 @@ function DashboardLayoutContent({
       <OnboardingProvider>
         <div dir="rtl" className="flex flex-col min-h-dvh bg-background">
             <AppHeader />
-            <main id="main-content" className="flex-1 p-4 pb-24 md:p-8">{children}</main>
+            <main id="main-content" className="flex-1 p-4 pb-28 md:p-8">{children}</main>
             <OnboardingWizard />
         </div>
       </OnboardingProvider>
