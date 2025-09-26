@@ -53,7 +53,7 @@ export default function DashboardLayout({
     <DrugProvider>
         <div dir="rtl" className="flex flex-col min-h-dvh">
             <AppHeader />
-            <main className="flex-1 p-4 pb-24 md:pb-8 md:p-8">{children}</main>
+            <main className="flex-1 p-4 pb-24 md:p-8">{children}</main>
             <BottomNav />
         </div>
     </DrugProvider>
