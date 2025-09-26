@@ -87,7 +87,7 @@ const scanAndCategorizeDrugPrompt = ai.definePrompt({
     name: 'scanAndCategorizeDrugPrompt',
     tools: [searchForDrugInfo],
     input: { schema: ScanAndCategorizeDrugInputSchema },
-    output: { schema: Omit<ScanAndCategorizeDrugOutput, 'summary' | 'sideEffects'> },
+    output: { schema: ScanAndCategorizeDrugOutputSchema.omit({ summary: true, sideEffects: true }) },
     prompt: `You are an expert pharmacist with OCR capabilities. Your task is to analyze the provided image of a medicine or supplement package with absolute precision and provide the output in Persian.
 
 Your process must be as follows:
