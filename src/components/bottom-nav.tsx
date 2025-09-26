@@ -16,8 +16,8 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 w-full h-16 border-t bg-background/95 backdrop-blur-sm md:hidden">
-      <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+    <div className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[90vw] max-w-md z-50">
+      <div className="h-16 w-full rounded-full border bg-background/80 backdrop-blur-sm shadow-lg flex items-center justify-around">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -25,10 +25,9 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                'inline-flex flex-col items-center justify-center px-5 hover:bg-muted/50 group',
-                isActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground'
+                'flex flex-col items-center justify-center text-muted-foreground w-16 h-16 rounded-full transition-all duration-300',
+                'hover:text-primary',
+                { 'text-primary bg-primary/10': isActive }
               )}
             >
               <item.icon
@@ -36,7 +35,7 @@ export function BottomNav() {
                   'w-6 h-6 mb-1 transition-transform group-hover:scale-110'
                 )}
               />
-              <span className="text-xs">{item.label}</span>
+              <span className="text-xs font-medium">{item.label}</span>
             </Link>
           );
         })}
