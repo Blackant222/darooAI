@@ -14,13 +14,12 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 function AppHeader() {
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 md:px-6 sticky top-0 z-30">
+    <header className="flex h-20 items-center justify-between px-4 md:px-8 sticky top-0 z-30">
       <div className="flex items-center gap-4">
         <Logo collapsed={false} />
       </div>
 
       <div className="flex items-center gap-2">
-        <ThemeToggle />
         <UserNav />
       </div>
     </header>
@@ -44,7 +43,7 @@ function DashboardLayoutContent({
   if (loading || !user) {
     return (
       <div dir="rtl" className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin primary-gradient-text" />
         <p className="mr-4">در حال بارگذاری اطلاعات کاربری...</p>
       </div>
     );
@@ -53,9 +52,9 @@ function DashboardLayoutContent({
   return (
     <DrugProvider>
       <OnboardingProvider>
-        <div dir="rtl" className="flex flex-col min-h-dvh bg-background">
+        <div dir="rtl" className="flex flex-col min-h-dvh">
             <AppHeader />
-            <main id="main-content" className="flex-1 p-4 pb-28 md:p-8">{children}</main>
+            <main id="main-content" className="flex-1 p-4 pb-40 md:p-8">{children}</main>
             <OnboardingWizard />
         </div>
       </OnboardingProvider>

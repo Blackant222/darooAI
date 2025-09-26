@@ -59,8 +59,8 @@ const config = {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
       },
       keyframes: {
         "accordion-down": {
@@ -71,25 +71,44 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        blob: {
+          "0%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+          "33%": {
+            transform: "translate(30px, -50px) scale(1.1)",
+          },
+          "66%": {
+            transform: "translate(-20px, 20px) scale(0.9)",
+          },
+          "100%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "blob": "blob 7s infinite",
       },
       space: {
         'x-reverse': 'space-x-reverse',
       },
-      boxShadow: {
-        'nav-light': '0px -2px 24px rgba(0, 0, 0, 0.08)',
-        'nav-dark': '0px -2px 32px rgba(0, 0, 0, 0.24)',
-        'nav-active-glow': '0px 4px 12px hsla(var(--primary), 0.36)',
-      },
-      backgroundImage: {
-        'nav-active-gradient': 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)',
-      }
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function({ addUtilities }) {
+        addUtilities({
+            '.animation-delay-2000': {
+                'animation-delay': '2s',
+            },
+            '.animation-delay-4000': {
+                'animation-delay': '4s',
+            },
+        })
+    }
+  ],
 } satisfies Config;
 
 export default config;

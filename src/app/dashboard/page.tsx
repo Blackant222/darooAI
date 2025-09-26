@@ -23,56 +23,54 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
-        <p className="text-muted-foreground text-sm">
+        <h1 className="text-3xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
+        <p className="text-muted-foreground text-base">
           در اینجا یک نمای کلی از داروخانه شما آورده شده است.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="bg-secondary">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <div className="glass-card p-6">
+          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 className="text-sm font-semibold text-foreground/80">
               تعداد کل داروها
-            </CardTitle>
-            <Pill className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {loading ? <Loader2 className="h-6 w-6 animate-spin"/> : <div className="text-2xl font-bold">{drugs.length}</div>}
+            </h3>
+            <Pill className="h-5 w-5 text-foreground/60" />
+          </div>
+          <div>
+            {loading ? <Loader2 className="h-8 w-8 animate-spin primary-gradient-text"/> : <div className="text-4xl font-bold">{drugs.length}</div>}
             <p className="text-xs text-muted-foreground">
               در داروخانه مجازی شما
             </p>
-          </CardContent>
-        </Card>
-        <Card className="bg-secondary">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">بینش هوش مصنوعی</CardTitle>
-            <Lightbulb className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">۰</div>
+          </div>
+        </div>
+        <div className="glass-card p-6">
+          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 className="text-sm font-semibold text-foreground/80">بینش هوش مصنوعی</h3>
+            <Lightbulb className="h-5 w-5 text-foreground/60" />
+          </div>
+          <div>
+            <div className="text-4xl font-bold">۰</div>
             <p className="text-xs text-muted-foreground">
               توصیه جدید در دسترس است
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
       
       <ScanDrugDialog>
-        <Button size="lg" className="w-full">
-            <FileUp className="ml-2 h-5 w-5" /> افزودن داروی جدید
+        <Button size="lg" className="w-full primary-gradient-bg text-lg h-14 rounded-2xl">
+            <FileUp className="ml-2 h-6 w-6" /> افزودن داروی جدید
         </Button>
       </ScanDrugDialog>
 
 
-      <Card className="bg-secondary">
-        <CardHeader>
-          <CardTitle>فعالیت اخیر</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="glass-card p-6">
+        <h3 className="font-semibold text-lg mb-4">فعالیت اخیر</h3>
+        <div>
           {loading ? (
              <div className="flex justify-center items-center py-8">
-                <Loader2 className="ml-2 h-5 w-5 animate-spin" />
+                <Loader2 className="ml-2 h-5 w-5 animate-spin primary-gradient-text" />
                 <span>در حال بارگذاری فعالیت‌ها...</span>
             </div>
           ) : drugs.length === 0 ? (
@@ -85,8 +83,8 @@ export default function DashboardPage() {
             <div className="space-y-4">
               {latestDrug && (
                  <div className="flex items-center">
-                    <div className="p-2 bg-primary/10 rounded-full">
-                        <Activity className="h-5 w-5 text-primary" />
+                    <div className="p-3 bg-blue-500/10 rounded-full">
+                        <Activity className="h-5 w-5 text-blue-500" />
                     </div>
                     <div className="flex-grow mr-4">
                       <p className="font-medium">
@@ -100,8 +98,8 @@ export default function DashboardPage() {
               )}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
