@@ -56,7 +56,6 @@ function DashboardLayoutContent({
         <div dir="rtl" className="flex flex-col min-h-dvh bg-background">
             <AppHeader />
             <main id="main-content" className="flex-1 p-4 pb-24 md:p-8">{children}</main>
-            <BottomNav />
             <OnboardingWizard />
         </div>
       </OnboardingProvider>
@@ -73,6 +72,7 @@ export default function DashboardLayout({
     return (
         <AuthProvider>
             <DashboardLayoutContent>{children}</DashboardLayoutContent>
+            <BottomNav />
         </AuthProvider>
     )
 }
