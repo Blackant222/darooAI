@@ -36,12 +36,12 @@ The user experience is designed to be seamless:
 
 -   **Frontend**: Next.js (App Router), TypeScript, Tailwind CSS, ShadCN/UI
 -   **AI**: Google's Genkit framework orchestrates calls to the Gemini family of models.
--   **Current State**: This is a fully functional high-fidelity prototype. It currently uses `localStorage` to simulate a database, allowing for a complete end-to-end user flow without a live backend.
+-   **Database & Auth**: The application uses Firebase for both its database (Firestore) and user authentication, providing a secure and scalable backend.
 
 ## The Path to Production
 
 The application is architected to be easily migrated to a full production setup. The `app.md` file in this project provides a detailed guide on how to:
 
--   Set up a **PostgreSQL database** (e.g., using Supabase).
--   Refactor the data layer to use **Next.js Server Components and Server Actions**, replacing the local state management.
--   Implement real user authentication with Supabase Auth.
+-   Set up environment variables for Firebase and Genkit.
+-   Deploy the application to a hosting provider like Vercel.
+-   Understand the technical architecture in depth.
