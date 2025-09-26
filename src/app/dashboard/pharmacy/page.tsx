@@ -66,7 +66,7 @@ export default function PharmacyPage() {
             </CardDescription>
           </div>
           <ScanDrugDialog>
-            <Button className="w-full md:w-auto">
+            <Button id="add-drug-button" className="w-full md:w-auto">
               <PlusCircle className="ml-2 h-4 w-4" /> افزودن دارو
             </Button>
           </ScanDrugDialog>
@@ -123,7 +123,7 @@ export default function PharmacyPage() {
                           </TableCell>
                           <TableCell className="hidden md:table-cell">{drug.addedAt ? formatDistanceToNow(new Date(drug.addedAt)) : '-'} پیش</TableCell>
                           <TableCell className="text-left">
-                            <Button variant="ghost" size="sm" onClick={() => setSelectedDrug(drug)}>
+                            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedDrug(drug)}}>
                                 <Eye className="ml-2"/>
                                 مشاهده
                             </Button>

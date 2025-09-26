@@ -18,6 +18,7 @@ import { Loader2 } from "lucide-react";
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/firebase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useOnboarding } from '@/context/onboarding-context';
 
 interface ProfileData {
     fullName: string;
@@ -26,6 +27,7 @@ interface ProfileData {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const { completeOnboarding } = useOnboarding();
   const [profileData, setProfileData] = useState<ProfileData>({
     fullName: '',
     healthConditions: '',
@@ -74,6 +76,9 @@ export default function ProfilePage() {
         fullName: profileData.fullName,
         healthConditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
       }, { merge: true });
+      
+      // If user is editing their profile, they've completed the onboarding.
+      await completeOnboarding();
 
       toast({
         title: "پروفایل به‌روزرسانی شد",

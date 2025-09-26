@@ -9,6 +9,8 @@ import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { AuthProvider } from '@/context/auth-context';
+import { OnboardingProvider } from '@/context/onboarding-context';
+import OnboardingWizard from '@/components/onboarding-wizard';
 
 function AppHeader() {
   return (
@@ -50,11 +52,14 @@ function DashboardLayoutContent({
 
   return (
     <DrugProvider>
+      <OnboardingProvider>
         <div dir="rtl" className="flex flex-col min-h-dvh bg-background">
             <AppHeader />
-            <main className="flex-1 p-4 pb-20 md:p-8">{children}</main>
+            <main id="main-content" className="flex-1 p-4 pb-20 md:p-8">{children}</main>
             <BottomNav />
+            <OnboardingWizard />
         </div>
+      </OnboardingProvider>
     </DrugProvider>
   );
 }

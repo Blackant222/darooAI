@@ -82,6 +82,7 @@ export default function SignupPage() {
             healthGoals: formData.healthGoals,
             activityLevel: formData.activityLevel,
             smokingStatus: formData.smokingStatus,
+            onboardingCompleted: false, // <-- Set onboarding as not completed
             createdAt: new Date().toISOString(),
         });
 
