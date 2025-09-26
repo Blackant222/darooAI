@@ -4,25 +4,10 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { db } from '@/firebase/client';
 import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { useAuth } from './auth-context';
+import { type Drug as DrugType } from '@/lib/types';
 
-export interface Ingredient {
-    name: string;
-    dosage?: string;
-}
 
-export interface Drug {
-    id: string;
-    brandName?: string;
-    activeIngredients: Ingredient[];
-    category: string;
-    tags: string[];
-    summary: string;
-    sideEffects: string;
-    addedAt: string;
-    isTaking?: boolean;
-    frequency?: string;
-    startDate?: string;
-}
+export interface Drug extends DrugType {}
 
 interface DrugContextType {
     drugs: Drug[];

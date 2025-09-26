@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Scans a medicine label, identifies the drug's brand name and active ingredients (with dosage), categorizes it, and extracts relevant tags by using a web search tool.
+ * @fileOverview Scans a medicine label, identifies the drug's brand name and active ingredients (with dosage), categorizes it, and extracts relevant tags by using a web search tool. It then generates a summary and side effect profile.
  *
  * - scanAndCategorizeDrug - A function that handles the drug scanning and categorization process.
  * - ScanAndCategorizeDrugInput - The input type for the scanAndCategorizeDrug function.

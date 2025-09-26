@@ -42,8 +42,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
-        setError('اندازه فایل باید کمتر از ۴ مگابایت باشد.');
+      if (selectedFile.size > 4.5 * 1024 * 1024) { // 4.5MB limit
+        setError('اندازه فایل باید کمتر از ۴.۵ مگابایت باشد.');
         return;
       }
       setFile(selectedFile);
