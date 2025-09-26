@@ -14,9 +14,9 @@ import { Button } from '@/components/ui/button';
 import { Loader2, UploadCloud, X, CheckCircle, AlertTriangle, PlusCircle, ScanLine, ArrowRight, Pill, Tag, List, Beaker } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
-import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/ai/flows/scan-and-categorize-drug';
+import { scanAndCategorizeDrug, type ScanAndCategorizeDrugOutput } from '@/genkit/flows/scan-and-categorize-drug';
 import { Badge } from './ui/badge';
-import { useDrugContext, type Drug } from '@/context/drug-context';
+import { useDrugContext } from '@/context/drug-context';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -27,7 +27,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const [result, setResult] = useState<ScanAndCategorizeDrugOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState(1);
@@ -42,8 +42,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
-        setError('اندازه فایل باید کمتر از ۴ مگابایت باشد.');
+      if (selectedFile.size > 4.5 * 1024 * 1024) { // 4.5MB limit
+        setError('اندازه فایل باید کمتر از ۴.۵ مگابایت باشد.');
         return;
       }
       setFile(selectedFile);
@@ -57,7 +57,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const resetState = () => {
     setFile(null);
     setPreview(null);
-    setIsLoading(false);
+    setIsAiLoading(false);
     setResult(null);
     setError(null);
     setStep(1);
@@ -77,7 +77,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   const handleScan = async () => {
     if (!file) return;
 
-    setIsLoading(true);
+    setIsAiLoading(true);
     setError(null);
     setResult(null);
 
@@ -99,36 +99,45 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
           description: 'امکان تحلیل برچسب دارو وجود نداشت. لطفاً از تصویر واضح‌تری استفاده کنید.',
         });
       } finally {
-        setIsLoading(false);
+        setIsAiLoading(false);
       }
     };
     reader.onerror = (err) => {
       console.error("FileReader error:", err);
       setError('خواندن فایل ناموفق بود.');
-      setIsLoading(false);
+      setIsAiLoading(false);
     };
   };
   
-  const handleAddToPharmacy = () => {
+  const handleAddToPharmacy = async () => {
     if (!result) return;
     
-    let newDrug: Drug = {
-      id: Date.now().toString(),
-      addedAt: new Date().toISOString(),
-      ...result,
+    let newDrug = {
+      brandName: result.brandName,
+      activeIngredients: result.activeIngredients,
+      category: result.category,
+      tags: result.tags,
+      summary: result.summary,
+      sideEffects: result.sideEffects,
       isTaking: isTaking === 'yes',
+      ...(isTaking === 'yes' && { frequency, startDate }),
     };
 
-    if (isTaking === 'yes') {
-        newDrug = { ...newDrug, frequency, startDate };
+    try {
+        await addDrug(newDrug);
+        toast({
+          title: 'دارو اضافه شد',
+          description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه شما اضافه شد.`,
+        });
+        handleOpenChange(false);
+    } catch (error) {
+        console.error("Failed to add drug:", error)
+        toast({
+            variant: "destructive",
+            title: "خطا",
+            description: "افزودن دارو به داروخانه ناموفق بود."
+        })
     }
-
-    addDrug(newDrug);
-    toast({
-      title: 'دارو اضافه شد',
-      description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه مجازی شما اضافه شد.`,
-    });
-    handleOpenChange(false);
   };
 
   const renderStepOne = () => (
@@ -164,8 +173,8 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
         )}
       </div>
       <DialogFooter>
-        <Button onClick={handleScan} disabled={!file || isLoading} className="w-full neumorphic-button">
-          {isLoading ? (
+        <Button onClick={handleScan} disabled={!file || isAiLoading} className="w-full">
+          {isAiLoading ? (
             <>
               <Loader2 className="ml-2 animate-spin" /> در حال اسکن...
             </>
@@ -187,7 +196,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
       </DialogHeader>
       <div className="space-y-4 py-4 text-right">
         {result && (
-          <Card className='neumorphic-card-inset p-4'>
+          <Card className='bg-muted/50 p-4'>
             <CardContent className='p-0 space-y-4'>
                  <div className="flex items-center gap-3">
                     <Pill className='text-primary' />
@@ -220,7 +229,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
                     <div>
                         <p className='text-sm text-muted-foreground'>تگ ها</p>
                         <div className="flex flex-wrap gap-2 pt-1">
-                            {result.tags.map((tag, i) => <Badge key={i} variant='secondary' className='neumorphic-badge'>{tag}</Badge>)}
+                            {result.tags.map((tag, i) => <Badge key={i} variant='secondary'>{tag}</Badge>)}
                         </div>
                     </div>
                 </div>
@@ -246,7 +255,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
               <div className="grid gap-2">
                 <Label htmlFor="frequency">تکرار مصرف</Label>
                 <Select dir='rtl' onValueChange={setFrequency} value={frequency}>
-                    <SelectTrigger id="frequency" className="neumorphic-input">
+                    <SelectTrigger id="frequency">
                         <SelectValue placeholder="انتخاب کنید..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -259,16 +268,16 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="start-date">تاریخ شروع</Label>
-                <Input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="neumorphic-input" />
+                <Input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} />
               </div>
           </div>
         )}
       </div>
        <DialogFooter className='flex-row justify-between'>
-          <Button onClick={() => setStep(1)} variant='outline' className="neumorphic-button">
+          <Button onClick={() => setStep(1)} variant='outline'>
             <ArrowRight className="ml-2"/> بازگشت
           </Button>
-          <Button onClick={handleAddToPharmacy} disabled={!isTaking} className="neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button onClick={handleAddToPharmacy} disabled={!isTaking} className="bg-primary text-primary-foreground hover:bg-primary/90">
             <PlusCircle className="ml-2"/> افزودن به داروخانه
           </Button>
       </DialogFooter>
@@ -278,7 +287,7 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent dir="rtl" className="sm:max-w-md neumorphic-card">
+      <DialogContent dir="rtl" className="sm:max-w-md">
         {step === 1 && renderStepOne()}
         {step === 2 && renderStepTwo()}
       </DialogContent>

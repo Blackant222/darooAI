@@ -1,71 +1,82 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-export interface Ingredient {
-    name: string;
-    dosage?: string;
-}
+import { db } from '@/firebase/client';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { useAuth } from './auth-context';
 
 export interface Drug {
-    id: string;
-    brandName?: string;
-    activeIngredients: Ingredient[];
-    category: string;
-    tags: string[];
-    addedAt: string;
-    isTaking?: boolean;
-    frequency?: string;
-    startDate?: string;
+  id: string;
+  brandName?: string;
+  activeIngredients: { name: string; dosage?: string }[];
+  category: string;
+  tags: string[];
+  summary: string;
+  sideEffects: string;
+  addedAt: string; // ISO String
+  isTaking?: boolean;
+  frequency?: string;
+  startDate?: string;
 }
 
 interface DrugContextType {
     drugs: Drug[];
-    addDrug: (drug: Drug) => void;
-    removeDrug: (id: string) => void;
+    addDrug: (drug: Omit<Drug, 'id' | 'addedAt'>) => Promise<void>;
+    removeDrug: (id: string) => Promise<void>;
+    loading: boolean;
 }
 
 const DrugContext = createContext<DrugContextType | undefined>(undefined);
 
 export function DrugProvider({ children }: { children: ReactNode }) {
     const [drugs, setDrugs] = useState<Drug[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
-    // Load from localStorage only on the client-side, after initial render
     useEffect(() => {
-        try {
-            const localData = localStorage.getItem('drugs');
-            if (localData) {
-                setDrugs(JSON.parse(localData));
-            }
-        } catch (error) {
-            console.error("Failed to parse drugs from localStorage", error);
-        } finally {
-            setIsLoaded(true);
+        if (!user) {
+            setDrugs([]);
+            setLoading(false);
+            return;
         }
-    }, []);
 
-    // Save to localStorage whenever drugs change, but only after initial load
-    useEffect(() => {
-        if (isLoaded) {
-            try {
-                localStorage.setItem('drugs', JSON.stringify(drugs));
-            } catch (error) {
-                console.error("Failed to save drugs to localStorage", error);
-            }
-        }
-    }, [drugs, isLoaded]);
+        setLoading(true);
+        const drugsCollectionRef = collection(db, 'users', user.uid, 'drugs');
+        const q = query(drugsCollectionRef, orderBy('addedAt', 'desc'));
+        
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const drugsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            } as Drug));
+            setDrugs(drugsData);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching drugs from Firestore:", error);
+            setLoading(false);
+        });
 
-    const addDrug = (drug: Drug) => {
-        setDrugs(prevDrugs => [...prevDrugs, drug]);
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [user]);
+
+    const addDrug = async (drug: Omit<Drug, 'id' | 'addedAt'>) => {
+        if (!user) throw new Error("User not authenticated to add drug.");
+        const drugsCollectionRef = collection(db, 'users', user.uid, 'drugs');
+        await addDoc(drugsCollectionRef, {
+            ...drug,
+            addedAt: new Date().toISOString(),
+        });
     };
 
-    const removeDrug = (id: string) => {
-        setDrugs(prevDrugs => prevDrugs.filter(drug => drug.id !== id));
+    const removeDrug = async (id: string) => {
+        if (!user) throw new Error("User not authenticated to remove drug.");
+        const drugDocRef = doc(db, 'users', user.uid, 'drugs', id);
+        await deleteDoc(drugDocRef);
     };
 
     return (
-        <DrugContext.Provider value={{ drugs, addDrug, removeDrug }}>
+        <DrugContext.Provider value={{ drugs, addDrug, removeDrug, loading }}>
             {children}
         </DrugContext.Provider>
     );

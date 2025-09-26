@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle, ChevronDown, Feather } from 'lucide-react';
+import { ArrowRight, ChevronDown, Feather } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -173,7 +173,7 @@ const blogPosts = [
     title: 'بهترین داروهای بدون نسخه برای سرماخوردگی',
     excerpt:
       'با شروع فصل سرما، شناخت بهترین و موثرترین داروهای بدون نسخه برای مقابله با علائم سرماخوردگی اهمیت پیدا می‌کند...',
-    author: 'تیم دارو AI',
+    author: 'تیم ابن سینا',
     date: '۱۴۰۳/۰۴/۱۰',
     image: 'https://picsum.photos/seed/blog1/600/400',
     imageHint: 'medicine pills',
@@ -193,7 +193,7 @@ const blogPosts = [
     title: 'نقش هوش مصنوعی در آینده مراقبت‌های بهداشتی',
     excerpt:
       'هوش مصنوعی در حال ایجاد انقلابی در صنعت بهداشت و درمان است. از تشخیص بیماری‌ها تا شخصی‌سازی درمان، با آینده پزشکی آشنا شوید.',
-    author: 'تیم دارو AI',
+    author: 'تیم ابن سینا',
     date: '۱۴۰۳/۰۴/۰۵',
     image: 'https://picsum.photos/seed/blog3/600/400',
     imageHint: 'AI healthcare',
@@ -207,7 +207,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/seed/person1/100/100',
     avatarHint: 'woman portrait',
     quote:
-      '"دارو AI زندگی من را متحول کرده است. مدیریت داروهای خانواده‌ام همیشه یک چالش بود، اما حالا با یک اسکن ساده همه چیز مرتب است. چت‌بات هوشمندش هم همیشه بهترین راهنمایی را می‌کند."',
+      '"ابن سینا زندگی من را متحول کرده است. مدیریت داروهای خانواده‌ام همیشه یک چالش بود، اما حالا با یک اسکن ساده همه چیز مرتب است. چت‌بات هوشمندش هم همیشه بهترین راهنمایی را می‌کند."',
   },
   {
     name: 'رضا قاسمی',
@@ -223,7 +223,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/seed/person3/100/100',
     avatarHint: 'elderly woman portrait',
     quote:
-      '"من همیشه نگران تداخل دارویی بودم. با دارو AI، لیستی از تمام داروهایم دارم و چت‌بات به من کمک می‌کند تا با اطمینان بیشتری از آن‌ها استفاده کنم. استفاده از آن هم بسیار آسان است."',
+      '"من همیشه نگران تداخل دارویی بودم. با ابن سینا، لیستی از تمام داروهایم دارم و چت‌بات به من کمک می‌کند تا با اطمینان بیشتری از آن‌ها استفاده کنم. استفاده از آن هم بسیار آسان است."',
   },
 ];
 
@@ -270,7 +270,6 @@ export default function LandingPage() {
             </Button>
             <Button
               asChild
-              className="neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Link href="/signup">رایگان شروع کنید</Link>
             </Button>
@@ -284,12 +283,12 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-6 text-center">
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline bg-clip-text text-transparent primary-gradient">
                   دستیار دارویی هوشمند شما
                 </h1>
                 <p className="mx-auto max-w-[700px] text-foreground/80 md:text-xl">
                   داروهای خود را با قدرت هوش مصنوعی اسکن، ردیابی و درک کنید.
-                  دارو AI به شما کمک می‌کند تا سلامتی خود را با سهولت و اطمینان
+                  ابن سینا به شما کمک می‌کند تا سلامتی خود را با سهولت و اطمینان
                   مدیریت کنید.
                 </p>
               </div>
@@ -297,7 +296,7 @@ export default function LandingPage() {
                 <Button
                   asChild
                   size="lg"
-                  className="group neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="group"
                 >
                   <Link href="/signup">
                     شروع رایگان
@@ -308,7 +307,7 @@ export default function LandingPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="group neumorphic-button bg-background hover:bg-accent/50"
+                  className="group"
                 >
                   <Link href="#how-it-works">
                     بیشتر بدانید
@@ -318,7 +317,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="relative mt-16 flex justify-center">
-              <div className="neumorphic-card rounded-xl p-2 w-full max-w-4xl">
+              <div className="border shadow-2xl rounded-2xl p-2 w-full max-w-4xl bg-card">
                 <Image
                   src="https://picsum.photos/seed/dashboard-dark/1200/675"
                   data-ai-hint="app dark dashboard"
@@ -337,8 +336,8 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="mx-auto grid max-w-5xl items-center gap-6 lg:grid-cols-3 lg:gap-12">
               {features.map((feature, index) => (
-                <div key={index} className="flex flex-col items-center text-center">
-                  <div className="neumorphic-button mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-card">
+                <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl glass-light dark:glass-dark">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold font-headline">
@@ -368,14 +367,14 @@ export default function LandingPage() {
                   فقط در سه مرحله ساده
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  ما فرایند مدیریت داروها را برای شما ساده کرده‌ایم. با دارو AI،
+                  ما فرایند مدیریت داروها را برای شما ساده کرده‌ایم. با ابن سینا،
                   سلامتی در دستان شماست.
                 </p>
               </div>
             </div>
             <div className="mx-auto mt-12 grid max-w-5xl gap-8 md:grid-cols-3 md:gap-12">
               <div className="flex flex-col items-center text-center">
-                <div className="neumorphic-card mb-4 flex h-16 w-16 items-center justify-center rounded-full border text-3xl font-bold text-primary">
+                <div className="border-primary border-2 mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl font-bold text-primary">
                   ۱
                 </div>
                 <h3 className="text-xl font-bold">ثبت‌نام و ایجاد پروفایل</h3>
@@ -385,7 +384,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <div className="neumorphic-card mb-4 flex h-16 w-16 items-center justify-center rounded-full border text-3xl font-bold text-primary">
+                <div className="border-primary border-2 mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl font-bold text-primary">
                   ۲
                 </div>
                 <h3 className="text-xl font-bold">اسکن داروهایتان</h3>
@@ -395,7 +394,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <div className="neumorphic-card mb-4 flex h-16 w-16 items-center justify-center rounded-full border text-3xl font-bold text-primary">
+                <div className="border-primary border-2 mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl font-bold text-primary">
                   ۳
                 </div>
                 <h3 className="text-xl font-bold">دریافت راهنمایی هوشمند</h3>
@@ -416,7 +415,7 @@ export default function LandingPage() {
                 کاربران ما چه می‌گویند؟
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                نگاهی به تجربیات افرادی که با دارو AI سلامتی خود را بهتر مدیریت
+                نگاهی به تجربیات افرادی که با ابن سینا سلامتی خود را بهتر مدیریت
                 می‌کنند.
               </p>
             </div>
@@ -424,7 +423,7 @@ export default function LandingPage() {
               {testimonials.map((testimonial, index) => (
                 <div
                   key={index}
-                  className="neumorphic-card flex flex-col justify-between rounded-lg p-6"
+                  className="bg-secondary flex flex-col justify-between rounded-2xl p-6 neumorphic-light dark:neumorphic-dark"
                 >
                   <p className="text-sm text-foreground/80">
                     {testimonial.quote}
@@ -459,7 +458,7 @@ export default function LandingPage() {
                 از بلاگ ما بخوانید
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                جدیدترین مقالات و نکات سلامتی از تیم متخصصین دارو AI.
+                جدیدترین مقالات و نکات سلامتی از تیم متخصصین ابن سینا.
               </p>
             </div>
             <div className="mx-auto mt-12 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -469,7 +468,7 @@ export default function LandingPage() {
                   href={`/blog/${post.slug}`}
                   className="group"
                 >
-                  <div className="overflow-hidden rounded-lg neumorphic-card h-full flex flex-col">
+                  <div className="overflow-hidden rounded-2xl bg-secondary neumorphic-light dark:neumorphic-dark h-full flex flex-col">
                     <Image
                       src={post.image}
                       data-ai-hint={post.imageHint}
@@ -495,7 +494,7 @@ export default function LandingPage() {
               ))}
             </div>
             <div className="mt-12 text-center">
-              <Button asChild variant="outline" className="neumorphic-button">
+              <Button asChild variant="outline">
                 <Link href="/blog">مشاهده همه مقالات</Link>
               </Button>
             </div>
@@ -514,14 +513,14 @@ export default function LandingPage() {
               </p>
             </div>
             <Accordion type="single" collapsible className="mt-12 w-full">
-              <AccordionItem value="item-1" className="neumorphic-card mb-4 rounded-lg px-4">
-                <AccordionTrigger>آیا دارو AI رایگان است؟</AccordionTrigger>
+              <AccordionItem value="item-1" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
+                <AccordionTrigger>آیا ابن سینا رایگان است؟</AccordionTrigger>
                 <AccordionContent>
-                  بله، نسخه فعلی دارو AI با تمام ویژگی‌های اصلی شامل اسکن دارو،
+                  بله، نسخه فعلی ابن سینا با تمام ویژگی‌های اصلی شامل اسکن دارو،
                   مدیریت داروخانه و چت‌بات هوشمند کاملاً رایگان است.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-2" className="neumorphic-card mb-4 rounded-lg px-4">
+              <AccordionItem value="item-2" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   اطلاعات پزشکی من چگونه استفاده می‌شود؟
                 </AccordionTrigger>
@@ -532,18 +531,18 @@ export default function LandingPage() {
                   ثالثی به اشتراک گذاشته نمی‌شود.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-3" className="neumorphic-card mb-4 rounded-lg px-4">
+              <AccordionItem value="item-3" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   آیا توصیه‌های چت‌بات جایگزین مشاوره پزشک است؟
                 </AccordionTrigger>
                 <AccordionContent>
-                  خیر. چت‌بات دارو AI یک ابزار کمکی هوشمند برای راهنمایی اولیه
+                  خیر. چت‌بات ابن سینا یک ابزار کمکی هوشمند برای راهنمایی اولیه
                   است و هرگز نباید جایگزین مشاوره با یک پزشک یا داروساز
                   متخصص شود. همیشه برای نگرانی‌های جدی پزشکی با یک متخصص مشورت
                   کنید.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-4" className="neumorphic-card mb-4 rounded-lg px-4">
+              <AccordionItem value="item-4" className="bg-secondary neumorphic-light dark:neumorphic-dark border-none mb-4 rounded-2xl px-4">
                 <AccordionTrigger>
                   چه نوع داروهایی را می‌توانم اسکن کنم؟
                 </AccordionTrigger>
@@ -571,7 +570,7 @@ export default function LandingPage() {
             <Button
               asChild
               size="lg"
-              className="group neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90 mt-4"
+              className="group mt-4"
             >
               <Link href="/signup">
                 همین حالا شروع کنید
@@ -583,7 +582,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-background border-t">
+      <footer className="bg-secondary border-t">
         <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-4 py-12 md:px-6">
           <div className="grid gap-2">
             <Logo collapsed={false} />
@@ -609,7 +608,7 @@ export default function LandingPage() {
         </div>
         <div className="border-t py-6">
           <p className="text-center text-xs text-muted-foreground">
-            &copy; ۲۰۲۴ دارو AI. تمام حقوق محفوظ است.
+            &copy; ۲۰۲۴ ابن سینا. تمام حقوق محفوظ است.
           </p>
         </div>
       </footer>

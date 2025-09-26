@@ -47,7 +47,7 @@ export function MultiSelectChip({ options, selected, onChange, placeholder }: Mu
             key={option}
             variant={selected.includes(option) ? 'default' : 'secondary'}
             onClick={() => toggleSelection(option)}
-            className="cursor-pointer neumorphic-badge"
+            className="cursor-pointer"
           >
             {option}
           </Badge>
@@ -55,7 +55,7 @@ export function MultiSelectChip({ options, selected, onChange, placeholder }: Mu
          <Badge
             variant={'outline'}
             onClick={() => setShowInput(prev => !prev)}
-            className="cursor-pointer neumorphic-badge"
+            className="cursor-pointer"
         >
             <Plus className='w-3 h-3 ml-1' />
             دیگر
@@ -69,7 +69,7 @@ export function MultiSelectChip({ options, selected, onChange, placeholder }: Mu
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={placeholder}
-            className="neumorphic-input flex-grow"
+            className="flex-grow"
             onKeyDown={(e) => {
                 if(e.key === 'Enter') {
                     e.preventDefault();
@@ -77,7 +77,7 @@ export function MultiSelectChip({ options, selected, onChange, placeholder }: Mu
                 }
             }}
           />
-          <Button type="button" size="sm" onClick={handleAddCustom} className='neumorphic-button'>افزودن</Button>
+          <Button type="button" size="sm" onClick={handleAddCustom}>افزودن</Button>
         </div>
       )}
 

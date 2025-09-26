@@ -1,6 +1,6 @@
-import { Pill } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { IbnSinaLogo } from "./ibn-sina-logo";
 
 export function Logo({
   collapsed,
@@ -15,10 +15,10 @@ export function Logo({
       className={cn("flex items-center gap-2", className)}
       prefetch={false}
     >
-      <Pill className="h-6 w-6 text-primary" />
+      <IbnSinaLogo className="h-6 w-6 text-primary" />
       {!collapsed && (
         <span className="text-lg font-bold font-headline whitespace-nowrap">
-          دارو AI
+          ابن سینا
         </span>
       )}
     </Link>

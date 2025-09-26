@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pill, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowRight, ArrowLeft, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -23,6 +24,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { MultiSelectChip } from '@/components/multi-select-chip';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { auth, db } from '@/firebase/client';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
 
 const totalSteps = 4;
@@ -41,6 +47,10 @@ export default function SignupPage() {
       agreedToTerms: false,
       agreedToPrivacy: false,
   });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
 
   const handleChange = (field: string, value: any) => {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,21 +58,59 @@ export default function SignupPage() {
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
+  
+  const handleSignup = async () => {
+    if (!formData.agreedToTerms || !formData.agreedToPrivacy) {
+        setError("برای ادامه باید با شرایط و سیاست حفظ حریم خصوصی موافقت کنید.");
+        return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        const user = userCredential.user;
+
+        await updateProfile(user, { displayName: formData.fullName });
+        
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            fullName: formData.fullName,
+            email: formData.email,
+            healthConditions: formData.healthConditions,
+            allergies: formData.allergies,
+            healthGoals: formData.healthGoals,
+            activityLevel: formData.activityLevel,
+            smokingStatus: formData.smokingStatus,
+            onboardingCompleted: false, // <-- Set onboarding as not completed
+            createdAt: new Date().toISOString(),
+        });
+
+        router.push('/dashboard');
+
+    } catch (err: any) {
+        setError(getFirebaseErrorMessage(err));
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
 
   return (
     <div
       dir="rtl"
       className="flex items-center justify-center min-h-dvh py-12 bg-background"
     >
-      <Card className="mx-auto max-w-md w-full neumorphic-card">
+      <Card className="mx-auto max-w-md w-full bg-secondary neumorphic-light dark:neumorphic-dark border-none">
         <CardHeader>
           <Link
             href="/"
             className="flex items-center justify-center mb-4"
             prefetch={false}
           >
-            <Pill className="h-8 w-8 text-primary" />
-             <span className="mr-2 text-xl font-bold font-headline">دارو AI</span>
+            <IbnSinaLogo className="h-8 w-8 text-primary" />
+             <span className="mr-2 text-xl font-bold font-headline">ابن سینا</span>
           </Link>
           <CardTitle className="text-2xl text-center font-headline">
             {step === totalSteps ? 'تکمیل ثبت‌نام' : 'ایجاد پروفایل سلامتی'}
@@ -77,6 +125,12 @@ export default function SignupPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4 text-right">
+             {error && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             {step === 1 && <Step1 formData={formData} onChange={handleChange} />}
             {step === 2 && <Step2 formData={formData} onChange={handleChange} />}
             {step === 3 && <Step3 formData={formData} onChange={handleChange} />}
@@ -88,7 +142,8 @@ export default function SignupPage() {
               <Button
                 variant="outline"
                 onClick={prevStep}
-                className="w-full neumorphic-button"
+                className="w-full"
+                disabled={isLoading}
               >
                 <ArrowRight className="ml-2" />
                 قبلی
@@ -97,22 +152,18 @@ export default function SignupPage() {
             {step < totalSteps ? (
               <Button
                 onClick={nextStep}
-                className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full"
               >
                 بعدی
                 <ArrowLeft className="mr-2" />
               </Button>
             ) : (
               <Button
-                asChild
-                className="w-full neumorphic-button bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={handleSignup}
+                className="w-full"
+                disabled={isLoading || !formData.agreedToTerms || !formData.agreedToPrivacy}
               >
-                <Link
-                  href="/dashboard"
-                  className="w-full h-full flex items-center justify-center"
-                >
-                  ایجاد حساب کاربری
-                </Link>
+                {isLoading ? <Loader2 className='animate-spin' /> : 'ایجاد حساب کاربری'}
               </Button>
             )}
           </div>
@@ -143,7 +194,6 @@ function Step1({ formData, onChange }: StepProps) {
           id="full-name"
           placeholder="مثال: سارا محمدی"
           required
-          className="neumorphic-input"
           value={formData.fullName}
           onChange={(e) => onChange('fullName', e.target.value)}
         />
@@ -155,14 +205,13 @@ function Step1({ formData, onChange }: StepProps) {
           type="email"
           placeholder="sara@example.com"
           required
-          className="neumorphic-input"
           value={formData.email}
           onChange={(e) => onChange('email', e.target.value)}
         />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="password">رمز عبور</Label>
-        <Input id="password" type="password" required className="neumorphic-input" value={formData.password} onChange={(e) => onChange('password', e.target.value)} />
+        <Input id="password" type="password" required value={formData.password} onChange={(e) => onChange('password', e.target.value)} />
       </div>
     </div>
   );
@@ -217,7 +266,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="activity-level">سطح فعالیت</Label>
           <Select value={formData.activityLevel} onValueChange={(value) => onChange('activityLevel', value)}>
-            <SelectTrigger id="activity-level" className="neumorphic-input">
+            <SelectTrigger id="activity-level" className="neumorphic-light dark:neumorphic-dark bg-background border-none">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>
@@ -230,7 +279,7 @@ function Step3({ formData, onChange }: StepProps) {
         <div className="grid gap-2">
           <Label htmlFor="smoking">مصرف سیگار</Label>
           <Select value={formData.smokingStatus} onValueChange={(value) => onChange('smokingStatus', value)}>
-            <SelectTrigger id="smoking" className="neumorphic-input">
+            <SelectTrigger id="smoking" className="neumorphic-light dark:neumorphic-dark bg-background border-none">
               <SelectValue placeholder="انتخاب کنید" />
             </SelectTrigger>
             <SelectContent>
@@ -278,4 +327,17 @@ function Step4({ formData, onChange }: StepProps) {
       </div>
     </div>
   );
+}
+
+function getFirebaseErrorMessage(error: any): string {
+  switch (error.code) {
+    case 'auth/email-already-in-use':
+      return 'این ایمیل قبلاً ثبت‌نام کرده است.';
+    case 'auth/invalid-email':
+      return 'فرمت ایمیل نامعتبر است.';
+    case 'auth/weak-password':
+      return 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+    default:
+      return 'خطایی در هنگام ثبت‌نام رخ داد. لطفاً دوباره امتحان کنید.';
+  }
 }
