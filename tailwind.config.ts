@@ -82,10 +82,10 @@ const config = {
       boxShadow: {
         'nav-light': '0px -2px 24px rgba(0, 0, 0, 0.08)',
         'nav-dark': '0px -2px 32px rgba(0, 0, 0, 0.24)',
-        'nav-active-glow': '0px 4px 12px rgba(99, 102, 241, 0.36)',
+        'nav-active-glow': '0px 4px 12px hsla(var(--primary), 0.36)',
       },
       backgroundImage: {
-        'nav-active-gradient': 'linear-gradient(135deg, #818CF8 0%, #6366F1 100%)',
+        'nav-active-gradient': 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)',
       }
     },
   },
