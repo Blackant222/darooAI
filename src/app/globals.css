@@ -36,10 +36,10 @@
   }
 
   .dark {
-    --background: 0 0% 12%; /* Dark Frost #1E1E1E */
+    --background: 0 0% 7%; /* Near Black #121212 */
     --foreground: 0 0% 88%; /* Light Grey #E0E0E0 */
 
-    --card: 0 0% 12%;
+    --card: 0 0% 12%; /* Dark Frost #1E1E1E */
     --card-foreground: 0 0% 88%;
 
     --popover: 0 0% 12%;
@@ -48,7 +48,7 @@
     --primary: 212 73% 60%; /* Soft Blue #4A90E2 */
     --primary-foreground: 210 40% 98%;
     
-    --secondary: 0 0% 7%; /* Near Black #121212 */
+    --secondary: 0 0% 12%; /* Dark Frost #1E1E1E */
     --secondary-foreground: 0 0% 88%;
 
     --muted: 0 0% 15%;

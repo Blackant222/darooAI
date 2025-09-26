@@ -5,7 +5,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileUp, Lightbulb, Pill, Activity, Loader2 } from "lucide-react";
@@ -18,19 +17,19 @@ export default function DashboardPage() {
   const { drugs, loading } = useDrugContext();
   const { user } = useAuth();
 
-  const latestDrug = drugs.length > 0 ? drugs.sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())[0] : null;
+  const latestDrug = drugs.length > 0 ? drugs[0] : null; // Already sorted in context
   const drugDisplayName = latestDrug?.brandName || latestDrug?.activeIngredients.map(i => i.name).join(', ');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
+        <p className="text-muted-foreground text-sm">
           در اینجا یک نمای کلی از داروخانه شما آورده شده است.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card className="bg-secondary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -57,27 +56,18 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-secondary col-span-full lg:col-span-1 flex flex-col justify-center items-center p-6">
-          <CardTitle className="text-lg font-semibold mb-2">
-            افزودن داروی جدید
-          </CardTitle>
-          <CardDescription className="text-center mb-4">
-            برای شروع، برچسب دارو را اسکن کنید.
-          </CardDescription>
-          <ScanDrugDialog>
-            <Button className="w-full">
-              <FileUp className="ml-2 h-4 w-4" /> اسکن کن
-            </Button>
-          </ScanDrugDialog>
-        </Card>
       </div>
+      
+      <ScanDrugDialog>
+        <Button size="lg" className="w-full">
+            <FileUp className="ml-2 h-5 w-5" /> افزودن داروی جدید
+        </Button>
+      </ScanDrugDialog>
+
 
       <Card className="bg-secondary">
         <CardHeader>
           <CardTitle>فعالیت اخیر</CardTitle>
-          <CardDescription>
-            نمای کلی از گزارشات مصرف اخیر شما.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -86,17 +76,21 @@ export default function DashboardPage() {
                 <span>در حال بارگذاری فعالیت‌ها...</span>
             </div>
           ) : drugs.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              فعالیت اخیری وجود ندارد.
-            </p>
+            <div className="text-muted-foreground text-center py-8 flex flex-col items-center gap-2">
+                <Activity className="w-8 h-8" />
+              <p>فعالیت اخیری وجود ندارد.</p>
+              <p className="text-xs">برای شروع، داروی جدیدی اضافه کنید.</p>
+            </div>
           ) : (
             <div className="space-y-4">
               {latestDrug && (
                  <div className="flex items-center">
-                    <Activity className="h-5 w-5 text-muted-foreground ml-4" />
-                    <div className="flex-grow">
+                    <div className="p-2 bg-primary/10 rounded-full">
+                        <Activity className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-grow mr-4">
                       <p className="font-medium">
-                        <span className='font-bold'>{drugDisplayName}</span> اضافه شد.
+                        <span className='font-bold'>{drugDisplayName}</span> به داروخانه شما اضافه شد.
                       </p>
                        <p className="text-sm text-muted-foreground">
                          {formatDistanceToNow(new Date(latestDrug.addedAt))} پیش

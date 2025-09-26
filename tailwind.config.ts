@@ -21,7 +21,6 @@ const config = {
       fontFamily: {
         body: ['"Vazirmatn"', "sans-serif"],
         headline: ['"Vazirmatn"', "sans-serif"],
-        code: ["monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

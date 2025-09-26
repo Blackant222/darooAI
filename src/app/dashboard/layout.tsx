@@ -3,7 +3,6 @@ import React from 'react';
 import { Logo } from '@/components/logo';
 import { UserNav } from '@/components/user-nav';
 import { BottomNav } from '@/components/bottom-nav';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { DrugProvider } from '@/context/drug-context';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
@@ -11,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { AuthProvider } from '@/context/auth-context';
 import { OnboardingProvider } from '@/context/onboarding-context';
 import OnboardingWizard from '@/components/onboarding-wizard';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 function AppHeader() {
   return (
