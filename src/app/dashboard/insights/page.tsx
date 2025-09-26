@@ -41,11 +41,15 @@ export default function ChatbotPage() {
   }));
 
   useEffect(() => {
-    // A simple way to get profile data, in a real app this might be in a context
-    const storedProfile = localStorage.getItem(`profile_${user?.uid}`);
-    if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
+    async function fetchProfile() {
+        if (user) {
+            const storedProfile = localStorage.getItem(`profile_${user.uid}`);
+            if (storedProfile) {
+                setProfile(JSON.parse(storedProfile));
+            }
+        }
     }
+    fetchProfile();
   }, [user]);
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-150px)] md:h-[calc(100dvh-128px)]">
+    <div className="flex flex-col h-full">
         <CardHeader className="px-0 pt-0">
             <CardTitle>چت‌بات هوشمند Avicenna</CardTitle>
             <CardDescription>
