@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import { Home, Pill, Bot, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/context/auth-context';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+
 
 const navItems = [
   { href: '/dashboard/profile', icon: UserIcon, label: 'پروفایل' },
@@ -15,30 +18,40 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
-
+  const { user } = useAuth();
+  
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-24 z-50 flex justify-center">
-      <div className="w-full max-w-md h-full flex items-center justify-around glass-pane border-t border-white/10 shadow-lg px-2">
+    <nav className="fixed bottom-6 left-0 right-0 h-16 z-50 flex justify-center md:hidden">
+      <div className="relative w-auto h-full flex items-center justify-around gap-2 px-3 glass-pane border rounded-full shadow-lg">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
+          const isProfile = item.href === '/dashboard/profile';
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col items-center justify-center gap-1.5 w-20 h-20 text-sm font-medium transition-colors duration-300 z-10 rounded-2xl",
-                isActive ? "text-foreground" : "text-muted-foreground/80 hover:text-foreground"
+                "relative flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 z-10",
+                isActive ? "text-white" : "text-muted-foreground/80 hover:text-foreground"
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-nav-indicator"
-                  className="absolute inset-0 bg-white/90 dark:bg-white/10 rounded-2xl shadow-md z-[-1]"
+                  className="absolute inset-0 bg-white rounded-full shadow-md z-[-1]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <item.icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 1.5}/>
-              <span className='font-semibold text-xs'>{item.label}</span>
+               {isProfile && user ? (
+                <Avatar className="h-8 w-8 border-2" style={{borderColor: isActive ? '#4361EE' : 'transparent'}}>
+                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/32/32"} />
+                    <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                </Avatar>
+               ) : (
+                <item.icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2}/>
+               )}
             </Link>
           );
         })}
