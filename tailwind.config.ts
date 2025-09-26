@@ -98,7 +98,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    function({ addUtilities }) {
+    function({ addUtilities }: { addUtilities: (utilities: any) => void }) {
         addUtilities({
             '.animation-delay-2000': {
                 'animation-delay': '2s',

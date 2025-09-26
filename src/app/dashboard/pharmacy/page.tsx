@@ -134,7 +134,7 @@ export default function PharmacyPage() {
                                     <MoreHorizontal className="h-4 w-4" />
                                   </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" dir="rtl">
+                                <DropdownMenuContent align="end">
                                   <DropdownMenuItem onClick={(e) => handleRemove(e, drug.id)} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                                     <Trash2 className="ml-2 h-4 w-4" />
                                     حذف
