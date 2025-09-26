@@ -57,7 +57,7 @@ export function AdminLogin() {
                 type="password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.gexitt.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
             </div>
