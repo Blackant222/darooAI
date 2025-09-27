@@ -23,7 +23,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">خوش آمدید، {user?.displayName || 'کاربر'}!</h1>
+        <h1 className="text-3xl font-bold font-headline">خوش آمدید، {user?.user_metadata?.full_name || user?.email || 'کاربر'}!</h1>
         <p className="text-muted-foreground text-base">
           در اینجا یک نمای کلی از داروخانه شما آورده شده است.
         </p>

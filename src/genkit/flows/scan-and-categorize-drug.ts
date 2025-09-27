@@ -119,7 +119,7 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     } catch (err) {
       // Log detailed error server side so we can debug without crashing the caller
       try {
-        console.error('AI prompt failed:', err?.message ?? err, err);
+        console.error('AI prompt failed:', (err as any)?.message ?? err, err);
       } catch (e) {
         console.error('AI prompt failed and error serialization failed', e);
       }

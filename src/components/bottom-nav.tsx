@@ -46,7 +46,7 @@ export function BottomNav() {
               )}
                {isProfile && user ? (
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-nav-avatar/40/40"} data-ai-hint="person portrait"/>
+                    <AvatarImage src={user.user_metadata?.avatar_url || "https://picsum.photos/seed/user-nav-avatar/40/40"} data-ai-hint="person portrait"/>
                     <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
                ) : (
