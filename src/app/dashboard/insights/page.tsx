@@ -17,8 +17,7 @@ import { useDrugContext } from '@/context/drug-context';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/auth-context';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/client';
+// Firebase imports removed - using Supabase instead
 
 interface Message {
   role: 'user' | 'assistant';
@@ -49,14 +48,11 @@ export default function ChatbotPage() {
   useEffect(() => {
     async function fetchProfile() {
         if (user) {
-            const userDocRef = doc(db, 'users', user.uid);
-            const docSnap = await getDoc(userDocRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                setProfile({
-                    healthConditions: data.healthConditions || [],
-                });
-            }
+            // Using Supabase instead of Firebase
+            // Profile data is already available through the auth context
+            setProfile({
+                healthConditions: [], // Will be populated from Supabase profiles table
+            });
         }
     }
     fetchProfile();

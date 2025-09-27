@@ -1,4 +1,3 @@
-      }
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,23 +7,18 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardHeader,
   CardTitle,
-      const { error } = await supabase.from('profiles').upsert({
-        id: user.id,
-        full_name: profileData.fullName,
-        health_conditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
-        updated_at: new Date().toISOString(),
-      });
-
-      if (error) throw error;
+} from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { useOnboarding } from '@/context/onboarding-context';
+import { useAuth } from '@/context/auth-context';
 
 interface ProfileData {
-    fullName: string;
-    healthConditions: string;
+  fullName: string;
+  healthConditions: string;
 }
 
 export default function ProfilePage() {
@@ -40,19 +34,17 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function fetchProfileData() {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      if (!user) return;
+      
       setLoading(true);
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('full_name, health_conditions')
+          .select('*')
           .eq('id', user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') { // Ignore row not found error
+        if (error && error.code !== 'PGRST116') {
           throw error;
         }
 
@@ -62,34 +54,40 @@ export default function ProfilePage() {
             healthConditions: (data.health_conditions || []).join(', '),
           });
         } else {
-          // Prefill with auth data if no profile doc exists
           setProfileData({
             fullName: user.user_metadata.full_name || '',
-            <AvatarImage src={user.user_metadata.avatar_url || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
+            healthConditions: '',
           });
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
+        toast({
+          variant: "destructive",
+          title: "خطا",
+          description: "خطا در بارگذاری اطلاعات پروفایل.",
+        });
       } finally {
         setLoading(false);
+      }
     }
 
     fetchProfileData();
-  }, [user]);
+  }, [user, toast]);
 
   const handleSaveChanges = async () => {
     if (!user) return;
 
     setIsSaving(true);
-    const userDocRef = doc(db, 'users', user.uid);
     try {
-      // We merge to avoid overwriting other fields like email, createdAt etc.
-      await setDoc(userDocRef, {
-        fullName: profileData.fullName,
-        healthConditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
-      }, { merge: true });
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        full_name: profileData.fullName,
+        health_conditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
+        updated_at: new Date().toISOString(),
+      });
+
+      if (error) throw error;
       
-      // If user is editing their profile, they've completed the onboarding.
       await completeOnboarding();
 
       toast({
@@ -128,55 +126,68 @@ export default function ProfilePage() {
   return (
     <Card className="bg-secondary">
       <CardHeader>
-        <CardTitle>پروفایل من</CardTitle>
+        <CardTitle className="text-2xl font-bold">پروفایل من</CardTitle>
         <CardDescription>
-          اطلاعات شخصی و شرایط سلامتی خود را به روز کنید.
+          اطلاعات شخصی و وضعیت سلامتی خود را مدیریت کنید
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-4 space-x-reverse">
-          <Avatar className="h-20 w-20 border-2 border-primary/50 p-1">
-            <AvatarImage src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
-            <AvatarFallback>{user.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
+          <Avatar className="h-20 w-20">
+            <AvatarImage src={user.user_metadata.avatar_url || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
+            <AvatarFallback className="text-lg">
+              {profileData.fullName.charAt(0) || user.email?.charAt(0) || 'U'}
+            </AvatarFallback>
           </Avatar>
-          <Button variant="outline">
-            تغییر عکس
-          </Button>
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName">نام کامل</Label>
-            <Input id="fullName" placeholder="نام خود را وارد کنید" value={profileData.fullName} onChange={handleInputChange} />
+          <div>
+            <h3 className="text-lg font-semibold">{profileData.fullName || 'کاربر'}</h3>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">ایمیل</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="user@example.com"
-              defaultValue={user.email || ""}
-              disabled
-              className="disabled:opacity-75"
+        </div>
+
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <label htmlFor="fullName" className="text-sm font-medium">
+              نام کامل
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              value={profileData.fullName}
+              onChange={handleInputChange}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="نام کامل خود را وارد کنید"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <label htmlFor="healthConditions" className="text-sm font-medium">
+              شرایط سلامتی
+            </label>
+            <textarea
+              id="healthConditions"
+              value={profileData.healthConditions}
+              onChange={handleInputChange}
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="شرایط سلامتی خود را با کاما جدا کنید (مثال: دیابت، فشار خون)"
             />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="healthConditions">شرایط سلامتی</Label>
-          <Textarea
-            id="healthConditions"
-            placeholder="مثال: فشار خون بالا, دیابت نوع ۲"
-            value={profileData.healthConditions}
-            onChange={handleInputChange}
-            className="neumorphic-light dark:neumorphic-dark bg-background border-none min-h-[120px]"
-          />
-           <p className="text-xs text-muted-foreground pt-1">
-              این اطلاعات به چت‌بات هوش مصنوعی کمک می‌کند تا توصیه‌های دقیق‌تری به شما ارائه دهد. شرایط را با کاما جدا کنید.
-            </p>
-        </div>
+
         <div className="flex justify-end">
-          <Button onClick={handleSaveChanges} disabled={isSaving}>
-            {isSaving ? <Loader2 className='ml-2 animate-spin' /> : null}
-            ذخیره تغییرات
+          <Button 
+            onClick={handleSaveChanges} 
+            disabled={isSaving}
+            className="primary-gradient-bg"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                در حال ذخیره...
+              </>
+            ) : (
+              'ذخیره تغییرات'
+            )}
           </Button>
         </div>
       </CardContent>
