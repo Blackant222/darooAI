@@ -130,12 +130,50 @@ export function ScanDrugDialog({ children }: { children: ReactNode }) {
           description: `${result.brandName || result.activeIngredients.map(i => i.name).join(', ')} به داروخانه شما اضافه شد.`,
         });
         handleOpenChange(false);
-    } catch (error) {
-        console.error("Failed to add drug:", error)
+    } catch (err) {
+        // Build a robust, serializable error object
+        let parsedError: any = { raw: String(err) };
+
+        try {
+            // If it's an Error instance with a JSON message (we throw JSON from addDrug), parse it
+            if (err instanceof Error && typeof err.message === 'string') {
+                try {
+                    const maybe = JSON.parse(err.message);
+                    if (maybe && typeof maybe === 'object' && Object.keys(maybe).length > 0) {
+                        parsedError = maybe;
+                    } else {
+                        // not JSON or empty object, keep message
+                        parsedError = { message: err.message };
+                    }
+                } catch (e) {
+                    // not JSON, use the message
+                    parsedError = { message: err.message };
+                }
+            } else if (err && typeof err === 'object') {
+                // Try to extract common fields
+                parsedError = {
+                    message: (err as any).message ?? (err as any).msg ?? undefined,
+                    details: (err as any).details ?? (err as any).detail ?? undefined,
+                    raw: JSON.stringify(err, Object.getOwnPropertyNames(err)),
+                };
+            }
+        } catch (parseErr) {
+            parsedError = { raw: String(err) };
+        }
+
+        // Always log a single string to avoid Next dev overlay printing an empty object
+        try {
+            console.error('Failed to add drug: ' + JSON.stringify(parsedError));
+        } catch (logErr) {
+            console.error('Failed to add drug (could not stringify error): ' + String(parsedError));
+        }
+
+        const userMessage = parsedError?.message || parsedError?.details || parsedError?.raw || 'افزودن دارو به داروخانه ناموفق بود.';
+
         toast({
             variant: "destructive",
             title: "خطا",
-            description: "افزودن دارو به داروخانه ناموفق بود."
+            description: userMessage,
         })
     }
   };

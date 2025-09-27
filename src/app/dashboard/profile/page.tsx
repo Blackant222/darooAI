@@ -1,3 +1,4 @@
+      }
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,16 +8,17 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/context/auth-context";
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        full_name: profileData.fullName,
+        health_conditions: profileData.healthConditions.split(',').map(s => s.trim()).filter(Boolean),
+        updated_at: new Date().toISOString(),
+      });
+
+      if (error) throw error;
 import { Loader2 } from "lucide-react";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/firebase/client';
+import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { useOnboarding } from '@/context/onboarding-context';
 
@@ -43,23 +45,33 @@ export default function ProfilePage() {
         return;
       }
       setLoading(true);
-      const userDocRef = doc(db, 'users', user.uid);
-      const docSnap = await getDoc(userDocRef);
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, health_conditions')
+          .eq('id', user.id)
+          .single();
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setProfileData({
-            fullName: data.fullName || user.displayName || '',
-            healthConditions: (data.healthConditions || []).join(', '),
-        });
-      } else {
-        // Prefill with auth data if no profile doc exists
-         setProfileData({
-            fullName: user.displayName || '',
-            healthConditions: '',
-        });
-      }
-      setLoading(false);
+        if (error && error.code !== 'PGRST116') { // Ignore row not found error
+          throw error;
+        }
+
+        if (data) {
+          setProfileData({
+            fullName: data.full_name || user.user_metadata.full_name || '',
+            healthConditions: (data.health_conditions || []).join(', '),
+          });
+        } else {
+          // Prefill with auth data if no profile doc exists
+          setProfileData({
+            fullName: user.user_metadata.full_name || '',
+            <AvatarImage src={user.user_metadata.avatar_url || "https://picsum.photos/seed/user-profile-avatar/80/80"} data-ai-hint="person portrait"/>
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      } finally {
+        setLoading(false);
     }
 
     fetchProfileData();

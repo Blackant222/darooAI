@@ -22,9 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { FlagMedicationForm } from "./flag-medication-form";
 import { useAdminAuth } from "@/context/admin-auth-context";
-import { collection, getDocs, getCountFromServer } from "firebase/firestore";
-import { db } from "@/firebase/client";
-import { User, Drug } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
+import { User } from "@/lib/types"; // Assuming this type is still valid or can be adapted
 import {
   Table,
   TableBody,
@@ -53,16 +52,19 @@ export function AdminDashboard() {
     async function fetchStats() {
       setLoadingStats(true);
       try {
-        const usersCol = collection(db, 'users');
-        const usersSnapshot = await getCountFromServer(usersCol);
-        
-        const allDrugsPromises = (await getDocs(usersCol)).docs.map(userDoc => 
-            getCountFromServer(collection(db, 'users', userDoc.id, 'drugs'))
-        );
-        const drugsCounts = await Promise.all(allDrugsPromises);
-        const totalDrugs = drugsCounts.reduce((sum, current) => sum + current.data().count, 0);
+        const { count: usersCount, error: usersError } = await supabase
+            .from('profiles')
+            .select('*', { count: 'exact', head: true });
 
-        setStats(prev => ({...prev, users: usersSnapshot.data().count, drugs: totalDrugs }));
+        if (usersError) throw usersError;
+
+        const { count: drugsCount, error: drugsError } = await supabase
+            .from('drugs')
+            .select('*', { count: 'exact', head: true });
+
+        if (drugsError) throw drugsError;
+
+        setStats(prev => ({...prev, users: usersCount ?? 0, drugs: drugsCount ?? 0 }));
       } catch (error) {
         console.error("Error fetching stats:", error);
       }
@@ -72,9 +74,22 @@ export function AdminDashboard() {
     async function fetchUsers() {
         setLoadingUsers(true);
         try {
-            const usersSnapshot = await getDocs(collection(db, 'users'));
-            const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
-            setAllUsers(usersData);
+            const { data: usersData, error } = await supabase
+                .from('profiles')
+                .select('id, full_name, created_at, email') // Assuming email is needed and available
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            // The user type might need adjustment based on the 'profiles' table structure
+            const formattedUsers = usersData.map(u => ({
+                id: u.id,
+                fullName: u.full_name,
+                email: u.email, // This might not be on the profiles table by default
+                createdAt: u.created_at,
+            })) as User[];
+
+            setAllUsers(formattedUsers);
         } catch (error) {
             console.error("Error fetching users:", error);
         }
@@ -176,7 +191,7 @@ export function AdminDashboard() {
                                 ) : allUsers.map(user => (
                                     <TableRow key={user.id}>
                                         <TableCell>{user.fullName}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.email || 'N/A'}</TableCell>
                                         <TableCell>{user.createdAt ? format(new Date(user.createdAt), 'yyyy/MM/dd') : 'N/A'}</TableCell>
                                     </TableRow>
                                 ))}

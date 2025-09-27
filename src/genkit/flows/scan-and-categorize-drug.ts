@@ -112,8 +112,27 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     outputSchema: ScanAndCategorizeDrugOutputSchema,
   },
   async (input) => {
-    const { output } = await scanAndCategorizeDrugPrompt(input);
-    
+    let output: any;
+    try {
+      const result = await scanAndCategorizeDrugPrompt(input);
+      output = result?.output;
+    } catch (err) {
+      // Log detailed error server side so we can debug without crashing the caller
+      try {
+        console.error('AI prompt failed:', err?.message ?? err, err);
+      } catch (e) {
+        console.error('AI prompt failed and error serialization failed', e);
+      }
+
+      // Graceful fallback: create a minimal structured response so the app can continue
+      output = {
+        brandName: undefined,
+        activeIngredients: [{ name: 'Unknown', dosage: 'N/A' }],
+        category: 'نامشخص',
+        tags: ['نامشخص'],
+      };
+    }
+
     if (!output) {
         throw new Error('The AI failed to return a valid structured response.');
     }
@@ -122,10 +141,12 @@ const scanAndCategorizeDrugFlow = ai.defineFlow(
     // use the brand name as the ingredient. This prevents a total failure.
     if (!output.activeIngredients || output.activeIngredients.length === 0) {
         if (!output.brandName) {
-            throw new Error('AI could not identify any brand name or active ingredients.');
+            // use the fallback brandName if present
+            output.activeIngredients = [{ name: output.brandName ?? 'Unknown' }];
+        } else {
+            // As a last resort, use the brand name itself as the ingredient.
+            output.activeIngredients = [{ name: output.brandName }];
         }
-        // As a last resort, use the brand name itself as the ingredient.
-        output.activeIngredients = [{ name: output.brandName }];
     }
 
     // Now, get the summary and side effects

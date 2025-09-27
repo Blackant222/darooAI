@@ -1,44 +1,73 @@
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+-- Create a table for public profiles
+create table profiles (
+  id uuid references auth.users not null primary key,
+  updated_at timestamp with time zone,
+  full_name text,
+  avatar_url text,
+  health_conditions text[],
+  onboarding_completed boolean default false
 );
 
-CREATE TABLE profiles (
-    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    full_name TEXT,
-    avatar_url TEXT,
-    health_conditions TEXT,
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security
+alter table profiles
+  enable row level security;
+
+create policy "Public profiles are viewable by everyone." on profiles
+  for select using (true);
+
+create policy "Users can insert their own profile." on profiles
+  for insert with check (auth.uid() = id);
+
+create policy "Users can update own profile." on profiles
+  for update using (auth.uid() = id);
+
+-- This trigger automatically creates a profile entry when a new user signs up
+-- See https://supabase.com/docs/guides/auth/managing-user-data
+create function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, full_name, avatar_url)
+  values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
+  return new;
+end;
+$$ language plpgsql security definer;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+-- Create a table for drugs
+create table drugs (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  brandName text,
+  activeIngredients jsonb,
+  category text,
+  tags text[],
+  summary text,
+  sideEffects text,
+  addedAt timestamp with time zone default timezone('utc'::text, now()) not null,
+  isTaking boolean,
+  frequency text,
+  startDate text
 );
 
-CREATE TABLE pharmacy_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    drug_name TEXT NOT NULL,
-    category TEXT,
-    tags TEXT[],
-    added_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- Set up Row Level Security (RLS) for drugs table
+alter table drugs
+  enable row level security;
 
-CREATE TABLE blog_posts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    slug TEXT UNIQUE NOT NULL,
-    title TEXT NOT NULL,
-    excerpt TEXT,
-    content TEXT,
-    author_id UUID REFERENCES users(id),
-    image_url TEXT,
-    published_at TIMESTAMPTZ
-);
+create policy "Users can view their own drugs." on drugs
+  for select using (auth.uid() = user_id);
 
--- Indexes for performance
-CREATE INDEX ON profiles (user_id);
-CREATE INDEX ON pharmacy_items (user_id);
-CREATE INDEX ON blog_posts (slug);
-CREATE INDEX ON blog_posts (author_id);
+create policy "Users can insert their own drugs." on drugs
+  for insert with check (auth.uid() = user_id);
+
+create policy "Users can update their own drugs." on drugs
+  for update using (auth.uid() = user_id);
+
+create policy "Users can delete their own drugs." on drugs
+  for delete using (auth.uid() = user_id);
+
+-- Enable realtime for drugs table
+alter publication supabase_realtime add table drugs;
 
