@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { db } from '@/firebase/client';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from './auth-context';
 
 interface OnboardingContextType {
@@ -25,29 +24,45 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
         }
 
         setLoading(true);
-        const userDocRef = doc(db, 'users', user.uid);
+        const fetchOnboardingStatus = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('onboarding_completed')
+                    .eq('id', user.id)
+                    .single();
 
-        const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                // If `onboardingCompleted` is explicitly false or doesn't exist, it's their first time.
-                setIsFirstTime(data.onboardingCompleted === false);
+                if (error && error.code !== 'PGRST116') { // PGRST116: row not found
+                    throw error;
+                }
+
+                if (data) {
+                    setIsFirstTime(!data.onboarding_completed);
+                } else {
+                    // If no profile exists, assume it's their first time.
+                    setIsFirstTime(true);
+                }
+            } catch (error) {
+                console.error("Error fetching user profile for onboarding status:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
-        }, (error) => {
-            console.error("Error fetching user profile for onboarding status:", error);
-            setLoading(false);
-        });
+        };
 
-        return () => unsubscribe();
+        fetchOnboardingStatus();
     }, [user]);
 
     const completeOnboarding = async () => {
         if (!user) return;
         
-        const userDocRef = doc(db, 'users', user.uid);
         try {
-            await setDoc(userDocRef, { onboardingCompleted: true }, { merge: true });
+            const { error } = await supabase
+                .from('profiles')
+                .update({ onboarding_completed: true })
+                .eq('id', user.id);
+
+            if (error) throw error;
+
             setIsFirstTime(false);
         } catch (error) {
             console.error("Error completing onboarding:", error);

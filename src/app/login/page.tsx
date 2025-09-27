@@ -15,8 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { auth } from '@/firebase/client';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/auth-context';
 import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
@@ -33,10 +32,14 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
       router.push('/dashboard');
     } catch (err: any) {
-      setError(getFirebaseErrorMessage(err));
+      setError(getSupabaseErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +114,13 @@ export default function LoginPage() {
   );
 }
 
-function getFirebaseErrorMessage(error: any): string {
+function getSupabaseErrorMessage(error: any): string {
+  if (error.message.includes('Invalid login credentials')) {
+    return 'ایمیل یا رمز عبور نامعتبر است.';
+  }
+  if (error.message.includes('Email not confirmed')) {
+    return 'لطفا ایمیل خود را تایید کنید.';
+  }
   switch (error.code) {
     case 'auth/invalid-email':
       return 'فرمت ایمیل نامعتبر است.';

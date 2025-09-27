@@ -14,8 +14,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
-import { auth } from "@/firebase/client";
-import { signOut } from "firebase/auth";
+import { supabase } from "@/lib/supabase";
 import { LifeBuoy, LogOut, Settings, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
@@ -23,7 +22,7 @@ export function UserNav() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
     router.push('/');
   };
   
@@ -37,7 +36,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10 border p-0.5">
             <AvatarImage
-              src={user.photoURL || "https://picsum.photos/seed/user-profile-avatar/40/40"}
+              src={user.user_metadata.avatar_url || "https://picsum.photos/seed/user-profile-avatar/40/40"}
               alt="آواتار کاربر"
               data-ai-hint="person portrait"
             />
@@ -48,7 +47,7 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.displayName || 'کاربر'}</p>
+            <p className="text-sm font-medium leading-none">{user.user_metadata.full_name || 'کاربر'}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>

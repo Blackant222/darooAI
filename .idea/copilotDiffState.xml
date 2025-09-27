@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/.env">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/.env" />
+              <option name="originalContent" value="GEMINI_API_KEY=AIzaSyDbJjMLw55OAJSl2e75WmDFJw-hS8CaUCI&#10;SECRET_COOKIE_PASSWORD=&quot;your-secret-cookie-password&quot;&#10;NEXT_PUBLIC_SUPABASE_URL=https://ndtrawjkztybdzkkcrgg.supabase.co&#10;NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdHJhd2prenR5YmR6a2tjcmdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjI5NDYsImV4cCI6MjA3NDQ5ODk0Nn0.qTs2rGOKd38gKA-cYncVW7-mLhUC0atCjdXBcSg_PTA" />
+              <option name="updatedContent" value="GEMINI_API_KEY=AIzaSyDbJjMLw55OAJSl2e75WmDFJw-hS8CaUCI&#10;SECRET_COOKIE_PASSWORD=&quot;your-secret-cookie-password&quot;&#10;NEXT_PUBLIC_SUPABASE_URL=https://ndtrawjkztybdzkkcrgg.supabase.co&#10;NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdHJhd2prenR5YmR6a2tjcmdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjI5NDYsImV4cCI6MjA3NDQ5ODk0Nn0.qTs2rGOKd38gKA-cYncVW7-mLhUC0atCjdXBcSg_PTA" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

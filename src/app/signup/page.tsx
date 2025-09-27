@@ -25,9 +25,7 @@ import {
 } from '@/components/ui/select';
 import { MultiSelectChip } from '@/components/multi-select-chip';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { auth, db } from '@/firebase/client';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 import { IbnSinaLogo } from '@/components/ibn-sina-logo';
 
 
@@ -69,28 +67,38 @@ export default function SignupPage() {
     setError(null);
 
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-        const user = userCredential.user;
-
-        await updateProfile(user, { displayName: formData.fullName });
-        
-        const userDocRef = doc(db, 'users', user.uid);
-        await setDoc(userDocRef, {
-            fullName: formData.fullName,
+        const { data, error } = await supabase.auth.signUp({
             email: formData.email,
-            healthConditions: formData.healthConditions,
-            allergies: formData.allergies,
-            healthGoals: formData.healthGoals,
-            activityLevel: formData.activityLevel,
-            smokingStatus: formData.smokingStatus,
-            onboardingCompleted: false, // <-- Set onboarding as not completed
-            createdAt: new Date().toISOString(),
+            password: formData.password,
+            options: {
+                data: {
+                    full_name: formData.fullName,
+                }
+            }
         });
+
+        if (error) throw error;
+        if (!data.user) throw new Error("User not created");
+
+        // The trigger will create the profile, here we update it with the rest of the data
+        const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+                health_conditions: formData.healthConditions,
+                // allergies and other fields need to be added to profiles table
+                // health_goals: formData.healthGoals,
+                // activity_level: formData.activityLevel,
+                // smoking_status: formData.smokingStatus,
+                onboarding_completed: false,
+            })
+            .eq('id', data.user.id);
+
+        if (profileError) throw profileError;
 
         router.push('/dashboard');
 
     } catch (err: any) {
-        setError(getFirebaseErrorMessage(err));
+        setError(getSupabaseErrorMessage(err));
     } finally {
         setIsLoading(false);
     }
@@ -329,7 +337,13 @@ function Step4({ formData, onChange }: StepProps) {
   );
 }
 
-function getFirebaseErrorMessage(error: any): string {
+function getSupabaseErrorMessage(error: any): string {
+  if (error.message.includes('User already registered')) {
+    return 'این ایمیل قبلاً ثبت‌نام کرده است.';
+  }
+  if (error.message.includes('Password should be at least 6 characters')) {
+    return 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+  }
   switch (error.code) {
     case 'auth/email-already-in-use':
       return 'این ایمیل قبلاً ثبت‌نام کرده است.';
